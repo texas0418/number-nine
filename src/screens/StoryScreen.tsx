@@ -1,0 +1,70 @@
+// src/screens/StoryScreen.tsx
+// Hosts the typographic engine for one chapter, persisting the furthest
+// revealed block so the reader resumes exactly at the locked door they left.
+
+import { useCallback, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ChapterView } from '../engine/ChapterView';
+import { BROADCAST_ONE } from '../chapters/broadcast1';
+import { getProgress, saveProgress } from '../db';
+import { setStaticLevel } from '../audio';
+import { colors, fonts } from '../theme';
+
+export default function StoryScreen({ onBack }: { onBack: () => void }) {
+  const chapter = BROADCAST_ONE;
+  const [initial] = useState(() => getProgress(chapter.id)?.blockIndex ?? 0);
+
+  const advance = useCallback(
+    (blockIndex: number) =>
+      saveProgress({ chapterId: chapter.id, blockIndex, completedMs: null }),
+    [chapter.id],
+  );
+
+  const complete = useCallback(() => {
+    saveProgress({
+      chapterId: chapter.id,
+      blockIndex: chapter.blocks.length,
+      completedMs: Date.now(),
+    });
+    setStaticLevel(0);
+    onBack();
+  }, [chapter, onBack]);
+
+  return (
+    <View style={styles.root}>
+      <View style={styles.header}>
+        <Pressable onPress={onBack} hitSlop={12}>
+          <Text style={styles.back}>‹ the set</Text>
+        </Pressable>
+        <Text style={styles.title}>{chapter.title}</Text>
+        <View style={styles.spacer} />
+      </View>
+      <ChapterView
+        chapter={chapter}
+        initialBlockIndex={initial}
+        onAdvance={advance}
+        onComplete={complete}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 26,
+    paddingBottom: 14,
+  },
+  back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },
+  title: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.mono,
+    fontSize: 12,
+    letterSpacing: 3,
+    color: colors.faint,
+  },
+  spacer: { width: 44 },
+});

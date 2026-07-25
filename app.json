@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Number Nine",
+    "slug": "number-nine",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "numbernine",
+    "owner": "boyscout1970",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0b0e0c",
+    "ios": {
+      "supportsTablet": false,
+      "buildNumber": "1",
+      "bundleIdentifier": "com.numbernine.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.numbernine.app",
+      "predictiveBackGestureEnabled": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0b0e0c"
+      }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0b0e0c",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180
+        }
+      ],
+      "expo-audio"
+    ]
+  }
+}
