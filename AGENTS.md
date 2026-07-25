@@ -19,6 +19,25 @@ load-bearing: everything must stay playable with sound failed open.
 - Pure modules (models, dbCore, daily/*) take no expo imports so Node can
   test them (`npm test`).
 
+# Design doctrine
+
+Read DESIGN.md before touching the engine or writing chapter data. The two
+laws: typography is ARCHITECTURE (every rotation/mirror/fork is diegetic —
+text turns because the story's space turns, never for style), and it's a
+BOOK, not an app (justified serif, room labels, thoughts as centered
+italics, whitespace as fear, wrong answers get atmosphere not error copy).
+
+# Puzzle doctrine (Simon's bar: DEVICE 6 took him DAYS on some puzzles)
+
+- A gate's answer never appears within three blocks of the gate (tested in
+  test-models.ts). Clues live far away, ideally in a different chapter region.
+- Every gate needs >= 2 scattered clues, at least one cross-modal (a logbook
+  artifact, an audio detail, a visual property of the text like mirroring).
+- Never explain the trick in prose. The reader gets nudges, not instructions.
+  Wrong answers get atmosphere (static, a dead line), never an error message.
+- Difficulty ramps: Broadcast One gates are minutes; later Broadcasts should
+  demand a notepad and real cross-referencing (days-energy, not minutes).
+
 # Git workflow (PR-based CI)
 
 `main` is what ships; `dev` is the integration branch. Never commit directly to either.

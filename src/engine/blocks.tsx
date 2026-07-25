@@ -15,6 +15,32 @@ export function ProseBlock({ text, faded }: { text: string; faded?: boolean }) {
   );
 }
 
+/** Frontispiece plate: how a broadcast introduces itself (DEVICE 6's orange
+ *  chapter cards, in our night-radio ink). */
+export function ChapterCardBlock({ number, title }: { number: string; title: string }) {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.cardNumber} maxFontSizeMultiplier={1.4}>
+        {number}
+      </Text>
+      <Text style={styles.cardRule}>· · · — — — · · ·</Text>
+      <Text style={styles.cardTitle} maxFontSizeMultiplier={1.4}>
+        {title}
+      </Text>
+    </View>
+  );
+}
+
+/** A place label, like a room on a survey map. */
+export function RoomBlock({ text }: { text: string }) {
+  return <Text style={styles.room}>{text.toUpperCase()}</Text>;
+}
+
+/** An inner thought: centered italics floating apart from the narration. */
+export function ThoughtBlock({ text }: { text: string }) {
+  return <Text style={styles.thought}>{text}</Text>;
+}
+
 /** The station speaking: always upside down; mirrored flips it again into a
  *  true mirror image. Either way the reader must turn the device to face it. */
 export function VoiceBlock({ text, mirrored }: { text: string; mirrored: boolean }) {
@@ -33,12 +59,53 @@ export function VoiceBlock({ text, mirrored }: { text: string; mirrored: boolean
 }
 
 /** A descent: the line turns 90° and runs down the page. Reader rotates the
- *  phone to keep reading, then rotates back when the prose levels out. */
-export function RotatedBlock({ text }: { text: string }) {
-  const SPAN = 320;
+ *  phone to keep reading, then rotates back when the prose levels out.
+ *  Two-pass: an invisible copy measures the wrapped height first, then the
+ *  visible copy renders inside an exactly-sized rotated frame — a rotated
+ *  box's visual extent must match its measured layout or lines clip. */
+export function RotatedBlock({
+  text,
+  direction = 'down',
+}: {
+  text: string;
+  direction?: 'down' | 'up';
+}) {
+  const SPAN = 300; // vertical run of the passage, in pt
+  // Capped scaling: this is physical typography — at full accessibility
+  // sizes the rotated run would grow wider than the screen. 1.35 keeps the
+  // gesture intact while still honoring larger text settings.
+  const MAX_SCALE = 1.35;
+  const [textHeight, setTextHeight] = useState<number | null>(null);
+  const measure = (lines: { y: number; height: number }[]) => {
+    if (!lines.length) return;
+    const last = lines[lines.length - 1];
+    setTextHeight(Math.ceil(last.y + last.height) + 2);
+  };
   return (
-    <View style={[styles.rotatedWrap, { height: SPAN }]}>
-      <Text style={[styles.rotated, { width: SPAN }]}>{text}</Text>
+    <View style={styles.rotatedWrap}>
+      <Text
+        style={[styles.rotated, styles.rotatedMeasure, { width: SPAN }]}
+        maxFontSizeMultiplier={MAX_SCALE}
+        onTextLayout={(e) => measure(e.nativeEvent.lines)}
+      >
+        {text}
+      </Text>
+      {textHeight != null && (
+        <View style={{ width: textHeight, height: SPAN, justifyContent: 'center', alignItems: 'center' }}>
+          <View
+            style={{
+              width: SPAN,
+              height: textHeight,
+              transform: [{ rotate: direction === 'down' ? '90deg' : '-90deg' }],
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={styles.rotated} maxFontSizeMultiplier={MAX_SCALE}>
+              {text}
+            </Text>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -132,7 +199,50 @@ export function ChapterEndBlock({
 }
 
 const styles = StyleSheet.create({
-  prose: { ...type.prose, marginBottom: 28 },
+  prose: { ...type.prose, textAlign: 'justify', marginBottom: 30 },
+  card: {
+    backgroundColor: colors.panel,
+    borderColor: colors.panelBorder,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 4,
+    alignItems: 'center',
+    paddingVertical: 56,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 44,
+  },
+  cardNumber: {
+    fontFamily: fonts.serif,
+    fontSize: 13,
+    letterSpacing: 5,
+    color: colors.muted,
+    marginBottom: 22,
+  },
+  cardRule: { fontFamily: fonts.mono, fontSize: 12, color: colors.dialDim, marginBottom: 22 },
+  cardTitle: {
+    fontFamily: fonts.serif,
+    fontSize: 24,
+    fontStyle: 'italic',
+    color: colors.prose,
+  },
+  room: {
+    fontFamily: fonts.serif,
+    fontSize: 14,
+    letterSpacing: 3,
+    color: colors.voice,
+    textDecorationLine: 'underline',
+    marginTop: 18,
+    marginBottom: 20,
+  },
+  thought: {
+    fontFamily: fonts.serif,
+    fontSize: 15,
+    fontStyle: 'italic',
+    color: colors.proseFaded,
+    textAlign: 'center',
+    marginVertical: 34,
+    paddingHorizontal: 30,
+  },
   voiceWrap: { alignItems: 'center', marginVertical: 30 },
   voice: {
     fontFamily: fonts.serif,
@@ -148,8 +258,11 @@ const styles = StyleSheet.create({
   },
   rotated: {
     ...type.prose,
-    transform: [{ rotate: '90deg' }],
     textAlign: 'left',
+  },
+  rotatedMeasure: {
+    position: 'absolute',
+    opacity: 0,
   },
   logbook: {
     backgroundColor: colors.panel,

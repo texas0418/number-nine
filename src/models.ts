@@ -11,12 +11,17 @@
 // Times are epoch ms; day keys are local 'YYYY-MM-DD'.
 
 export type ChapterBlock =
+  | { kind: 'chapterCard'; number: string; title: string; cue?: AudioCue }
+  | { kind: 'room'; text: string; cue?: AudioCue }
+  | { kind: 'thought'; text: string; cue?: AudioCue }
   | { kind: 'prose'; text: string; faded?: boolean; cue?: AudioCue }
   | { kind: 'voice'; text: string; mirrored: boolean; cue?: AudioCue }
-  | { kind: 'rotated'; text: string; cue?: AudioCue }
+  | { kind: 'rotated'; text: string; direction?: 'down' | 'up'; cue?: AudioCue }
   | { kind: 'logbook'; lines: string[]; cue?: AudioCue }
   | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string }
   | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue }
+  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
+  | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 export const AUDIO_CUES = ['static-swell', 'ident', 'silence'] as const;

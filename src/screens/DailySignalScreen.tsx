@@ -5,7 +5,15 @@
 // strength pre-reveals a few letters; the weekly rhythm lives in cipher.ts.
 
 import { useMemo, useState } from 'react';
-import { Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import {
+  Dimensions,
+  PixelRatio,
+  Pressable,
+  Share,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   buildPuzzle,
   isSolved,
@@ -19,6 +27,26 @@ import { playIdent } from '../audio';
 import { colors, fonts } from '../theme';
 
 const LETTER_ROWS = ['ABCDEFGHI', 'JKLMNOPQR', 'STUVWXYZ'];
+
+/** Dynamic Type-aware box sizing. Cells and keys are fixed boxes, so instead
+ *  of OS text scaling (which would overflow them) the boxes themselves grow
+ *  with the user's font scale, clamped so the longest cipher word and the
+ *  9-key row always fit the screen width. */
+function boxSizes(maxWordLen: number) {
+  const scale = Math.min(PixelRatio.getFontScale(), 1.9);
+  const win = Dimensions.get('window').width;
+  const cellW = Math.max(22, Math.min(26 * scale, (win - 74) / maxWordLen));
+  const keyW = Math.min(44, Math.max(30, (win - 44 - 8 * 6) / 9));
+  return {
+    cellW,
+    cellH: Math.round(cellW * 1.55),
+    cellFont: Math.round(cellW * 0.58),
+    numFont: Math.max(9, Math.round(cellW * 0.35)),
+    keyW,
+    keyH: Math.round(Math.max(40, 40 * Math.min(scale, 1.4))),
+    keyFont: Math.round(Math.min(22, 15 * Math.min(scale, 1.5))),
+  };
+}
 
 function initialGuesses(puzzle: DailyPuzzle): Map<number, string> {
   const m = new Map<number, string>();
@@ -73,19 +101,25 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       .filter(([, l]) => puzzle.revealedLetters.includes(l))
       .map(([n]) => n),
   );
+  const sizes = useMemo(
+    () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length))),
+    [puzzle],
+  );
 
   return (
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back}>‹ the set</Text>
+          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
         </Pressable>
-        <Text style={styles.title}>TONIGHT’S SIGNAL</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+          TONIGHT’S SIGNAL
+        </Text>
         <Pressable onPress={share} hitSlop={12}>
-          <Text style={styles.back}>share</Text>
+          <Text style={styles.back} maxFontSizeMultiplier={1.3}>share</Text>
         </Pressable>
       </View>
-      <Text style={styles.meta}>
+      <Text style={styles.meta} maxFontSizeMultiplier={1.3} numberOfLines={2}>
         intercepted · 4625 kHz · no. {serial} · {puzzle.revealedLetters.length} letters clear
       </Text>
 
@@ -104,6 +138,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
                   guess={guesses.get(sym.num)}
                   selected={selected === sym.num}
                   revealed={revealedSet.has(sym.num)}
+                  sizes={sizes}
                   onPress={() => !solved && setSelected(sym.num)}
                 />
               ),
@@ -127,10 +162,15 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
               {[...row].map((letter) => (
                 <Pressable
                   key={letter}
-                  style={styles.key}
+                  style={[styles.key, { width: sizes.keyW, height: sizes.keyH }]}
                   onPress={() => assign(letter)}
                 >
-                  <Text style={styles.keyText}>{letter}</Text>
+                  <Text
+                    style={[styles.keyText, { fontSize: sizes.keyFont }]}
+                    allowFontScaling={false}
+                  >
+                    {letter}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -151,12 +191,14 @@ function Cell({
   guess,
   selected,
   revealed,
+  sizes,
   onPress,
 }: {
   num: number;
   guess: string | undefined;
   selected: boolean;
   revealed: boolean;
+  sizes: ReturnType<typeof boxSizes>;
   onPress: () => void;
 }) {
   return (
@@ -164,14 +206,27 @@ function Cell({
       onPress={onPress}
       style={[
         styles.cell,
+        { width: sizes.cellW, height: sizes.cellH },
         selected && { borderColor: colors.dial },
         revealed && { borderColor: colors.panelBorder, backgroundColor: colors.bg },
       ]}
     >
-      <Text style={[styles.cellLetter, revealed && { color: colors.muted }]}>
+      <Text
+        style={[
+          styles.cellLetter,
+          { fontSize: sizes.cellFont, height: Math.round(sizes.cellFont * 1.35) },
+          revealed && { color: colors.muted },
+        ]}
+        allowFontScaling={false}
+      >
         {guess ?? ' '}
       </Text>
-      <Text style={[styles.cellNum, selected && { color: colors.dial }]}>{num}</Text>
+      <Text
+        style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial }]}
+        allowFontScaling={false}
+      >
+        {num}
+      </Text>
     </Pressable>
   );
 }
@@ -203,27 +258,23 @@ const styles = StyleSheet.create({
   word: { flexDirection: 'row', marginRight: 14, gap: 3 },
   literal: { fontFamily: fonts.mono, fontSize: 16, color: colors.dial, alignSelf: 'center' },
   cell: {
-    width: 26,
-    height: 40,
     borderWidth: 1,
     borderColor: colors.hairline,
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cellLetter: { fontFamily: fonts.mono, fontSize: 15, color: colors.prose, height: 20 },
-  cellNum: { fontFamily: fonts.mono, fontSize: 9, color: colors.faint },
+  cellLetter: { fontFamily: fonts.mono, color: colors.prose },
+  cellNum: { fontFamily: fonts.mono, color: colors.faint },
   keys: { marginTop: 'auto', marginBottom: 34 },
   keyRow: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: 6 },
   key: {
-    width: 32,
-    height: 40,
     backgroundColor: colors.panel,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  keyText: { fontFamily: fonts.mono, fontSize: 15, color: colors.prose },
+  keyText: { fontFamily: fonts.mono, color: colors.prose },
   hint: {
     fontFamily: fonts.mono,
     fontSize: 10,

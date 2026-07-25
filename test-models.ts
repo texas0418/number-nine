@@ -42,11 +42,29 @@ ok('streak handles unsorted input',
 
 // --- chapter reveal math -------------------------------------------------
 const blocks = BROADCAST_ONE.blocks;
+const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe'];
 const gateIdxs = blocks
   .map((b, i) => ({ b, i }))
-  .filter(({ b }) => b.kind === 'radio' || b.kind === 'fork')
+  .filter(({ b }) => GATE_KINDS.includes(b.kind))
   .map(({ i }) => i);
-ok('broadcast one has two gates', gateIdxs.length === 2);
+ok('broadcast one has four gates', gateIdxs.length === 4);
+
+// Puzzle doctrine: no gate's literal answer may appear in the three blocks
+// preceding it (clues must live far from their locks).
+const answerNear = gateIdxs.some((gi) => {
+  const b = blocks[gi];
+  const key =
+    b.kind === 'radio'
+      ? String(b.targetKhz)
+      : b.kind === 'keypad' || b.kind === 'safe'
+        ? b.answer
+        : null;
+  if (!key) return false;
+  return blocks.slice(Math.max(0, gi - 3), gi).some((prev) =>
+    JSON.stringify(prev).includes(key),
+  );
+});
+ok('no gate answer within three blocks of its gate', !answerNear);
 ok('reveal stops at first gate',
   visibleCount(blocks, new Set()) === gateIdxs[0] + 1);
 ok('reveal stops at second gate once first solved',

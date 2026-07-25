@@ -30,9 +30,9 @@ export default function TitleScreen({
       : 'broadcast one · begin';
   return (
     <View style={styles.root}>
-      <Text style={styles.ident}>· · · — — — · · ·</Text>
-      <Text style={styles.title}>NUMBER{'\n'}NINE</Text>
-      <Text style={styles.sub}>a story received, not read</Text>
+      <Text style={styles.ident} maxFontSizeMultiplier={1.5}>· · · — — — · · ·</Text>
+      <Text style={styles.title} maxFontSizeMultiplier={1.15}>NUMBER{'\n'}NINE</Text>
+      <Text style={styles.sub} maxFontSizeMultiplier={1.2}>a story received, not read</Text>
 
       <View style={styles.menu}>
         <MenuRow label={storyLabel} hint="the story · chapter one is free" onPress={onStory} />
@@ -50,7 +50,9 @@ export default function TitleScreen({
         <MenuRow label="the set" hint="settings · about" onPress={onSettings} />
       </View>
 
-      <Text style={styles.footer}>headphones recommended · play in the dark</Text>
+      <Text style={styles.footer} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+        headphones recommended · play in the dark
+      </Text>
     </View>
   );
 }
@@ -68,8 +70,12 @@ function MenuRow({
 }) {
   return (
     <Pressable style={styles.row} onPress={onPress}>
-      <Text style={[styles.rowLabel, dim && { color: colors.faint }]}>{label}</Text>
-      <Text style={styles.rowHint}>{hint}</Text>
+      <Text style={[styles.rowLabel, dim && { color: colors.faint }]} maxFontSizeMultiplier={1.25}>
+        {label}
+      </Text>
+      <Text style={styles.rowHint} maxFontSizeMultiplier={1.25}>
+        {hint}
+      </Text>
     </Pressable>
   );
 }
