@@ -19,6 +19,7 @@ try {
 }
 
 const DIAL_WIDTH = 260;
+const NEEDLE_W = 22; // fat, grabbable thumb (was a 2px hairline)
 
 export function RadioTuner({
   bandLowKhz,
@@ -87,7 +88,15 @@ export function RadioTuner({
         {khz} kHz
       </Text>
       <View style={styles.dialTrack} {...(locked ? {} : pan.panHandlers)}>
-        <View style={[styles.needle, { left: Math.max(0, Math.min(DIAL_WIDTH - 2, needleLeft)) }]} />
+        <View style={styles.dialCenterline} />
+        <View
+          style={[
+            styles.needle,
+            { left: Math.max(0, Math.min(DIAL_WIDTH - NEEDLE_W, needleLeft - NEEDLE_W / 2)) },
+          ]}
+        >
+          <View style={styles.needleGrip} />
+        </View>
       </View>
       <View style={styles.meterRow}>
         <Text style={styles.meterLabel}>signal</Text>
@@ -122,17 +131,38 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   dialTrack: {
-    height: 34,
+    height: 56, // taller = far easier to grab on a phone
     backgroundColor: colors.bg,
-    borderRadius: 6,
+    borderRadius: 8,
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 14,
+    overflow: 'hidden',
+  },
+  dialCenterline: {
+    position: 'absolute',
+    left: 8,
+    right: 8,
+    height: 2,
+    top: '50%',
+    marginTop: -1,
+    backgroundColor: colors.hairline,
   },
   needle: {
     position: 'absolute',
-    top: 4,
-    bottom: 4,
-    width: 2,
+    top: 6,
+    bottom: 6,
+    width: NEEDLE_W,
+    borderRadius: 5,
+    backgroundColor: colors.panelBorder,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.dialDim,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  needleGrip: {
+    width: 3,
+    height: '70%',
+    borderRadius: 2,
     backgroundColor: colors.dial,
   },
   meterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },

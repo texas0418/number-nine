@@ -1,26 +1,32 @@
 // src/engine/ChapterView.tsx
-// The page itself. A chapter is one continuous scroll of typographic blocks
-// with two reveal systems layered together:
-//   - gates (radio, fork) stop the reveal until solved — the story physically
-//     cannot be scrolled past a locked door;
-//   - pacing: blocks materialize one at a time (fade + settle) as the reader
-//     reaches them, so the page is never pre-populated. Resumed progress
-//     renders instantly without replaying the pacing.
-// Audio cues fire as their block first scrolls into the reader's view.
+// The page. A chapter is one continuous scroll of typographic blocks with two
+// layered systems:
+//   - GATES (radio, fork, keypad, safe, cipher) stop the reveal until solved —
+//     the story physically cannot be scrolled past a locked door.
+//   - SCROLL-DRIVEN REVEAL: every block's opacity is bound to scroll position,
+//     so text fades IN as you scroll down to it and fades back OUT as you
+//     scroll up away from it. The page is never pre-populated; the reader
+//     brings each line into being by arriving at it.
+// Scroll drives opacity natively (no per-frame React state), so interacting
+// with a gate never re-lays-out or jumps the page. Audio cues fire via a
+// lightweight scroll listener as their block first enters view.
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+/* eslint-disable react-hooks/refs -- the `geom` ref (scroll offset, viewport
+   height, measured block tops, fired-cue set) is read ONLY inside the scroll
+   listener and onLayout/onMeasure handlers, never during render. Reading it in
+   render would be the bug this rule guards against; here it is by design. */
+import { useMemo, useRef, useState } from 'react';
 import {
   Animated,
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
 import type { Chapter, ChapterBlock } from '../models';
 import { cue } from '../audio';
-import { solvedGatesBefore, visibleCount } from './reveal';
+import { isGate, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
   ChapterEndBlock,
@@ -29,13 +35,12 @@ import {
   ProseBlock,
   RoomBlock,
   RotatedBlock,
+  StaircaseBlock,
   ThoughtBlock,
   VoiceBlock,
 } from './blocks';
 import { RadioTuner } from './RadioTuner';
 import { Keypad } from './Keypad';
-
-const PACE_MS = 450; // beat between one block settling and the next appearing
 
 export function ChapterView({
   chapter,
@@ -52,53 +57,40 @@ export function ChapterView({
   const [solved, setSolved] = useState<Set<number>>(() =>
     solvedGatesBefore(blocks, initialBlockIndex),
   );
-  const [pacedCount, setPacedCount] = useState(() =>
-    Math.max(1, Math.min(initialBlockIndex, blocks.length)),
-  );
-  const gateLimit = visibleCount(blocks, solved);
-  const count = Math.min(gateLimit, Math.max(pacedCount, 1));
+  const count = visibleCount(blocks, solved);
 
-  // Geometry + one-shot bookkeeping, only ever touched in handlers/effects.
-  const geom = useRef({
-    scrollY: 0,
-    viewH: 0,
-    tops: new Map<number, number>(),
-    firedCues: new Set<number>(),
-    pacing: false,
-    count: 0,
-    gateLimit: 0,
-    total: blocks.length,
-  });
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [viewH, setViewH] = useState(0);
+  const geom = useRef({ y: 0, viewH: 0, tops: new Map<number, number>(), fired: new Set<number>() });
 
-  const evaluate = useCallback(() => {
+  const fireCues = () => {
     const g = geom.current;
     if (g.viewH === 0) return;
-    const line = g.scrollY + g.viewH * 0.7;
-    for (let i = 0; i < g.count; i++) {
-      const block = blocks[i];
-      if (!('cue' in block) || !block.cue || g.firedCues.has(i)) continue;
+    const line = g.y + g.viewH * 0.72;
+    for (let i = 0; i < count; i++) {
+      const b = blocks[i];
+      if (!('cue' in b) || !b.cue || g.fired.has(i)) continue;
       const top = g.tops.get(i);
       if (top !== undefined && top <= line) {
-        g.firedCues.add(i);
-        cue(block.cue);
+        g.fired.add(i);
+        cue(b.cue);
       }
     }
-    if (g.pacing || g.count >= g.gateLimit || g.count >= g.total) return;
-    const lastTop = g.tops.get(g.count - 1);
-    if (lastTop !== undefined && lastTop <= g.scrollY + g.viewH) {
-      g.pacing = true;
-      setTimeout(() => {
-        geom.current.pacing = false;
-        setPacedCount((p) => p + 1);
-      }, PACE_MS);
-    }
-  }, [blocks]);
+  };
 
-  useEffect(() => {
-    geom.current.count = count;
-    geom.current.gateLimit = gateLimit;
-    evaluate();
-  }, [count, gateLimit, evaluate]);
+  const onScroll = useMemo(
+    () =>
+      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+        useNativeDriver: true,
+        listener: (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+          geom.current.y = e.nativeEvent.contentOffset.y;
+          geom.current.viewH = e.nativeEvent.layoutMeasurement.height;
+          fireCues();
+        },
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [count],
+  );
 
   const solveGate = (index: number) => {
     setSolved((prev) => {
@@ -109,58 +101,79 @@ export function ChapterView({
     });
   };
 
-  const recordTop = (index: number) => (e: LayoutChangeEvent) => {
-    geom.current.tops.set(index, e.nativeEvent.layout.y);
-    evaluate();
-  };
-
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    geom.current.scrollY = e.nativeEvent.contentOffset.y;
-    geom.current.viewH = e.nativeEvent.layoutMeasurement.height;
-    evaluate();
+  const recordTop = (index: number) => (y: number) => {
+    geom.current.tops.set(index, y);
+    fireCues();
   };
 
   return (
-    <ScrollView
+    <Animated.ScrollView
       style={styles.scroll}
       contentContainerStyle={styles.content}
       onScroll={onScroll}
       onLayout={(e) => {
         geom.current.viewH = e.nativeEvent.layout.height;
-        evaluate();
+        setViewH(e.nativeEvent.layout.height);
       }}
-      scrollEventThrottle={64}
+      scrollEventThrottle={16}
     >
       {blocks.slice(0, count).map((block, i) => (
-        <BlockFade key={i} animate={i >= initialBlockIndex}>
-          <View onLayout={recordTop(i)}>
-            {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
-          </View>
-        </BlockFade>
+        <BlockReveal
+          key={i}
+          scrollY={scrollY}
+          viewH={viewH}
+          exempt={isGate(block) || block.kind === 'chapterEnd'}
+          onMeasure={recordTop(i)}
+        >
+          {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
+        </BlockReveal>
       ))}
-    </ScrollView>
+    </Animated.ScrollView>
   );
 }
 
-/** Fade + settle for newly materializing blocks; instant for resumed ones. */
-function BlockFade({
-  animate,
+/** Binds a block's opacity to scroll position: invisible below the reveal
+ *  line, full once it climbs into the reading zone, fading again on the way
+ *  back up. Gates and the end card are exempt (always solid — you act on them). */
+function BlockReveal({
+  scrollY,
+  viewH,
+  exempt,
+  onMeasure,
   children,
 }: {
-  animate: boolean;
+  scrollY: Animated.Value;
+  viewH: number;
+  exempt: boolean;
+  onMeasure: (y: number) => void;
   children: React.ReactNode;
 }) {
-  const [opacity] = useState(() => new Animated.Value(animate ? 0 : 1));
-  const [shift] = useState(() => new Animated.Value(animate ? 10 : 0));
-  useEffect(() => {
-    if (!animate) return;
-    Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 700, useNativeDriver: true }),
-      Animated.timing(shift, { toValue: 0, duration: 700, useNativeDriver: true }),
-    ]).start();
-  }, [animate, opacity, shift]);
+  const [top, setTop] = useState<number | null>(null);
+  const opacity = useMemo(() => {
+    if (exempt) return 1 as unknown as Animated.AnimatedInterpolation<number>;
+    if (top == null || viewH === 0)
+      return 0 as unknown as Animated.AnimatedInterpolation<number>;
+    // Reveal LATE (device feedback: it came in too early / as soon as you
+    // scrolled). A block stays fully invisible until its top has climbed to
+    // ~60% down the screen, and only reaches full opacity at ~38% down — so
+    // the reader must scroll it up into the middle reading band before it
+    // resolves. Fades back out symmetrically on scroll-up. (Tunable knob.)
+    return scrollY.interpolate({
+      inputRange: [top - viewH * 0.6, top - viewH * 0.38],
+      outputRange: [0, 1],
+      extrapolate: 'clamp',
+    });
+  }, [scrollY, viewH, top, exempt]);
+
   return (
-    <Animated.View style={{ opacity, transform: [{ translateY: shift }] }}>
+    <Animated.View
+      style={{ opacity }}
+      onLayout={(e: LayoutChangeEvent) => {
+        const y = e.nativeEvent.layout.y;
+        setTop(y);
+        onMeasure(y);
+      }}
+    >
       {children}
     </Animated.View>
   );
@@ -186,6 +199,8 @@ function renderBlock(
       return <VoiceBlock text={block.text} mirrored={block.mirrored} />;
     case 'rotated':
       return <RotatedBlock text={block.text} direction={block.direction} />;
+    case 'staircase':
+      return <StaircaseBlock steps={block.steps} direction={block.direction} />;
     case 'logbook':
       return <LogbookBlock lines={block.lines} />;
     case 'fork':
@@ -222,6 +237,17 @@ function renderBlock(
           onSolved={() => solveGate(index)}
         />
       );
+    case 'cipher':
+      return (
+        <Keypad
+          letters
+          answer={block.answer}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solved={gateSolved}
+          onSolved={() => solveGate(index)}
+        />
+      );
     case 'chapterEnd':
       return <ChapterEndBlock title={block.title} onDone={onComplete} />;
   }
@@ -229,5 +255,5 @@ function renderBlock(
 
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
-  content: { paddingHorizontal: 26, paddingTop: 30, paddingBottom: 80 },
+  content: { paddingHorizontal: 26, paddingTop: 30, paddingBottom: 120 },
 });

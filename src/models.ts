@@ -17,11 +17,14 @@ export type ChapterBlock =
   | { kind: 'prose'; text: string; faded?: boolean; cue?: AudioCue }
   | { kind: 'voice'; text: string; mirrored: boolean; cue?: AudioCue }
   | { kind: 'rotated'; text: string; direction?: 'down' | 'up'; cue?: AudioCue }
+  | { kind: 'staircase'; steps: string[]; direction?: 'down' | 'up'; cue?: AudioCue }
   | { kind: 'logbook'; lines: string[]; cue?: AudioCue }
   | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string }
   | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue }
   | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
   | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
+  // A word/decode lock: letter entry, not digits. The "cipher" of the fiction.
+  | { kind: 'cipher'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 export const AUDIO_CUES = ['static-swell', 'ident', 'silence'] as const;

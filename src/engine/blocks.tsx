@@ -33,12 +33,20 @@ export function ChapterCardBlock({ number, title }: { number: string; title: str
 
 /** A place label, like a room on a survey map. */
 export function RoomBlock({ text }: { text: string }) {
-  return <Text style={styles.room}>{text.toUpperCase()}</Text>;
+  return (
+    <Text style={styles.room} maxFontSizeMultiplier={1.4}>
+      {text.toUpperCase()}
+    </Text>
+  );
 }
 
 /** An inner thought: centered italics floating apart from the narration. */
 export function ThoughtBlock({ text }: { text: string }) {
-  return <Text style={styles.thought}>{text}</Text>;
+  return (
+    <Text style={styles.thought} maxFontSizeMultiplier={1.5}>
+      {text}
+    </Text>
+  );
 }
 
 /** The station speaking: always upside down; mirrored flips it again into a
@@ -114,10 +122,43 @@ export function LogbookBlock({ lines }: { lines: string[] }) {
   return (
     <View style={styles.logbook}>
       {lines.map((line, i) => (
-        <Text key={i} style={styles.logbookLine}>
+        // Cap scaling on the monospace log: at full accessibility size an
+        // uncapped mono line overran the panel and clipped ("entries
+        // incomplete" -> "incompet…"). 1.3 keeps it legible and contained.
+        <Text key={i} style={styles.logbookLine} maxFontSizeMultiplier={1.3}>
           {line}
         </Text>
       ))}
+    </View>
+  );
+}
+
+/** The cellar stairs, typeset AS stairs: each step drops down and to the
+ *  right, so the paragraph physically descends the page. Reads top-left to
+ *  bottom-right like a flight of steps (direction 'up' climbs, right-to-left). */
+export function StaircaseBlock({
+  steps,
+  direction = 'down',
+}: {
+  steps: string[];
+  direction?: 'down' | 'up';
+}) {
+  const STEP = 26; // horizontal inset per stair
+  const order = direction === 'up' ? [...steps].reverse() : steps;
+  const n = order.length;
+  return (
+    <View style={styles.staircase}>
+      {order.map((line, i) => {
+        const depth = direction === 'up' ? n - 1 - i : i;
+        return (
+          <View key={i} style={[styles.stairRow, { paddingLeft: 8 + depth * STEP }]}>
+            <View style={styles.stairTread} />
+            <Text style={styles.stairText} maxFontSizeMultiplier={1.3}>
+              {line}
+            </Text>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -277,6 +318,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 24,
     color: colors.muted,
+    flexShrink: 1,
+  },
+  staircase: { marginVertical: 24 },
+  stairRow: { flexDirection: 'row', alignItems: 'flex-end', marginBottom: 10 },
+  stairTread: {
+    width: 18,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.panelBorder,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  stairText: {
+    fontFamily: fonts.serif,
+    fontSize: 18,
+    lineHeight: 28,
+    color: colors.prose,
+    flexShrink: 1,
   },
   forkRow: { flexDirection: 'row', gap: 18, marginBottom: 20 },
   forkCol: { flex: 1 },

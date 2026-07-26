@@ -42,12 +42,21 @@ ok('streak handles unsorted input',
 
 // --- chapter reveal math -------------------------------------------------
 const blocks = BROADCAST_ONE.blocks;
-const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe'];
+const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher'];
+const ANSWER_KINDS = ['keypad', 'safe', 'cipher'];
 const gateIdxs = blocks
   .map((b, i) => ({ b, i }))
   .filter(({ b }) => GATE_KINDS.includes(b.kind))
   .map(({ i }) => i);
-ok('broadcast one has four gates', gateIdxs.length === 4);
+// Five puzzles (safe, radio, cipher, telephone-keypad, count-keypad) + 1 fork.
+ok('broadcast one has five solve-puzzles plus the fork', gateIdxs.length === 6);
+const puzzleCount = blocks.filter((b) => ANSWER_KINDS.includes(b.kind) || b.kind === 'radio').length;
+ok('broadcast one has at least five puzzles', puzzleCount >= 5);
+// Variety: the puzzles are not all the same mechanic.
+const mechanics = new Set(
+  blocks.filter((b) => GATE_KINDS.includes(b.kind) && b.kind !== 'fork').map((b) => b.kind),
+);
+ok('puzzles span multiple mechanics', mechanics.size >= 4);
 
 // Puzzle doctrine: no gate's literal answer may appear in the three blocks
 // preceding it (clues must live far from their locks).
@@ -56,12 +65,12 @@ const answerNear = gateIdxs.some((gi) => {
   const key =
     b.kind === 'radio'
       ? String(b.targetKhz)
-      : b.kind === 'keypad' || b.kind === 'safe'
-        ? b.answer
+      : ANSWER_KINDS.includes(b.kind)
+        ? (b as { answer: string }).answer
         : null;
   if (!key) return false;
   return blocks.slice(Math.max(0, gi - 3), gi).some((prev) =>
-    JSON.stringify(prev).includes(key),
+    JSON.stringify(prev).toUpperCase().includes(key.toUpperCase()),
   );
 });
 ok('no gate answer within three blocks of its gate', !answerNear);

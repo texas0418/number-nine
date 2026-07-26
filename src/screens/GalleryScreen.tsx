@@ -15,6 +15,7 @@ import {
   ProseBlock,
   RoomBlock,
   RotatedBlock,
+  StaircaseBlock,
   ThoughtBlock,
   VoiceBlock,
 } from '../engine/blocks';
@@ -58,6 +59,34 @@ export default function GalleryScreen({ onBack }: { onBack: () => void }) {
           '11 JUNE 63 — 2314 — ident, then counting. 90 groups.',
           'margin, smaller hand: her words arrive turned around',
         ]}
+      />
+      <Label text="staircase · down" />
+      <StaircaseBlock
+        direction="down"
+        steps={[
+          'The cellar stairs went down eleven steps,',
+          'and the dark came up at the sixth,',
+          'and from below — faint, patient —',
+          'something was humming in six notes.',
+        ]}
+      />
+      <Label text="staircase · up" />
+      <StaircaseBlock
+        direction="up"
+        steps={[
+          'He took the eleven steps two at a time,',
+          'up out of the cellar,',
+          'into the hall, where the telephone shivered.',
+        ]}
+      />
+      <Label text="cipher · letters (unsolved)" />
+      <Keypad
+        letters
+        answer="NINE"
+        prompt="the repeated group, read as letters · A is one"
+        unlockedText="she has been saying her own name"
+        solved={false}
+        onSolved={noop}
       />
       <Label text="rotated · down (long — must not clip at any text size)" />
       <RotatedBlock text="The cellar stairs went down eleven steps, and the dark came up to meet him at the sixth, and from below — faint, patient, already switched on — something was humming in six notes." />

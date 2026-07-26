@@ -1,20 +1,26 @@
 // src/chapters/broadcast1.ts
-// Broadcast One — the FREE chapter, and therefore the whole top of the funnel.
-// Its job is to convert: sustain the writing and atmosphere long enough that
-// the reader wants Broadcasts Two–Six, and end on a held breath, not a wall.
-// This is a full draft (~20-25 min), still open to a polish pass, but built
-// to real length and pacing — not scaffolding.
+// Broadcast One — the FREE chapter, the whole top of the funnel. Its job is to
+// convert: sustain the writing and the dread long enough that the reader wants
+// Broadcasts Two–Six, and end on a held breath, not a wall. Full draft
+// (~25-30 min), open to a polish pass.
 //
-// Follows the puzzle doctrine (AGENTS.md / test-models.ts): every gate's
-// answer lives far from the gate, assembled from scattered clues, never
-// explained. Difficulty ramps across three gates:
-//   Gate A (safe combination): the year of Halloran's death, given once in
-//     the opening as "nineteen sixty-three" and never again — dial 1963.
-//   Gate B (radio): the aerial licence "No. 46-25" from the effects list,
-//     tied to "she lives where you are licensed to listen" — tune 4625.
-//   Gate C (telephone): the voice speaks MIRRORED. "FIVE. NINE. TWO." read
-//     turned around, and the margin note "her words arrive turned around" —
-//     dial 295.
+// FIVE puzzles, five DIFFERENT kinds (device feedback: too few, too easy, "just
+// hidden codes"). None is a found number you simply type — each needs a
+// different act of mind:
+//   1. THE SAFE (combination) — deduce the year he STOPPED from a 1904–1963
+//      memorial seen much earlier; pick the later number. Digits: 1963.
+//   2. THE DIAL (analog tuning) — cross-reference the aerial licence "No.
+//      46-25" with the card "where we are licensed": tune 4625 kHz.
+//   3. THE CIPHER (letter decode) — realize the counted numbers are LETTERS
+//      (A=1): the group 14·9·14·5 spells a word. Letters: NINE.
+//   4. THE TELEPHONE (orientation) — the voice speaks MIRRORED; read it turned
+//      around: FIVE·NINE·TWO becomes 2·9·5. Digits: 295.
+//   5. THE COUNT (deduction) — she counts ninety groups every night; tonight
+//      she counted them, then his name, then began again. Reason it: 91.
+//
+// Puzzle doctrine (AGENTS.md, tested in test-models.ts): a gate's literal
+// answer never appears within three blocks of the gate. Clues live far away
+// and cross-modal. Wrong answers get atmosphere, never an error message.
 
 import type { Chapter } from '../models';
 
@@ -24,107 +30,108 @@ export const BROADCAST_ONE: Chapter = {
   blocks: [
     { kind: 'chapterCard', number: 'BROADCAST ONE', title: 'The Licence', cue: 'ident' },
 
-    // --- The estrangement, the stakes -------------------------------------
+    // --- The estrangement (and, planted early, the years on the stone) -----
     { kind: 'room', text: 'The Hall' },
     {
       kind: 'prose',
-      text: 'They had not spoken in nineteen years when Halloran died, which was a tidy sort of symmetry, because Halloran had been dead in every way that mattered to Edwin since the winter of nineteen sixty-three. The solicitor’s letter called him "next of kin" as though the phrase were a door being held open. Edwin had not wanted to walk through it.',
+      text: 'They had not spoken in nineteen years when Halloran died, which was its own tidy symmetry, because Halloran had been dead in every way that counted to Edwin since a certain winter long ago. The stone in the churchyard gave the plain arithmetic of him — 1904 to 1963 — and nothing of the silence in between.',
       cue: 'silence',
     },
     {
       kind: 'prose',
-      text: 'He came anyway. One does. The house stood at the edge of the town where the land gave up and became marsh, and it had the particular silence of a place that has been listened in for a long time.',
+      text: 'The solicitor’s letter called Edwin "next of kin," as though the phrase were a door held open. He had not wanted to walk through it. One does anyway. The house stood where the land gave up and became marsh, and it had the particular quiet of a place that has been listened in for a very long time.',
     },
     {
       kind: 'prose',
-      text: 'The parcel was waiting on the hall table: a shortwave receiver wrapped in oilcloth, and a logbook with water-swollen pages, and a single brass key. Edwin signed the delivery man’s book. The man did not meet his eyes, and left quickly, the way people leave a room where someone has just said something they should not have.',
+      text: 'The parcel waited on the hall table: a shortwave receiver wrapped in oilcloth, a logbook with water-swollen pages, and a single brass key. Edwin signed for all three. The delivery man would not meet his eyes, and left the way people leave a room where something has just been said that should not have been.',
     },
 
-    // --- The study: the effects, the first lock ---------------------------
+    // --- The study: effects, and the safe (PUZZLE 1) ----------------------
     { kind: 'room', text: 'The Study' },
     {
       kind: 'prose',
-      text: 'The brass key opened nothing in the hall, nor the kitchen, nor the two cold bedrooms. It opened the study, where Halloran had done his listening, and where the air was still faintly sweet with pipe smoke that no one had smoked in six weeks.',
-    },
-    {
-      kind: 'prose',
-      text: 'On the desk, under a paperweight of green glass, was an inventory in the solicitor’s careful hand — everything the estate contained, itemized for probate, waiting for a signature Edwin was not sure he wanted to give.',
+      text: 'The brass key opened nothing in the hall, nor the kitchen, nor the two cold bedrooms. It opened the study, where Halloran had done his listening, and where the air was still faintly sweet with a pipe no one had smoked in six weeks.',
     },
     {
       kind: 'logbook',
       lines: [
-        'EFFECTS OF H. MARSH — ITEMIZED',
+        'EFFECTS OF H. MARSH — ITEMIZED FOR PROBATE',
         'one receiver, war surplus, working',
         'one logbook, damp, entries incomplete',
         'one wireless aerial licence, No. 46-25,',
-        '  marked RENEW BY JUNE (not renewed)',
+        '  marked RENEW BY JUNE (never renewed)',
         'one desk safe, contents unknown, LOCKED',
         'one pencil, sharpened to nothing',
       ],
     },
     {
       kind: 'prose',
-      text: 'The desk safe was the size of a biscuit tin and set into the wall behind a hinged watercolour of the marsh. Three brass wheels, nought to nine. Halloran had been the sort of man who used the same number for everything, and had said so once, long ago, at a Christmas neither of them had enjoyed: a man should carry only one number in his head, and it should be the one he cannot forget.',
+      text: 'The desk safe was the size of a biscuit tin, set into the wall behind a hinged watercolour of the marsh: three brass wheels, and a place for one figure before them. Halloran had been a man who kept only one number in his head, and had said so once, at a Christmas neither brother enjoyed — a man should carry a single number, and it should be the one he can never put down.',
     },
-    { kind: 'thought', text: 'The one he cannot forget. The year it all went wrong, then. For both of us.' },
+    {
+      kind: 'thought',
+      text: 'The year he stopped, then. Not the year he began — the later of the two. I have carried it as long as he did.',
+    },
     {
       kind: 'safe',
       id: 'b1-safe',
       answer: '1963',
-      prompt: 'the desk safe · three wheels, and one before them',
+      prompt: 'the desk safe · one figure, then three wheels',
       unlockedText: 'the wheels give · the door swings on the year that ended them both',
     },
     {
       kind: 'prose',
-      text: 'Inside the safe was a single index card, and on the card, in Halloran’s hand, four words underlined twice: SHE LIVES WHERE YOU ARE LICENSED TO LISTEN. Nothing else. Edwin turned it over. The back was blank, and somehow the blankness was worse.',
+      text: 'Inside was a single index card. On it, in Halloran’s hand, four words underlined twice: WHERE WE ARE LICENSED. Nothing else. Edwin turned it over; the back was blank, and the blankness was somehow the worse of the two sides.',
     },
 
-    // --- The logbook: the descent -----------------------------------------
+    // --- The logbook: the descent, and clues sown for later gates ----------
     {
       kind: 'prose',
-      text: 'He read the logbook then, because there was nothing else to do and because the house wanted him to. Halloran had been a listener — not a talker, never once in nineteen years a telephone call — but a listener of the patient, nocturnal kind, the kind that keeps a pencil sharpened.',
+      text: 'He read the logbook because there was nothing else to do and because the house seemed to want him to. Halloran had been a listener — not a talker, never once in nineteen years a telephone call — but a listener of the patient, nocturnal kind, the kind that keeps a pencil sharpened.',
     },
     {
       kind: 'logbook',
       lines: [
         'LISTENING LOG — H. MARSH',
-        '3 JUNE 63 — 2314 — a station where no station should be.',
-        '  Six notes, like a music box. Then a woman counts.',
-        '7 JUNE 63 — 2314 — she counted ninety groups again.',
-        '11 JUNE 63 — 2314 — ident, then counting. 90 groups.',
-        '13 JUNE 63 — she said the song was for me. It was.',
-        '14 JUNE 63 —',
+        '3 JUN 63 · 2314 · a station where none should be.',
+        '  six notes, a music box. then a woman counts.',
+        '11 JUN 63 · 2314 · ninety groups again.',
+        '13 JUN 63 · she said the song was for me.',
+        '14 JUN 63 ·',
         '',
-        'margin, a smaller and more careful hand:',
-        'her words arrive turned around',
-        'do not answer the telephone before she rings off',
+        'margin, a smaller, more careful hand:',
+        '· her words arrive turned around',
+        '· the numbers are letters, with patience',
+        '· do not answer before she rings off',
       ],
     },
     {
       kind: 'prose',
-      text: 'The fourteenth of June was blank. Every night after the fourteenth of June was blank. Nineteen years of nightly entries, and then a man simply stops, mid-sentence, mid-June, and the pencil is sharpened to nothing and the safe holds one card that reads like an address.',
+      text: 'The fourteenth of June was blank. Every night after it was blank. Nineteen years of nightly entries, and then a man simply stops, mid-June, mid-sentence, the pencil worn to nothing and the safe holding a card that reads like an address.',
     },
-    { kind: 'thought', text: 'Renew by June. Halloran never renewed anything in his life. Not a licence. Not a brother.' },
 
-    // --- Descent to the cellar --------------------------------------------
+    // --- Descent to the cellar (PUZZLE 2 lead-in), typeset as stairs -------
     {
       kind: 'prose',
-      text: 'The receiver wanted a mains socket, and the only one in the house that still worked was in the cellar, where the marsh pressed closest to the walls and the house kept its cold like a held breath.',
+      text: 'The receiver wanted a mains socket, and the only one still live was in the cellar, where the marsh pressed closest to the walls and the house kept its cold like a held breath.',
       cue: 'static-swell',
     },
     {
-      kind: 'rotated',
+      kind: 'staircase',
       direction: 'down',
-      text: 'The cellar stairs went down eleven steps, and the dark came up to meet him at the sixth, and from below — faint, patient, already switched on though no plug had touched the wall — something was humming to itself in six descending notes.',
+      steps: [
+        'The cellar stairs went down eleven steps,',
+        'and the dark came up at the sixth,',
+        'and from below — faint, patient,',
+        'already switched on though no plug',
+        'had touched the wall —',
+        'something was humming in six notes.',
+      ],
     },
     { kind: 'room', text: 'The Cellar' },
     {
       kind: 'prose',
-      text: 'The receiver sat on the workbench with its dial lamp lit and its cord coiled beside it, unplugged. Edwin stood on the last step for a while. Then he crossed the floor, because a man who has come this far down does not go back up over a humming.',
-    },
-    {
-      kind: 'prose',
-      text: 'The card from the safe was in his breast pocket. He could feel the two underlines through the cloth. Where you are licensed to listen. He thought of the inventory, and the number the estate had recorded against the aerial, and he reached for the dial with a steadiness he did not feel.',
+      text: 'The receiver sat on the workbench with its dial lamp lit and its cord coiled beside it, unplugged. The card from the safe was in his breast pocket; he could feel the two underlines through the cloth. Where we are licensed. He thought of the number the estate had set against the aerial, and reached for the dial with a steadiness he did not feel.',
     },
     {
       kind: 'radio',
@@ -132,75 +139,122 @@ export const BROADCAST_ONE: Chapter = {
       bandLowKhz: 4400,
       bandHighKhz: 4800,
       targetKhz: 4625,
-      lockedText: 'drag to tune · the static thins where the carrier is',
+      lockedText: 'drag the dial · the static thins where the carrier lives',
       unlockedText: 'carrier locked · she is already singing',
       cue: 'static-swell',
     },
 
-    // --- The broadcast ----------------------------------------------------
+    // --- The broadcast, and the cipher (PUZZLE 3) --------------------------
     { kind: 'voice', text: 'NINE. NINE. NINE. GOOD EVENING, LISTENER.', mirrored: false, cue: 'ident' },
     {
       kind: 'prose',
-      text: 'The voice was a woman’s, flat and clean as a pressed flower, with no room in it at all. She played the six notes first — a music box running down — and then she began to count, in groups of five, without hurry, as though she had all the nights in the world and intended to use them one at a time.',
+      text: 'The voice was a woman’s, flat and clean as a pressed flower, with no room in it at all. She played the six notes first — a music box running down — then began to count, in groups of five, unhurried, as though she had every night in the world and meant to spend them one at a time.',
     },
     {
       kind: 'prose',
-      text: 'Ninety groups. Edwin found the sharpened pencil in his hand without any memory of picking it up, and found that he had written the first thirty groups down the margin of his brother’s log in a hand that was becoming, group by group, less his own.',
+      text: 'Edwin found the sharpened pencil in his hand without any memory of taking it up, and found he had already written thirty groups down the margin of his brother’s log. One group came back, and came back, and came back — the same four figures, as if they were not a count at all but a word she could not stop saying.',
+    },
+    {
+      kind: 'logbook',
+      lines: [
+        'his hand, unsteady, down the margin:',
+        '06 22 19 · 11 14 08 · 25 04 25',
+        '14 09 14 05   ← this one, again',
+        '14 09 14 05   ← and again',
+        '14 09 14 05   ← she will not let it go',
+      ],
+    },
+    {
+      kind: 'thought',
+      text: 'The margin. The numbers are letters, with patience. Count them on your fingers if you must — the first letter, the ninth, the fourteenth.',
+    },
+    {
+      kind: 'cipher',
+      id: 'b1-decode',
+      answer: 'NINE',
+      prompt: 'the repeated group, read as letters · A is one',
+      unlockedText: 'the slate settles · she has been saying her own name all along',
     },
     {
       kind: 'prose',
-      text: 'When it ended the static closed over the frequency like water over a stone, and the cellar was only a cold room again, and Edwin — who had a train to catch in the morning and a life two hundred miles away and no earthly reason to remain — did not move.',
-      cue: 'silence',
+      text: 'He set the four letters down and did not like the shape they made. The station had a name, and it had been counting its name into the dark for nineteen years, and tonight, for the first time, someone had been patient enough to spell it back.',
     },
 
-    // --- The fork: two ways to learn the same terrible thing ---------------
+    // --- Fork (narrative branch, not a puzzle) ----------------------------
     {
       kind: 'fork',
       leftLabel: 'READ THE LOG',
-      left: 'He turned back to the blank fourteenth of June, and found it was not blank anymore. Tonight’s date was written at the top of the page. In pencil. In his own hand. He did not remember writing it, and the graphite was still bright.',
+      left: 'He turned to the blank fourteenth of June, and it was not blank now. Tonight’s date stood at the head of the page — in pencil, in his own hand, the graphite still bright — though he had written nothing there.',
       rightLabel: 'OPEN THE BENCH',
-      right: 'He opened the drawer beneath the bench. Ninety index cards, banded in string, each a night, each transcribed in Halloran’s neat columns. He thumbed to the last. It was dated tomorrow, and the columns were already full.',
-      join: 'Either way the arithmetic was the same, and the arithmetic was the thing he could not put down. The station had been counting toward something for nineteen years. The something had a date. And the date, by every reckoning in that cold room, was almost here.',
+      right: 'He opened the drawer beneath the bench: ninety index cards, banded in string, each a night in Halloran’s neat columns. He thumbed to the last. It was dated tomorrow, and its columns were already full.',
+      join: 'Either way the arithmetic was the same, and the arithmetic was the thing he could not put down. She had been counting toward something for nineteen years. It had a date, and by every reckoning in that cold room the date was nearly here.',
     },
     { kind: 'voice', text: 'FIVE. NINE. TWO. EDWIN.', mirrored: true },
-    { kind: 'thought', text: 'He had not told the radio his name. He had not told anyone his name in this house.' },
+    { kind: 'thought', text: 'He had not told the radio his name. He had not spoken his name aloud in this house at all.' },
 
-    // --- Ascent, and the telephone ----------------------------------------
+    // --- Ascent (stairs, climbing) and the telephone (PUZZLE 4) -----------
     {
       kind: 'prose',
-      text: 'Upstairs, faintly, the telephone began to ring. It rang the way a thing rings when it has been ringing a long time and fully intends to continue — patient, nocturnal, the ring of something that keeps a pencil sharpened.',
-      faded: true,
+      text: 'Upstairs, faintly, the telephone began to ring — the way a thing rings when it has been ringing a long while and fully intends to go on.',
       cue: 'static-swell',
     },
     {
-      kind: 'rotated',
+      kind: 'staircase',
       direction: 'up',
-      text: 'He took the eleven steps two at a time with the cold peeling off him like a wet coat, up out of the cellar and into the hall, where the telephone stood shivering on its little table and the card in his pocket said her words arrive turned around.',
+      steps: [
+        'He took the eleven steps two at a time,',
+        'the cold peeling off him like a wet coat,',
+        'up out of the cellar,',
+        'into the hall, where the telephone',
+        'shivered on its little table.',
+      ],
     },
     { kind: 'room', text: 'The Hall' },
     {
       kind: 'prose',
-      text: 'The margin had warned him. Do not answer before she rings off. But she had said three numbers to him by name, and a man who has been given three numbers in the dark will always, always dial them. He lifted the receiver. He turned her words around in his head, and dialled what she had said.',
+      text: 'The margin had warned him: her words arrive turned around. She had given him three figures by name, in her flat clean voice, and a man who has been handed three figures in the dark will always dial them. He lifted the receiver, turned her words around in his head the way you would turn a card to read its back, and dialled.',
     },
     {
       kind: 'keypad',
       id: 'b1-phone',
       answer: '295',
-      prompt: 'the telephone · dial what she said, the way she said it',
+      prompt: 'the telephone · what she said, turned around',
       unlockedText: 'the line clicks open · and somebody, close, is breathing',
     },
+    { kind: 'voice', text: 'YOU COUNTED WRONG, EDWIN. WE WILL BEGIN AGAIN.', mirrored: false },
 
-    // --- The cliffhanger --------------------------------------------------
-    { kind: 'voice', text: 'YOU COUNTED WRONG, EDWIN. WE WILL START AGAIN.', mirrored: false },
+    // --- The count (PUZZLE 5, deduction) and the cliffhanger --------------
     {
       kind: 'prose',
-      text: 'Sixty feet away and behind a closed door, in a cellar he had left dark, the receiver turned its dial lamp off. Politely. The way a house guest puts out the lamp when the conversation is finished and the night, properly, is only beginning.',
+      text: 'He thought about the count then, because the voice wanted him to. Ninety groups. Ninety, every night, for nineteen years without fail — the log said so, and the log did not lie. But tonight she had counted the ninety, and then she had spoken his name into the middle of them, and then she had begun again.',
+    },
+    {
+      kind: 'thought',
+      text: 'Ninety groups. And a name is a thing you count. So how many did she truly speak, before she started over?',
+    },
+    {
+      kind: 'logbook',
+      lines: [
+        'the last card in the tin, dated tomorrow:',
+        'GROUPS COUNTED TONIGHT: ______',
+        '(the space left blank, waiting for a hand)',
+      ],
+    },
+    {
+      kind: 'keypad',
+      id: 'b1-count',
+      answer: '91',
+      prompt: 'fill the card · her true count, your name included',
+      unlockedText: 'the pencil moves on its own · the number was always going to be this',
+    },
+    {
+      kind: 'prose',
+      text: 'Sixty feet away, behind a door he had left open onto the dark, the receiver put out its dial lamp. Politely. The way a guest turns down the lamp when the conversation is finished and the night, properly, is only beginning.',
       faded: true,
     },
-    { kind: 'thought', text: 'Ninety groups. She had counted ninety, every night, for nineteen years. Tonight she had counted ninety-one.' },
     {
       kind: 'prose',
-      text: 'Edwin Marsh did not catch his train in the morning. There would be no more mornings of the ordinary kind — only broadcasts now, one a night, counting down the last of them. He sat in the cold hall with the receiver warm against his ear, and he listened, because that is the one thing the Marsh brothers had ever truly known how to do.',
+      text: 'Edwin Marsh did not catch his train in the morning. There would be no more ordinary mornings — only broadcasts now, one a night, counting down the last of them. He sat in the cold hall with the receiver warm against his ear and listened, because listening was the one thing the Marsh brothers had ever truly known how to do.',
     },
     { kind: 'chapterEnd', title: 'END OF BROADCAST ONE' },
   ],

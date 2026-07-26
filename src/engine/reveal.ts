@@ -5,8 +5,10 @@
 
 import type { ChapterBlock } from '../models';
 
+export const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher'] as const;
+
 export const isGate = (b: ChapterBlock): boolean =>
-  b.kind === 'radio' || b.kind === 'fork' || b.kind === 'keypad' || b.kind === 'safe';
+  (GATE_KINDS as readonly string[]).includes(b.kind);
 
 /** Blocks visible given the set of solved gate indices: everything up to and
  *  including the first unsolved gate. */

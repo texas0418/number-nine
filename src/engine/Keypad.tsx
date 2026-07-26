@@ -1,7 +1,9 @@
 // src/engine/Keypad.tsx
-// A diegetic telephone dial embedded in the prose. No hints, no error
-// message: a wrong number just rings once into static and clears — DEVICE 6
-// rules, the knowledge IS the key. Solving gives the haptic thunk + ident.
+// A diegetic entry lock embedded in the prose: a telephone dial / safe wheel
+// (digits) or a decoding slate (letters, for the cipher gate). No hints, no
+// error message — a wrong entry just rings once into static and clears
+// (DEVICE 6 rules, the knowledge IS the key). Solving gives the haptic thunk
+// and the ident.
 
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -15,11 +17,18 @@ try {
   Haptics = null;
 }
 
-const KEY_ROWS = [
+const DIGIT_ROWS = [
   ['1', '2', '3'],
   ['4', '5', '6'],
   ['7', '8', '9'],
   ['', '0', '⌫'],
+];
+
+const LETTER_ROWS = [
+  ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+  ['H', 'I', 'J', 'K', 'L', 'M', 'N'],
+  ['O', 'P', 'Q', 'R', 'S', 'T', 'U'],
+  ['V', 'W', 'X', 'Y', 'Z', '⌫'],
 ];
 
 export function Keypad({
@@ -28,15 +37,18 @@ export function Keypad({
   unlockedText,
   solved,
   onSolved,
+  letters = false,
 }: {
   answer: string;
   prompt: string;
   unlockedText: string;
   solved: boolean;
   onSolved: () => void;
+  letters?: boolean;
 }) {
   const [entry, setEntry] = useState(solved ? answer : '');
   const [done, setDone] = useState(solved);
+  const rows = letters ? LETTER_ROWS : DIGIT_ROWS;
 
   const press = (key: string) => {
     if (done || key === '') return;
@@ -54,7 +66,7 @@ export function Keypad({
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       onSolved();
     } else {
-      // one ring into static, then the line goes dead and the dial clears
+      // one ring into static, then the line goes dead and the slate clears
       setStaticLevel(0.5);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Error);
       setTimeout(() => {
@@ -64,25 +76,33 @@ export function Keypad({
     }
   };
 
-  const display = done
-    ? answer
-    : entry.padEnd(answer.length, '·');
+  const display = done ? answer : entry.padEnd(answer.length, '·');
 
   return (
-    <View style={styles.body}>
-      <Text style={styles.prompt}>{done ? unlockedText : prompt}</Text>
-      <Text style={[styles.display, done && { color: colors.lockGlow }]} allowFontScaling={false}>
+    <View style={[styles.body, letters && styles.bodyWide]}>
+      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+        {done ? unlockedText : prompt}
+      </Text>
+      <Text
+        style={[styles.display, letters && styles.displayLetters, done && { color: colors.lockGlow }]}
+        allowFontScaling={false}
+      >
         {[...display].join(' ')}
       </Text>
       {!done && (
         <View>
-          {KEY_ROWS.map((row, ri) => (
+          {rows.map((row, ri) => (
             <View key={ri} style={styles.row}>
               {row.map((key, ki) => (
                 <Pressable
                   key={ki}
-                  style={[styles.key, key === '' && { opacity: 0 }]}
+                  style={[
+                    letters ? styles.keySmall : styles.key,
+                    key === '' && { opacity: 0 },
+                    key === '⌫' && letters && styles.keyWide,
+                  ]}
                   onPress={() => press(key)}
+                  hitSlop={4}
                 >
                   <Text style={styles.keyText} allowFontScaling={false}>
                     {key}
@@ -108,10 +128,11 @@ const styles = StyleSheet.create({
     padding: 18,
     marginVertical: 24,
   },
+  bodyWide: { width: 320 },
   prompt: {
     fontFamily: fonts.mono,
-    fontSize: 11,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 19,
     color: colors.muted,
     textAlign: 'center',
     marginBottom: 12,
@@ -124,14 +145,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 14,
   },
-  row: { flexDirection: 'row', justifyContent: 'center', gap: 10, marginBottom: 10 },
+  displayLetters: { fontSize: 20, letterSpacing: 2 },
+  row: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 8 },
   key: {
     width: 56,
+    height: 46,
+    backgroundColor: colors.bg,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  keySmall: {
+    width: 38,
     height: 44,
     backgroundColor: colors.bg,
     borderRadius: 6,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  keyWide: { width: 84 },
   keyText: { fontFamily: fonts.mono, fontSize: 18, color: colors.prose },
 });
