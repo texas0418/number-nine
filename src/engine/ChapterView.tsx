@@ -26,7 +26,7 @@ import {
 } from 'react-native';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
 import { cue, stopSfx } from '../audio';
-import { isGate, solvedGatesBefore, visibleCount } from './reveal';
+import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
   ChapterEndBlock,
@@ -134,7 +134,10 @@ export function ChapterView({
     setSolved((prev) => {
       const next = new Set(prev);
       next.add(index);
-      onAdvance(visibleCount(blocks, next));
+      // Persist the first UNSOLVED gate index (progressIndex), NOT
+      // visibleCount — the latter includes the pending gate and made resume
+      // mark it solved (skipped puzzles after leaving mid-chapter).
+      onAdvance(progressIndex(blocks, next));
       return next;
     });
   };

@@ -18,6 +18,16 @@ export function visibleCount(blocks: ChapterBlock[], solved: Set<number>): numbe
   return blocks.length;
 }
 
+/** PERSISTENCE index: the first UNSOLVED gate's index (or blocks.length when
+ *  none remain). Persist THIS, not visibleCount — visibleCount includes the
+ *  pending gate, so restoring from it marked that gate as already solved
+ *  (the resume-skips-a-puzzle bug). */
+export function progressIndex(blocks: ChapterBlock[], solved: Set<number>): number {
+  for (let i = 0; i < blocks.length; i++)
+    if (isGate(blocks[i]) && !solved.has(i)) return i;
+  return blocks.length;
+}
+
 /** Gate indices below a resume point — reconstructs solved gates from the
  *  persisted furthest-block index. */
 export function solvedGatesBefore(

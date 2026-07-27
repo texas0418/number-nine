@@ -59,9 +59,9 @@ export function Hotspot({
       onSolved();
     } else {
       // a dull knock on the wrong spot; the room absorbs it
-      setStaticLevel(0.35);
+      setStaticLevel(0.3);
       Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
-      setTimeout(() => setStaticLevel(0.15), 350);
+      setTimeout(() => setStaticLevel(0.08), 350);
     }
   };
 

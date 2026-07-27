@@ -69,10 +69,10 @@ export function Keypad({
       onSolved();
     } else {
       // one ring into static, then the line goes dead and the slate clears
-      setStaticLevel(0.5);
+      setStaticLevel(0.38);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Error);
       setTimeout(() => {
-        setStaticLevel(0.15);
+        setStaticLevel(0.08);
         setEntry('');
       }, 700);
     }

@@ -39,7 +39,7 @@ export const BROADCAST_ONE: Chapter = {
     },
     {
       kind: 'prose',
-      text: 'The solicitor’s letter called Edwin "next of kin," as though the phrase were a door held open. He had not wanted to walk through it. One does anyway. The house stood where the land gave up and became marsh, and it had the particular quiet of a place that has been listened in for a very long time.',
+      text: 'The solicitor’s letter called Edwin "next of kin," as though the phrase were a door held open — the property having passed to his brother, the letter noted in passing, on the death of his wife, whom it did not trouble to name. He had not wanted to walk through that door. One does anyway. The house stood where the land gave up and became marsh, and it had the particular quiet of a place that has been listened in for a very long time.',
     },
     {
       kind: 'prose',
@@ -203,6 +203,33 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'prose',
       text: 'Inside the lid, scratched fine as hairs, were tally marks. Edwin counted them twice: ninety. The box had been keeping score of something for a long time, and the score was old, and tonight — he felt it with a listener’s certainty — the score had changed.',
     },
+    {
+      kind: 'prose',
+      text: 'The cold came through the cellar wall unevenly. Beneath the little barred window, one brick sat a fraction proud of its courses, and alone among all its neighbours it did not sweat.',
+    },
+    {
+      kind: 'hotspot',
+      id: 'b1-brick',
+      image: 'cellar',
+      target: { x: 0.01, y: 0.53, w: 0.23, h: 0.17 },
+      prompt: 'the cellar wall',
+      unlockedText: 'the brick comes away · behind it, a tin box, wartime issue',
+    },
+    {
+      kind: 'prose',
+      text: 'The tin was GPO stock, stencilled and rusted shut around four brass wheels set into its lid. His brother had hidden it the way he had done everything in this house — where only a listener would think to feel for it, and locked the way she liked things kept.',
+    },
+    {
+      kind: 'keypad',
+      id: 'b1-tin',
+      answer: '5264',
+      prompt: 'the tin box · four wheels',
+      unlockedText: 'the wheels agree · the lid lifts on a photograph',
+    },
+    {
+      kind: 'prose',
+      text: 'A photograph, silvered with age: a woman at this same workbench, headphones over her hair, laughing at whoever held the camera. On the back, in pencil, two words — my best listener — and nothing else. No name.',
+    },
 
     // --- Fork (narrative branch, not a puzzle) ----------------------------
     {
@@ -268,6 +295,30 @@ export const BROADCAST_ONE: Chapter = {
       answer: '91',
       prompt: 'fill the card',
       unlockedText: 'the pencil moves on its own · the number was always going to be this',
+    },
+    {
+      kind: 'prose',
+      text: 'And then, before the line went dead, she spoke once more — slowly, deliberately, the way one speaks to a child or to the deaf — and what she gave him was not a count at all.',
+    },
+    {
+      kind: 'logbook',
+      cue: 'page-turn',
+      lines: [
+        'her last groups of the night, in a shaking hand:',
+        '20 · 05 · 18 · 01 · 07 · 18 · 01 · 13',
+        '(no ident followed. the first time in nineteen years.)',
+      ],
+    },
+    {
+      kind: 'cipher',
+      id: 'b1-lastword',
+      answer: 'MARGARET',
+      prompt: 'the last transmission · eight letters',
+      unlockedText: 'her words arrive turned around · and turned, they make a name',
+    },
+    {
+      kind: 'prose',
+      text: 'Margaret. The woman in the photograph, laughing at her workbench. The wife the solicitor’s letter had not troubled to name. His brother’s best listener — nineteen years dead, and counting still. The station had not taken Halloran first.',
     },
     {
       kind: 'prose',

@@ -60,7 +60,7 @@ export function RadioTuner({
       khzRef.current = next;
       setKhz(next);
       const strength = signalStrength(next, targetKhz, bandLowKhz, bandHighKhz);
-      setStaticLevelNow(0.15 + 0.55 * (1 - strength));
+      setStaticLevelNow(0.1 + 0.35 * (1 - strength));
     };
     const settle = () => {
       if (lockedRef.current || !isRadioLocked(khzRef.current, targetKhz)) return;

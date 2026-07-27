@@ -37,7 +37,10 @@ const SFX_FILES: Record<string, number> = {
   'bell-3': require('../assets/audio/bell-b4.wav'),
   'bell-4': require('../assets/audio/bell-e4.wav'),
 };
-const sfxPlayers: Record<string, any> = {};
+// Loops (the phone ringing) keep persistent players; one-shots get a FRESH
+// player per play — expo-audio players don't reliably restart after they
+// finish, which made repeat taps (the music-box tines) go silent.
+const loopPlayers: Record<string, any> = {};
 
 export function initAudio(): void {
   const a = audio();
@@ -49,26 +52,29 @@ export function initAudio(): void {
     staticPlayer.volume = 0;
     staticPlayer.play();
     identPlayer = a.createAudioPlayer(require('../assets/audio/ident.wav'));
-    for (const [name, mod] of Object.entries(SFX_FILES)) {
-      try {
-        sfxPlayers[name] = a.createAudioPlayer(mod);
-      } catch {
-        /* one bad clip must not sink the rest */
-      }
-    }
   } catch {
     staticPlayer = null;
     identPlayer = null;
   }
 }
 
-/** Fire a one-shot sound effect by name. Silent no-op if audio is unavailable. */
-export function playSfx(name: string): void {
-  const p = sfxPlayers[name];
-  if (!p) return;
+/** Fire a one-shot by name on a fresh player (reliable repeats), then release. */
+export function playSfx(name: string, volume = 0.9): void {
+  const a = audio();
+  const mod = SFX_FILES[name];
+  if (!a || mod === undefined) return;
   try {
-    p.seekTo(0);
+    const p = a.createAudioPlayer(mod);
+    p.volume = volume;
     p.play();
+    setTimeout(() => {
+      try {
+        p.remove?.();
+        p.release?.();
+      } catch {
+        /* fail open */
+      }
+    }, 5000);
   } catch {
     /* fail open */
   }
@@ -76,9 +82,12 @@ export function playSfx(name: string): void {
 
 /** Start a looping effect (e.g. the hall telephone ringing on and on). */
 export function startSfxLoop(name: string, volume = 0.5): void {
-  const p = sfxPlayers[name];
-  if (!p) return;
+  const a = audio();
+  const mod = SFX_FILES[name];
+  if (!a || mod === undefined) return;
   try {
+    if (!loopPlayers[name]) loopPlayers[name] = a.createAudioPlayer(mod);
+    const p = loopPlayers[name];
     p.loop = true;
     p.volume = volume;
     p.seekTo(0);
@@ -88,9 +97,9 @@ export function startSfxLoop(name: string, volume = 0.5): void {
   }
 }
 
-/** Stop a looping (or playing) effect — the moment the line clicks open. */
+/** Stop a looping effect — the moment the line clicks open. */
 export function stopSfx(name: string): void {
-  const p = sfxPlayers[name];
+  const p = loopPlayers[name];
   if (!p) return;
   try {
     p.pause();
@@ -143,10 +152,12 @@ export function playIdent(): void {
 }
 
 export function cue(name: string): void {
-  if (name === 'static-swell') setStaticLevel(0.55);
-  else if (name === 'silence') setStaticLevel(0.04);
+  // The static bed is ATMOSPHERE — it must never drown the diegetic one-shots
+  // (device feedback: "all I hear is static"). Levels kept low.
+  if (name === 'static-swell') setStaticLevel(0.28);
+  else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
-  else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.45); // rings until answered
+  else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, page-turn
 }
 
