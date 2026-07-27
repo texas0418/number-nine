@@ -25,7 +25,7 @@ import {
   View,
 } from 'react-native';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
-import { cue } from '../audio';
+import { cue, stopSfx } from '../audio';
 import { isGate, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
@@ -42,6 +42,8 @@ import {
 } from './blocks';
 import { RadioTuner } from './RadioTuner';
 import { Keypad } from './Keypad';
+import { MelodyBox } from './MelodyBox';
+import { Hotspot } from './Hotspot';
 import { SceneBackdrop } from './SceneBackdrop';
 import { ProseReveal } from './ProseReveal';
 
@@ -127,6 +129,8 @@ export function ChapterView({
   );
 
   const solveGate = (index: number) => {
+    const b = blocks[index];
+    if (b && 'stopsCue' in b && b.stopsCue) stopSfx(b.stopsCue); // e.g. the ringing stops because you answered
     setSolved((prev) => {
       const next = new Set(prev);
       next.add(index);
@@ -307,6 +311,29 @@ function renderGate(
         <Keypad
           letters
           answer={block.answer}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          solved={gateSolved}
+          onSolved={() => solveGate(index)}
+        />
+      );
+    case 'melody':
+      return (
+        <MelodyBox
+          answer={block.answer}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          solved={gateSolved}
+          onSolved={() => solveGate(index)}
+        />
+      );
+    case 'hotspot':
+      return (
+        <Hotspot
+          image={block.image}
+          target={block.target}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}

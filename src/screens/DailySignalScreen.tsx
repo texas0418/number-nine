@@ -1,10 +1,18 @@
 // src/screens/DailySignalScreen.tsx
 // Tonight's Signal: the free nightly cryptogram. Cryptoquip interaction —
 // tap any cell to select its NUMBER (highlighting it everywhere), then tap a
-// letter to assign it to that number across the whole transmission. Signal
-// strength pre-reveals a few letters; the weekly rhythm lives in cipher.ts.
+// letter to assign it to that number across the whole transmission.
+//
+// - Empty cells flicker faintly through random letters (a decode machine
+//   hunting); assigning a letter scrambles the affected cells briefly before
+//   they settle. On solve the whole grid settles into the plaintext.
+// - In-progress guesses persist (kv) so leaving the screen never loses work.
+// - A complete-but-wrong transcription gets diegetic feedback: static, an
+//   error thud, and the station "repeats the group".
+// - Solving pays off: the decoded line is presented as an entry from
+//   Halloran's listening log, with streak and share.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   PixelRatio,
@@ -22,16 +30,28 @@ import {
 } from '../daily/cipher';
 import { transmissionForDay } from '../daily/schedule';
 import { currentStreak, dayKeyFromMs } from '../models';
-import { isDaySolved, listSolvedDays, recordSolve } from '../db';
-import { playIdent } from '../audio';
+import {
+  deleteKv,
+  getKv,
+  isDaySolved,
+  listSolvedDays,
+  recordSolve,
+  setKv,
+} from '../db';
+import { playIdent, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
-const LETTER_ROWS = ['ABCDEFGHI', 'JKLMNOPQR', 'STUVWXYZ'];
+let Haptics: any | null = null;
+try {
+  Haptics = require('expo-haptics');
+} catch {
+  Haptics = null;
+}
 
-/** Dynamic Type-aware box sizing. Cells and keys are fixed boxes, so instead
- *  of OS text scaling (which would overflow them) the boxes themselves grow
- *  with the user's font scale, clamped so the longest cipher word and the
- *  9-key row always fit the screen width. */
+const LETTER_ROWS = ['ABCDEFGHI', 'JKLMNOPQR', 'STUVWXYZ'];
+const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+/** Dynamic Type-aware box sizing (see boxSizes rationale in git history). */
 function boxSizes(maxWordLen: number) {
   const scale = Math.min(PixelRatio.getFontScale(), 1.9);
   const win = Dimensions.get('window').width;
@@ -48,10 +68,18 @@ function boxSizes(maxWordLen: number) {
   };
 }
 
-function initialGuesses(puzzle: DailyPuzzle): Map<number, string> {
+function initialGuesses(puzzle: DailyPuzzle, saved: string | null): Map<number, string> {
   const m = new Map<number, string>();
   for (const [num, letter] of puzzle.answerByNum)
     if (puzzle.revealedLetters.includes(letter)) m.set(num, letter);
+  if (saved) {
+    try {
+      for (const [k, v] of Object.entries(JSON.parse(saved) as Record<string, string>))
+        m.set(Number(k), v);
+    } catch {
+      /* corrupt save: start from reveals */
+    }
+  }
   return m;
 }
 
@@ -62,13 +90,17 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     [todayKey],
   );
   const puzzle = useMemo(() => buildPuzzle(todayKey, plaintext), [todayKey, plaintext]);
+  const kvKey = `daily-guesses:${todayKey}`;
 
   const [solvedAlready] = useState(() => isDaySolved(todayKey));
   const [guesses, setGuesses] = useState<Map<number, string>>(() =>
-    solvedAlready ? new Map(puzzle.answerByNum) : initialGuesses(puzzle),
+    solvedAlready
+      ? new Map(puzzle.answerByNum)
+      : initialGuesses(puzzle, getKv(kvKey)),
   );
   const [selected, setSelected] = useState<number | null>(null);
   const [solved, setSolved] = useState(solvedAlready);
+  const [refused, setRefused] = useState(false);
   const [streak, setStreak] = useState(() =>
     currentStreak(listSolvedDays(), todayKey),
   );
@@ -78,12 +110,22 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     const next = new Map(guesses);
     next.set(selected, letter);
     setGuesses(next);
+    setKv(kvKey, JSON.stringify(Object.fromEntries(next)));
     if (isSolved(puzzle, next)) {
       setSolved(true);
       setSelected(null);
+      setRefused(false);
       recordSolve(todayKey, Date.now());
+      deleteKv(kvKey);
       setStreak(currentStreak(listSolvedDays(), todayKey));
       playIdent();
+      Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
+    } else if (next.size >= puzzle.answerByNum.size) {
+      // every number has a letter but the transcription is wrong somewhere
+      setRefused(true);
+      setStaticLevel(0.5);
+      Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Error);
+      setTimeout(() => setStaticLevel(0.12), 600);
     }
   };
 
@@ -110,9 +152,9 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
+          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ set</Text>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+        <Text style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
           TONIGHT’S SIGNAL
         </Text>
         <Pressable onPress={share} hitSlop={12}>
@@ -150,13 +192,27 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       {solved ? (
         <View style={styles.solvedWrap}>
           <Text style={styles.solvedRule}>· · · — — — · · ·</Text>
-          <Text style={styles.solvedText}>signal received</Text>
-          <Text style={styles.streak}>
-            {streak} night{streak === 1 ? '' : 's'} listening
+          <Text style={styles.solvedText}>SIGNAL RECEIVED</Text>
+          <Text style={styles.decoded} maxFontSizeMultiplier={1.4}>
+            “{plaintext.toLowerCase()}”
           </Text>
+          <Text style={styles.attribution} maxFontSizeMultiplier={1.3}>
+            — the listening log of H. MARSH · entry no. {serial}
+          </Text>
+          <Text style={styles.streak}>
+            {streak} night{streak === 1 ? '' : 's'} listening · a new signal at midnight
+          </Text>
+          <Pressable style={styles.shareBtn} onPress={share}>
+            <Text style={styles.shareBtnText}>share the intercept</Text>
+          </Pressable>
         </View>
       ) : (
         <View style={styles.keys}>
+          {refused && (
+            <Text style={styles.refused} maxFontSizeMultiplier={1.3}>
+              she repeats the group, unhurried — something is mistranscribed
+            </Text>
+          )}
           {LETTER_ROWS.map((row) => (
             <View key={row} style={styles.keyRow}>
               {[...row].map((letter) => (
@@ -186,6 +242,9 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
+/** One cipher cell. Empty cells flicker faintly through random letters (the
+ *  decode machine hunting); a newly assigned letter scrambles briefly before
+ *  settling. Revealed/settled letters hold still. */
 function Cell({
   num,
   guess,
@@ -201,6 +260,41 @@ function Cell({
   sizes: ReturnType<typeof boxSizes>;
   onPress: () => void;
 }) {
+  const [flick, setFlick] = useState('');
+  const [settling, setSettling] = useState(false);
+  const prevGuess = useRef(guess);
+
+  // Ambient flicker while empty.
+  useEffect(() => {
+    if (guess || revealed) return;
+    const id = setInterval(
+      () => setFlick(AZ[Math.floor(Math.random() * 26)]),
+      700 + ((num * 97) % 500), // desynchronized per cell
+    );
+    return () => clearInterval(id);
+  }, [guess, revealed, num]);
+
+  // Burst scramble when a letter lands on this cell. State changes happen only
+  // inside interval ticks (async), never synchronously in the effect body.
+  useEffect(() => {
+    if (guess === prevGuess.current) return;
+    prevGuess.current = guess;
+    if (!guess) return;
+    let n = 0;
+    const id = setInterval(() => {
+      setSettling(true);
+      setFlick(AZ[Math.floor(Math.random() * 26)]);
+      if (++n >= 8) {
+        clearInterval(id);
+        setSettling(false);
+      }
+    }, 36);
+    return () => clearInterval(id);
+  }, [guess]);
+
+  const showing = settling ? flick : guess ?? (revealed ? '' : flick);
+  const isGhost = !guess && !revealed && !settling;
+
   return (
     <Pressable
       onPress={onPress}
@@ -216,10 +310,11 @@ function Cell({
           styles.cellLetter,
           { fontSize: sizes.cellFont, height: Math.round(sizes.cellFont * 1.35) },
           revealed && { color: colors.muted },
+          isGhost && styles.ghost,
         ]}
         allowFontScaling={false}
       >
-        {guess ?? ' '}
+        {showing || ' '}
       </Text>
       <Text
         style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial }]}
@@ -233,9 +328,16 @@ function Cell({
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62, paddingHorizontal: 22 },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },
-  title: { fontFamily: fonts.mono, fontSize: 13, letterSpacing: 3, color: colors.prose },
+  title: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: fonts.mono,
+    fontSize: 13,
+    letterSpacing: 3,
+    color: colors.prose,
+  },
   meta: {
     fontFamily: fonts.mono,
     fontSize: 10,
@@ -265,6 +367,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cellLetter: { fontFamily: fonts.mono, color: colors.prose },
+  ghost: { color: colors.faint, opacity: 0.5 },
   cellNum: { fontFamily: fonts.mono, color: colors.faint },
   keys: { marginTop: 'auto', marginBottom: 34 },
   keyRow: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: 6 },
@@ -282,8 +385,42 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
-  solvedWrap: { marginTop: 'auto', marginBottom: 60, alignItems: 'center' },
-  solvedRule: { fontFamily: fonts.mono, fontSize: 12, color: colors.faint, marginBottom: 12 },
-  solvedText: { fontFamily: fonts.mono, fontSize: 14, letterSpacing: 3, color: colors.lockGlow },
-  streak: { fontFamily: fonts.mono, fontSize: 11, color: colors.muted, marginTop: 8 },
+  refused: {
+    fontFamily: fonts.mono,
+    fontSize: 11,
+    lineHeight: 17,
+    color: colors.danger,
+    textAlign: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 16,
+  },
+  solvedWrap: { marginTop: 'auto', marginBottom: 48, alignItems: 'center', paddingHorizontal: 10 },
+  solvedRule: { fontFamily: fonts.mono, fontSize: 12, color: colors.dialDim, marginBottom: 10 },
+  solvedText: { fontFamily: fonts.mono, fontSize: 14, letterSpacing: 4, color: colors.lockGlow },
+  decoded: {
+    fontFamily: fonts.serif,
+    fontSize: 19,
+    lineHeight: 30,
+    fontStyle: 'italic',
+    color: colors.prose,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  attribution: {
+    fontFamily: fonts.mono,
+    fontSize: 10,
+    letterSpacing: 1,
+    color: colors.muted,
+    marginTop: 10,
+  },
+  streak: { fontFamily: fonts.mono, fontSize: 11, color: colors.muted, marginTop: 14 },
+  shareBtn: {
+    marginTop: 18,
+    borderColor: colors.panelBorder,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  shareBtnText: { fontFamily: fonts.mono, fontSize: 12, color: colors.lockGlow },
 });

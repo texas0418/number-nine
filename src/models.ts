@@ -23,11 +23,17 @@ export type ChapterBlock =
   // An inline framed object image (the receiver, the telephone, the safe…).
   | { kind: 'plate'; image: SceneId; caption?: string; cue?: AudioCue }
   | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string }
-  | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue }
-  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue }
-  | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue }
+  | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue; stopsCue?: AudioCue }
+  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // A word/decode lock: letter entry, not digits. The "cipher" of the fiction.
-  | { kind: 'cipher'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue }
+  | { kind: 'cipher'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // An EAR puzzle: listen to the melody, play it back on brass keys.
+  // `answer` is the key-index sequence, e.g. '123134'.
+  | { kind: 'melody'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // An OBSERVATION puzzle: touch the hidden detail in a photograph.
+  // `target` is a normalized rect {x,y,w,h} within the image.
+  | { kind: 'hotspot'; id: string; image: SceneId; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */

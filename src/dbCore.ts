@@ -18,6 +18,14 @@ export const MIGRATIONS: string[][] = [
       solved_ms INTEGER NOT NULL
     )`,
   ],
+  // v2: small kv store (first use: tonight's in-progress cipher guesses, so
+  // leaving the screen never loses a half-finished transcription).
+  [
+    `CREATE TABLE IF NOT EXISTS kv (
+      k TEXT PRIMARY KEY,
+      v TEXT NOT NULL
+    )`,
+  ],
 ];
 
 export const TARGET_DB_VERSION = MIGRATIONS.length;
@@ -67,3 +75,8 @@ export const rowToSolve = (r: DailySolveRow): DailySolve => ({
   dayKey: r.day_key,
   solvedMs: r.solved_ms,
 });
+
+export const SET_KV_SQL =
+  'INSERT INTO kv (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v';
+export const GET_KV_SQL = 'SELECT v FROM kv WHERE k = ?';
+export const DELETE_KV_SQL = 'DELETE FROM kv WHERE k = ?';

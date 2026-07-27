@@ -32,6 +32,10 @@ const SFX_FILES: Record<string, number> = {
   'phone-ring': require('../assets/audio/phone-ring.wav'),
   'lamp-off': require('../assets/audio/lamp-off.wav'),
   'page-turn': require('../assets/audio/page-turn.wav'),
+  'bell-1': require('../assets/audio/bell-e5.wav'),
+  'bell-2': require('../assets/audio/bell-d5.wav'),
+  'bell-3': require('../assets/audio/bell-b4.wav'),
+  'bell-4': require('../assets/audio/bell-e4.wav'),
 };
 const sfxPlayers: Record<string, any> = {};
 
@@ -65,6 +69,32 @@ export function playSfx(name: string): void {
   try {
     p.seekTo(0);
     p.play();
+  } catch {
+    /* fail open */
+  }
+}
+
+/** Start a looping effect (e.g. the hall telephone ringing on and on). */
+export function startSfxLoop(name: string, volume = 0.5): void {
+  const p = sfxPlayers[name];
+  if (!p) return;
+  try {
+    p.loop = true;
+    p.volume = volume;
+    p.seekTo(0);
+    p.play();
+  } catch {
+    /* fail open */
+  }
+}
+
+/** Stop a looping (or playing) effect — the moment the line clicks open. */
+export function stopSfx(name: string): void {
+  const p = sfxPlayers[name];
+  if (!p) return;
+  try {
+    p.pause();
+    p.loop = false;
   } catch {
     /* fail open */
   }
@@ -116,7 +146,8 @@ export function cue(name: string): void {
   if (name === 'static-swell') setStaticLevel(0.55);
   else if (name === 'silence') setStaticLevel(0.04);
   else if (name === 'ident') playIdent();
-  else playSfx(name); // key-unlock, safe-open, unlock, phone-ring, lamp-off, page-turn
+  else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.45); // rings until answered
+  else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, page-turn
 }
 
 export function stopAll(): void {

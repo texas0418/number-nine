@@ -42,21 +42,26 @@ ok('streak handles unsorted input',
 
 // --- chapter reveal math -------------------------------------------------
 const blocks = BROADCAST_ONE.blocks;
-const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher'];
-const ANSWER_KINDS = ['keypad', 'safe', 'cipher'];
+const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher', 'melody', 'hotspot'];
+const ANSWER_KINDS = ['keypad', 'safe', 'cipher', 'melody'];
 const gateIdxs = blocks
   .map((b, i) => ({ b, i }))
   .filter(({ b }) => GATE_KINDS.includes(b.kind))
   .map(({ i }) => i);
-// Five puzzles (safe, radio, cipher, telephone-keypad, count-keypad) + 1 fork.
-ok('broadcast one has five solve-puzzles plus the fork', gateIdxs.length === 6);
-const puzzleCount = blocks.filter((b) => ANSWER_KINDS.includes(b.kind) || b.kind === 'radio').length;
-ok('broadcast one has at least five puzzles', puzzleCount >= 5);
-// Variety: the puzzles are not all the same mechanic.
+// Seven puzzles (hotspot, safe, radio, cipher, melody, telephone, count) + 1 fork.
+ok('broadcast one has seven solve-puzzles plus the fork', gateIdxs.length === 8);
+const puzzleCount = blocks.filter(
+  (b) => ANSWER_KINDS.includes(b.kind) || b.kind === 'radio' || b.kind === 'hotspot',
+).length;
+ok('broadcast one has at least seven puzzles', puzzleCount >= 7);
+// Variety doctrine: not just codes — observation (hotspot) and ear (melody)
+// mechanics must be present alongside the entry locks.
 const mechanics = new Set(
   blocks.filter((b) => GATE_KINDS.includes(b.kind) && b.kind !== 'fork').map((b) => b.kind),
 );
-ok('puzzles span multiple mechanics', mechanics.size >= 4);
+ok('puzzles span at least six mechanics', mechanics.size >= 6);
+ok('has a non-code observation puzzle', mechanics.has('hotspot'));
+ok('has a non-code ear puzzle', mechanics.has('melody'));
 
 // Puzzle doctrine: no gate's literal answer may appear in the three blocks
 // preceding it (clues must live far from their locks).

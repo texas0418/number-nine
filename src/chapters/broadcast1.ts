@@ -67,13 +67,21 @@ export const BROADCAST_ONE: Chapter = {
     },
     {
       kind: 'prose',
-      text: 'The desk safe was the size of a biscuit tin, set into the wall behind a hinged watercolour of the marsh: three brass wheels, and a place for one figure before them. Halloran had been a man who kept only one number in his head, and had said so once, at a Christmas neither brother enjoyed — a man should carry a single number, and it should be the one he can never put down.',
+      text: 'A desk safe, the inventory said. But no safe showed itself anywhere in the study — only the bookshelves, the desk, the cold window, and Halloran’s watercolours of the marsh, hung level as judgement. Edwin walked the walls twice. Old houses keep their secrets in plain sight, and so, he was beginning to understand, had his brother.',
+    },
+    {
+      kind: 'hotspot',
+      id: 'b1-find-safe',
+      image: 'study',
+      target: { x: 0.13, y: 0.33, w: 0.2, h: 0.18 },
+      prompt: 'the study wall',
+      unlockedText: 'the watercolour swings on a hinge · behind it, steel',
+    },
+    {
+      kind: 'prose',
+      text: 'The safe was the size of a biscuit tin, set flush into the plaster: three brass wheels, and a place for one figure before them. Halloran had been a man who kept only one number in his head, and had said so once, at a Christmas neither brother enjoyed — a man should carry a single number, and it should be the one he can never put down.',
     },
     { kind: 'plate', image: 'obj-safe', caption: 'the desk safe · contents unknown' },
-    {
-      kind: 'thought',
-      text: 'The year he stopped, then. Not the year he began — the later of the two. I have carried it as long as he did.',
-    },
     {
       kind: 'safe',
       id: 'b1-safe',
@@ -136,7 +144,7 @@ export const BROADCAST_ONE: Chapter = {
     { kind: 'room', text: 'The Cellar', scene: 'cellar' },
     {
       kind: 'prose',
-      text: 'The receiver sat on the workbench with its dial lamp lit and its cord coiled beside it, unplugged. The card from the safe was in his breast pocket; he could feel the two underlines through the cloth. Where we are licensed. He thought of the number the estate had set against the aerial, and reached for the dial with a steadiness he did not feel.',
+      text: 'The receiver sat on the workbench with its dial lamp lit and its cord coiled beside it, unplugged. The card from the safe was in his breast pocket; he could feel the two underlines through the cloth. He reached for the dial with a steadiness he did not feel.',
     },
     {
       kind: 'radio',
@@ -170,19 +178,30 @@ export const BROADCAST_ONE: Chapter = {
       ],
     },
     {
-      kind: 'thought',
-      text: 'The margin. The numbers are letters, with patience. Count them on your fingers if you must — the first letter, the ninth, the fourteenth.',
-    },
-    {
       kind: 'cipher',
       id: 'b1-decode',
       answer: 'NINE',
-      prompt: 'the repeated group, read as letters · A is one',
+      prompt: 'the repeated group · four letters',
       unlockedText: 'the slate settles · she has been saying her own name all along',
     },
     {
       kind: 'prose',
       text: 'He set the four letters down and did not like the shape they made. The station had a name, and it had been counting its name into the dark for nineteen years, and tonight, for the first time, someone had been patient enough to spell it back.',
+    },
+    {
+      kind: 'prose',
+      text: 'In the drawer beneath the bench, wrapped in a handkerchief, lay a music box no larger than a matchbox — four brass tines worn bright with use. His brother had built things all his life, and had never once built anything without a reason. The mechanism would not wind. It was waiting, patiently, to be played.',
+    },
+    {
+      kind: 'melody',
+      id: 'b1-musicbox',
+      answer: '123134',
+      prompt: 'the music box',
+      unlockedText: 'the tines remember her song · the lid lifts',
+    },
+    {
+      kind: 'prose',
+      text: 'Inside the lid, scratched fine as hairs, were tally marks. Edwin counted them twice: ninety. The box had been keeping score of something for a long time, and the score was old, and tonight — he felt it with a listener’s certainty — the score had changed.',
     },
 
     // --- Fork (narrative branch, not a puzzle) ----------------------------
@@ -217,15 +236,16 @@ export const BROADCAST_ONE: Chapter = {
     { kind: 'room', text: 'The Hall', scene: 'hall' },
     {
       kind: 'prose',
-      text: 'The margin had warned him: her words arrive turned around. She had given him three figures by name, in her flat clean voice, and a man who has been handed three figures in the dark will always dial them. He lifted the receiver, turned her words around in his head the way you would turn a card to read its back, and dialled.',
+      text: 'She had given him three figures by name, in her flat clean voice, and a man who has been handed three figures in the dark will always dial them. He lifted the receiver and dialled.',
     },
     { kind: 'plate', image: 'obj-telephone', caption: 'the hall telephone · still ringing' },
     {
       kind: 'keypad',
       id: 'b1-phone',
       answer: '295',
-      prompt: 'the telephone · what she said, turned around',
+      prompt: 'the telephone',
       unlockedText: 'the line clicks open · and somebody, close, is breathing',
+      stopsCue: 'phone-ring',
     },
     { kind: 'voice', text: 'YOU COUNTED WRONG, EDWIN. WE WILL BEGIN AGAIN.', mirrored: false },
 
@@ -233,10 +253,6 @@ export const BROADCAST_ONE: Chapter = {
     {
       kind: 'prose',
       text: 'He thought about the count then, because the voice wanted him to. Ninety groups. Ninety, every night, for nineteen years without fail — the log said so, and the log did not lie. But tonight she had counted the ninety, and then she had spoken his name into the middle of them, and then she had begun again.',
-    },
-    {
-      kind: 'thought',
-      text: 'Ninety groups. And a name is a thing you count. So how many did she truly speak, before she started over?',
     },
     {
       kind: 'logbook',
@@ -250,7 +266,7 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'keypad',
       id: 'b1-count',
       answer: '91',
-      prompt: 'fill the card · her true count, your name included',
+      prompt: 'fill the card',
       unlockedText: 'the pencil moves on its own · the number was always going to be this',
     },
     {

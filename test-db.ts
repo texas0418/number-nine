@@ -7,12 +7,15 @@ import {
   ALL_SOLVE_DAYS_SQL,
   ChapterProgressRow,
   COUNT_SOLVES_SQL,
+  DELETE_KV_SQL,
   ENABLE_FK_SQL,
+  GET_KV_SQL,
   GET_PROGRESS_SQL,
   GET_SOLVE_SQL,
   INSERT_SOLVE_SQL,
   MIGRATIONS,
   RESET_PROGRESS_SQL,
+  SET_KV_SQL,
   TARGET_DB_VERSION,
   UPSERT_PROGRESS_SQL,
   progressToParams,
@@ -94,6 +97,15 @@ eq('first solve time wins',
 eq('solved days list in order',
   (db.prepare(ALL_SOLVE_DAYS_SQL).all() as { day_key: string }[]).map((r) => r.day_key),
   ['2026-07-24', '2026-07-25']);
+
+// ------------------------------------------------------------------- kv
+db.prepare(SET_KV_SQL).run('daily-guesses:2026-07-27', '{"3":"E"}');
+db.prepare(SET_KV_SQL).run('daily-guesses:2026-07-27', '{"3":"E","7":"T"}');
+eq('kv upserts',
+  (db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-27') as { v: string }).v,
+  '{"3":"E","7":"T"}');
+db.prepare(DELETE_KV_SQL).run('daily-guesses:2026-07-27');
+eq('kv deletes', db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-27'), undefined);
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);
