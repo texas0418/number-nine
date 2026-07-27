@@ -24,7 +24,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import type { Chapter, ChapterBlock } from '../models';
+import type { Chapter, ChapterBlock, SceneId } from '../models';
 import { cue } from '../audio';
 import { isGate, solvedGatesBefore, visibleCount } from './reveal';
 import {
@@ -32,6 +32,7 @@ import {
   ChapterEndBlock,
   ForkBlock,
   LogbookBlock,
+  PlateBlock,
   ProseBlock,
   RoomBlock,
   RotatedBlock,
@@ -41,6 +42,7 @@ import {
 } from './blocks';
 import { RadioTuner } from './RadioTuner';
 import { Keypad } from './Keypad';
+import { SceneBackdrop } from './SceneBackdrop';
 
 export function ChapterView({
   chapter,
@@ -63,6 +65,36 @@ export function ChapterView({
   const [viewH, setViewH] = useState(0);
   const geom = useRef({ y: 0, viewH: 0, tops: new Map<number, number>(), fired: new Set<number>() });
 
+  // Room blocks that set an ambient backdrop, in order.
+  const roomScenes = useMemo(
+    () =>
+      blocks.flatMap((b, i) =>
+        b.kind === 'room' && b.scene ? [{ index: i, scene: b.scene }] : [],
+      ),
+    [blocks],
+  );
+  const [activeScene, setActiveScene] = useState<SceneId | null>(
+    () => roomScenes[0]?.scene ?? null,
+  );
+  const activeRef = useRef<SceneId | null>(roomScenes[0]?.scene ?? null);
+
+  const updateScene = () => {
+    if (!roomScenes.length) return;
+    const g = geom.current;
+    // The active room is the last one whose label has scrolled into the
+    // upper third of the screen.
+    const line = g.y + g.viewH * 0.35;
+    let scene = roomScenes[0].scene;
+    for (const rs of roomScenes) {
+      const top = g.tops.get(rs.index);
+      if (top !== undefined && top <= line) scene = rs.scene;
+    }
+    if (scene !== activeRef.current) {
+      activeRef.current = scene;
+      setActiveScene(scene);
+    }
+  };
+
   const fireCues = () => {
     const g = geom.current;
     if (g.viewH === 0) return;
@@ -76,6 +108,7 @@ export function ChapterView({
         cue(b.cue);
       }
     }
+    updateScene();
   };
 
   const onScroll = useMemo(
@@ -107,28 +140,31 @@ export function ChapterView({
   };
 
   return (
-    <Animated.ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.content}
-      onScroll={onScroll}
-      onLayout={(e) => {
-        geom.current.viewH = e.nativeEvent.layout.height;
-        setViewH(e.nativeEvent.layout.height);
-      }}
-      scrollEventThrottle={16}
-    >
-      {blocks.slice(0, count).map((block, i) => (
-        <BlockReveal
-          key={i}
-          scrollY={scrollY}
-          viewH={viewH}
-          exempt={isGate(block) || block.kind === 'chapterEnd'}
-          onMeasure={recordTop(i)}
-        >
-          {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
-        </BlockReveal>
-      ))}
-    </Animated.ScrollView>
+    <View style={styles.root}>
+      <SceneBackdrop sceneId={activeScene} />
+      <Animated.ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        onScroll={onScroll}
+        onLayout={(e) => {
+          geom.current.viewH = e.nativeEvent.layout.height;
+          setViewH(e.nativeEvent.layout.height);
+        }}
+        scrollEventThrottle={16}
+      >
+        {blocks.slice(0, count).map((block, i) => (
+          <BlockReveal
+            key={i}
+            scrollY={scrollY}
+            viewH={viewH}
+            exempt={isGate(block) || block.kind === 'chapterEnd'}
+            onMeasure={recordTop(i)}
+          >
+            {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
+          </BlockReveal>
+        ))}
+      </Animated.ScrollView>
+    </View>
   );
 }
 
@@ -203,6 +239,23 @@ function renderBlock(
       return <StaircaseBlock steps={block.steps} direction={block.direction} />;
     case 'logbook':
       return <LogbookBlock lines={block.lines} />;
+    case 'plate':
+      return <PlateBlock image={block.image} caption={block.caption} />;
+    case 'chapterEnd':
+      return <ChapterEndBlock title={block.title} onDone={onComplete} />;
+    default:
+      return renderGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** The interactive gates, split out to keep renderBlock under the complexity cap. */
+function renderGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  switch (block.kind) {
     case 'fork':
       return (
         <ForkBlock
@@ -233,6 +286,7 @@ function renderBlock(
           answer={block.answer}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
           solved={gateSolved}
           onSolved={() => solveGate(index)}
         />
@@ -244,16 +298,18 @@ function renderBlock(
           answer={block.answer}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
           solved={gateSolved}
           onSolved={() => solveGate(index)}
         />
       );
-    case 'chapterEnd':
-      return <ChapterEndBlock title={block.title} onDone={onComplete} />;
+    default:
+      return null;
   }
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1 },
+  root: { flex: 1 },
+  scroll: { flex: 1, backgroundColor: 'transparent' },
   content: { paddingHorizontal: 26, paddingTop: 30, paddingBottom: 120 },
 });

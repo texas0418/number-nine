@@ -12,6 +12,7 @@ import {
   ChapterEndBlock,
   ForkBlock,
   LogbookBlock,
+  PlateBlock,
   ProseBlock,
   RoomBlock,
   RotatedBlock,
@@ -60,6 +61,9 @@ export default function GalleryScreen({ onBack }: { onBack: () => void }) {
           'margin, smaller hand: her words arrive turned around',
         ]}
       />
+      <Label text="plate · object image (inline)" />
+      <PlateBlock image="obj-receiver" caption="the receiver · war surplus, working" />
+      <PlateBlock image="obj-telephone" caption="the hall telephone" />
       <Label text="staircase · down" />
       <StaircaseBlock
         direction="down"

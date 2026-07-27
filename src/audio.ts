@@ -24,6 +24,17 @@ let identPlayer: any | null = null;
 let staticTarget = 0;
 let fadeTimer: ReturnType<typeof setInterval> | null = null;
 
+// One-shot diegetic SFX, preloaded so playback has no first-hit latency.
+const SFX_FILES: Record<string, number> = {
+  'key-unlock': require('../assets/audio/key-unlock.wav'),
+  'safe-open': require('../assets/audio/safe-open.wav'),
+  unlock: require('../assets/audio/unlock.wav'),
+  'phone-ring': require('../assets/audio/phone-ring.wav'),
+  'lamp-off': require('../assets/audio/lamp-off.wav'),
+  'page-turn': require('../assets/audio/page-turn.wav'),
+};
+const sfxPlayers: Record<string, any> = {};
+
 export function initAudio(): void {
   const a = audio();
   if (!a || staticPlayer) return;
@@ -34,9 +45,28 @@ export function initAudio(): void {
     staticPlayer.volume = 0;
     staticPlayer.play();
     identPlayer = a.createAudioPlayer(require('../assets/audio/ident.wav'));
+    for (const [name, mod] of Object.entries(SFX_FILES)) {
+      try {
+        sfxPlayers[name] = a.createAudioPlayer(mod);
+      } catch {
+        /* one bad clip must not sink the rest */
+      }
+    }
   } catch {
     staticPlayer = null;
     identPlayer = null;
+  }
+}
+
+/** Fire a one-shot sound effect by name. Silent no-op if audio is unavailable. */
+export function playSfx(name: string): void {
+  const p = sfxPlayers[name];
+  if (!p) return;
+  try {
+    p.seekTo(0);
+    p.play();
+  } catch {
+    /* fail open */
   }
 }
 
@@ -82,10 +112,11 @@ export function playIdent(): void {
   }
 }
 
-export function cue(name: 'static-swell' | 'ident' | 'silence'): void {
+export function cue(name: string): void {
   if (name === 'static-swell') setStaticLevel(0.55);
   else if (name === 'silence') setStaticLevel(0.04);
-  else playIdent();
+  else if (name === 'ident') playIdent();
+  else playSfx(name); // key-unlock, safe-open, unlock, phone-ring, lamp-off, page-turn
 }
 
 export function stopAll(): void {

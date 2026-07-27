@@ -12,22 +12,45 @@
 
 export type ChapterBlock =
   | { kind: 'chapterCard'; number: string; title: string; cue?: AudioCue }
-  | { kind: 'room'; text: string; cue?: AudioCue }
+  // `scene` sets the ambient backdrop that fills the screen until the next room.
+  | { kind: 'room'; text: string; scene?: SceneId; cue?: AudioCue }
   | { kind: 'thought'; text: string; cue?: AudioCue }
   | { kind: 'prose'; text: string; faded?: boolean; cue?: AudioCue }
   | { kind: 'voice'; text: string; mirrored: boolean; cue?: AudioCue }
   | { kind: 'rotated'; text: string; direction?: 'down' | 'up'; cue?: AudioCue }
   | { kind: 'staircase'; steps: string[]; direction?: 'down' | 'up'; cue?: AudioCue }
   | { kind: 'logbook'; lines: string[]; cue?: AudioCue }
+  // An inline framed object image (the receiver, the telephone, the safe…).
+  | { kind: 'plate'; image: SceneId; caption?: string; cue?: AudioCue }
   | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string }
   | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue }
-  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
-  | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
+  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue }
+  | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue }
   // A word/decode lock: letter entry, not digits. The "cipher" of the fiction.
-  | { kind: 'cipher'; id: string; answer: string; prompt: string; unlockedText: string; cue?: AudioCue }
+  | { kind: 'cipher'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
-export const AUDIO_CUES = ['static-swell', 'ident', 'silence'] as const;
+/** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */
+export type SceneId =
+  | 'hall'
+  | 'study'
+  | 'cellar'
+  | 'obj-receiver'
+  | 'obj-telephone'
+  | 'obj-logbook'
+  | 'obj-safe';
+
+export const AUDIO_CUES = [
+  'static-swell',
+  'ident',
+  'silence',
+  'key-unlock',
+  'safe-open',
+  'unlock',
+  'phone-ring',
+  'lamp-off',
+  'page-turn',
+] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 
 export const isAudioCue = (v: unknown): v is AudioCue =>

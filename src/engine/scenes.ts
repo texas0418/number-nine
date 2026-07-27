@@ -1,0 +1,21 @@
+// src/engine/scenes.ts
+// Image registry. require() needs static literal paths, so every backdrop and
+// object plate is listed here and referenced elsewhere by its SceneId key.
+// All assets ship in the bundle (offline-first). PLACEHOLDER ART — real 1963
+// grayscale interiors/objects are a pre-ship task; see scripts/gen-scenes-sfx.py.
+
+import type { SceneId } from '../models';
+
+export const SCENES: Record<SceneId, number> = {
+  hall: require('../../assets/scenes/hall.jpg'),
+  study: require('../../assets/scenes/study.jpg'),
+  cellar: require('../../assets/scenes/cellar.jpg'),
+  'obj-receiver': require('../../assets/scenes/obj-receiver.jpg'),
+  'obj-telephone': require('../../assets/scenes/obj-telephone.jpg'),
+  'obj-logbook': require('../../assets/scenes/obj-logbook.jpg'),
+  'obj-safe': require('../../assets/scenes/obj-safe.jpg'),
+};
+
+/** The three room backdrops (full-screen ambient), distinct from object plates. */
+export const isBackdrop = (id: SceneId): boolean =>
+  id === 'hall' || id === 'study' || id === 'cellar';

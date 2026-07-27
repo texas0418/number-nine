@@ -4,8 +4,27 @@
 // so the reader physically turns the phone in their hands (DEVICE 6's trick).
 
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import type { SceneId } from '../models';
+import { SCENES } from './scenes';
 import { colors, fonts, type } from '../theme';
+
+/** An inline framed object image — the receiver, the telephone, the safe —
+ *  set into the text column like a halftone plate in a printed book. */
+export function PlateBlock({ image, caption }: { image: SceneId; caption?: string }) {
+  return (
+    <View style={styles.plateWrap}>
+      <View style={styles.plateFrame}>
+        <Image source={SCENES[image]} resizeMode="cover" style={styles.plate} />
+      </View>
+      {caption ? (
+        <Text style={styles.plateCaption} maxFontSizeMultiplier={1.3}>
+          {caption}
+        </Text>
+      ) : null}
+    </View>
+  );
+}
 
 export function ProseBlock({ text, faded }: { text: string; faded?: boolean }) {
   return (
@@ -319,6 +338,26 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: colors.muted,
     flexShrink: 1,
+  },
+  plateWrap: { alignItems: 'center', marginVertical: 26 },
+  plateFrame: {
+    width: '72%',
+    aspectRatio: 1,
+    borderRadius: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.panelBorder,
+    backgroundColor: colors.panel,
+    overflow: 'hidden',
+    padding: 4,
+  },
+  plate: { flex: 1, borderRadius: 5 },
+  plateCaption: {
+    fontFamily: fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1,
+    color: colors.muted,
+    marginTop: 10,
+    textAlign: 'center',
   },
   staircase: { marginVertical: 24 },
   stairRow: { flexDirection: 'row', alignItems: 'flex-end', marginBottom: 10 },

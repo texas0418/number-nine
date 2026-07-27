@@ -31,7 +31,7 @@ export const BROADCAST_ONE: Chapter = {
     { kind: 'chapterCard', number: 'BROADCAST ONE', title: 'The Licence', cue: 'ident' },
 
     // --- The estrangement (and, planted early, the years on the stone) -----
-    { kind: 'room', text: 'The Hall' },
+    { kind: 'room', text: 'The Hall', scene: 'hall' },
     {
       kind: 'prose',
       text: 'They had not spoken in nineteen years when Halloran died, which was its own tidy symmetry, because Halloran had been dead in every way that counted to Edwin since a certain winter long ago. The stone in the churchyard gave the plain arithmetic of him — 1904 to 1963 — and nothing of the silence in between.',
@@ -45,9 +45,10 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'prose',
       text: 'The parcel waited on the hall table: a shortwave receiver wrapped in oilcloth, a logbook with water-swollen pages, and a single brass key. Edwin signed for all three. The delivery man would not meet his eyes, and left the way people leave a room where something has just been said that should not have been.',
     },
+    { kind: 'plate', image: 'obj-receiver', caption: 'the receiver · war surplus, working' },
 
     // --- The study: effects, and the safe (PUZZLE 1) ----------------------
-    { kind: 'room', text: 'The Study' },
+    { kind: 'room', text: 'The Study', scene: 'study', cue: 'key-unlock' },
     {
       kind: 'prose',
       text: 'The brass key opened nothing in the hall, nor the kitchen, nor the two cold bedrooms. It opened the study, where Halloran had done his listening, and where the air was still faintly sweet with a pipe no one had smoked in six weeks.',
@@ -68,6 +69,7 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'prose',
       text: 'The desk safe was the size of a biscuit tin, set into the wall behind a hinged watercolour of the marsh: three brass wheels, and a place for one figure before them. Halloran had been a man who kept only one number in his head, and had said so once, at a Christmas neither brother enjoyed — a man should carry a single number, and it should be the one he can never put down.',
     },
+    { kind: 'plate', image: 'obj-safe', caption: 'the desk safe · contents unknown' },
     {
       kind: 'thought',
       text: 'The year he stopped, then. Not the year he began — the later of the two. I have carried it as long as he did.',
@@ -78,6 +80,7 @@ export const BROADCAST_ONE: Chapter = {
       answer: '1963',
       prompt: 'the desk safe · one figure, then three wheels',
       unlockedText: 'the wheels give · the door swings on the year that ended them both',
+      solveCue: 'safe-open',
     },
     {
       kind: 'prose',
@@ -89,8 +92,10 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'prose',
       text: 'He read the logbook because there was nothing else to do and because the house seemed to want him to. Halloran had been a listener — not a talker, never once in nineteen years a telephone call — but a listener of the patient, nocturnal kind, the kind that keeps a pencil sharpened.',
     },
+    { kind: 'plate', image: 'obj-logbook', caption: 'the listening log · entries incomplete' },
     {
       kind: 'logbook',
+      cue: 'page-turn',
       lines: [
         'LISTENING LOG — H. MARSH',
         '3 JUN 63 · 2314 · a station where none should be.',
@@ -128,7 +133,7 @@ export const BROADCAST_ONE: Chapter = {
         'something was humming in six notes.',
       ],
     },
-    { kind: 'room', text: 'The Cellar' },
+    { kind: 'room', text: 'The Cellar', scene: 'cellar' },
     {
       kind: 'prose',
       text: 'The receiver sat on the workbench with its dial lamp lit and its cord coiled beside it, unplugged. The card from the safe was in his breast pocket; he could feel the two underlines through the cloth. Where we are licensed. He thought of the number the estate had set against the aerial, and reached for the dial with a steadiness he did not feel.',
@@ -196,7 +201,7 @@ export const BROADCAST_ONE: Chapter = {
     {
       kind: 'prose',
       text: 'Upstairs, faintly, the telephone began to ring — the way a thing rings when it has been ringing a long while and fully intends to go on.',
-      cue: 'static-swell',
+      cue: 'phone-ring',
     },
     {
       kind: 'staircase',
@@ -209,11 +214,12 @@ export const BROADCAST_ONE: Chapter = {
         'shivered on its little table.',
       ],
     },
-    { kind: 'room', text: 'The Hall' },
+    { kind: 'room', text: 'The Hall', scene: 'hall' },
     {
       kind: 'prose',
       text: 'The margin had warned him: her words arrive turned around. She had given him three figures by name, in her flat clean voice, and a man who has been handed three figures in the dark will always dial them. He lifted the receiver, turned her words around in his head the way you would turn a card to read its back, and dialled.',
     },
+    { kind: 'plate', image: 'obj-telephone', caption: 'the hall telephone · still ringing' },
     {
       kind: 'keypad',
       id: 'b1-phone',
@@ -251,6 +257,7 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'prose',
       text: 'Sixty feet away, behind a door he had left open onto the dark, the receiver put out its dial lamp. Politely. The way a guest turns down the lamp when the conversation is finished and the night, properly, is only beginning.',
       faded: true,
+      cue: 'lamp-off',
     },
     {
       kind: 'prose',

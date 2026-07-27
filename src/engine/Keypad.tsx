@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { playIdent, setStaticLevel } from '../audio';
+import { cue, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -38,6 +38,7 @@ export function Keypad({
   solved,
   onSolved,
   letters = false,
+  solveCue = 'unlock',
 }: {
   answer: string;
   prompt: string;
@@ -45,6 +46,7 @@ export function Keypad({
   solved: boolean;
   onSolved: () => void;
   letters?: boolean;
+  solveCue?: string;
 }) {
   const [entry, setEntry] = useState(solved ? answer : '');
   const [done, setDone] = useState(solved);
@@ -62,7 +64,7 @@ export function Keypad({
     if (next === answer) {
       setDone(true);
       setStaticLevel(0.06);
-      playIdent();
+      cue(solveCue); // the latch/safe/telephone unlock sound for this lock
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       onSolved();
     } else {
