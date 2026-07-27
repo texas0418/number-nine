@@ -11,7 +11,10 @@ import type { SceneId } from '../models';
 import { SCENES } from './scenes';
 import { colors } from '../theme';
 
-const BASE_OPACITY = 0.5;
+// Real photography is delivered properly exposed (and already dark/moody), so
+// it shows at high opacity; a top scrim band protects the reading zone where
+// the first lines of each room sit over lighter wall.
+const BASE_OPACITY = 0.72;
 
 export function SceneBackdrop({ sceneId }: { sceneId: SceneId | null }) {
   const [shown, setShown] = useState<SceneId | null>(sceneId);
@@ -46,6 +49,11 @@ export function SceneBackdrop({ sceneId }: { sceneId: SceneId | null }) {
         />
       )}
       <View style={styles.scrim} />
+      {/* Faux top gradient (stacked bands, no gradient lib): darkens the upper
+          reading zone so first lines stay crisp over lighter wall. */}
+      <View style={[styles.band, styles.band1]} />
+      <View style={[styles.band, styles.band2]} />
+      <View style={[styles.band, styles.band3]} />
     </View>
   );
 }
@@ -58,6 +66,10 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.bg,
-    opacity: 0.22,
+    opacity: 0.14,
   },
+  band: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: colors.bg },
+  band1: { height: '22%', opacity: 0.5 },
+  band2: { height: '34%', opacity: 0.3 },
+  band3: { height: '48%', opacity: 0.18 },
 });

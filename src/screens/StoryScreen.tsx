@@ -32,7 +32,15 @@ export default function StoryScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.header}>
+      {/* ChapterView fills the whole screen so the room backdrop is full-bleed
+          behind everything; the header floats over it. */}
+      <ChapterView
+        chapter={chapter}
+        initialBlockIndex={initial}
+        onAdvance={advance}
+        onComplete={complete}
+      />
+      <View style={styles.header} pointerEvents="box-none">
         <Pressable onPress={onBack} hitSlop={12}>
           <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
         </Pressable>
@@ -41,22 +49,21 @@ export default function StoryScreen({ onBack }: { onBack: () => void }) {
         </Text>
         <View style={styles.spacer} />
       </View>
-      <ChapterView
-        chapter={chapter}
-        initialBlockIndex={initial}
-        onAdvance={advance}
-        onComplete={complete}
-      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62 },
+  root: { flex: 1, backgroundColor: colors.bg },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 26,
+    paddingTop: 62,
     paddingBottom: 14,
   },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },

@@ -311,5 +311,5 @@ function renderGate(
 const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1, backgroundColor: 'transparent' },
-  content: { paddingHorizontal: 26, paddingTop: 30, paddingBottom: 120 },
+  content: { paddingHorizontal: 26, paddingTop: 104, paddingBottom: 120 },
 });
