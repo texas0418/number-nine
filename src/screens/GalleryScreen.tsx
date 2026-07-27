@@ -64,6 +64,8 @@ export default function GalleryScreen({ onBack }: { onBack: () => void }) {
       <Label text="plate · object image (inline)" />
       <PlateBlock image="obj-receiver" caption="the receiver · war surplus, working" />
       <PlateBlock image="obj-telephone" caption="the hall telephone" />
+      <PlateBlock image="obj-safe" caption="the desk safe" />
+      <PlateBlock image="obj-logbook" caption="the listening log" />
       <Label text="staircase · down" />
       <StaircaseBlock
         direction="down"

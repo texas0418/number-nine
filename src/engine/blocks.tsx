@@ -15,7 +15,7 @@ export function PlateBlock({ image, caption }: { image: SceneId; caption?: strin
   return (
     <View style={styles.plateWrap}>
       <View style={styles.plateFrame}>
-        <Image source={SCENES[image]} resizeMode="cover" style={styles.plate} />
+        <Image source={SCENES[image]} resizeMode="contain" style={styles.plate} />
       </View>
       {caption ? (
         <Text style={styles.plateCaption} maxFontSizeMultiplier={1.3}>
@@ -350,7 +350,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     padding: 4,
   },
-  plate: { flex: 1, borderRadius: 5 },
+  // Explicit 100%×100% (not flex:1): flex-basis left the Image at its intrinsic
+  // 780px, which the overflow-hidden frame clipped to a zoomed corner.
+  plate: { width: '100%', height: '100%', borderRadius: 5 },
   plateCaption: {
     fontFamily: fonts.mono,
     fontSize: 11,
