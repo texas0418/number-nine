@@ -2,10 +2,10 @@
 // Line-by-line scroll-driven reveal for narration. A prose block is measured
 // into its actual laid-out lines, then each line is rendered as its own
 // Animated.Text whose opacity is bound to that line's position in the scroll —
-// so a paragraph materialises line by line as the reader draws it up into the
-// reading zone, and fades back out on the way up. (Left-aligned, not
-// justified: single-line Texts can't justify anyway, and dropping justify also
-// fixes the max-Dynamic-Type clipping the justified block had.)
+// so a paragraph resolves line by line as the reader draws it up into the
+// reading zone, gently and continuously (no typewriter, no hard edge). Left-
+// aligned (single-line Texts can't justify anyway, and dropping justify also
+// fixes the max-Dynamic-Type clipping the justified block had).
 
 import { useState } from 'react';
 import {
@@ -32,9 +32,7 @@ export function ProseReveal({
 }) {
   const [top, setTop] = useState<number | null>(null);
   const [lines, setLines] = useState<{ text: string; y: number }[] | null>(null);
-
-  const measured =
-    lines && top != null && viewH > 0 ? { lines, top } : null;
+  const measured = lines && top != null && viewH > 0 ? { lines, top } : null;
 
   return (
     <Animated.View
@@ -45,8 +43,6 @@ export function ProseReveal({
         onMeasure(y);
       }}
     >
-      {/* Always-mounted hidden measurer: reports the laid-out lines at the
-          current width/text-size and re-fires when either changes. */}
       <Text
         style={[styles.line, styles.measure]}
         onTextLayout={(e) =>
@@ -64,14 +60,11 @@ export function ProseReveal({
       {measured ? (
         measured.lines.map((ln, i) => {
           const absTop = measured.top + ln.y;
-          // Ease-in: a line is fully invisible across the bottom of the screen
-          // and only resolves crisply in the last stretch before mid-screen,
-          // so lines appear one at a time rather than a stack of ghost lines.
-          // 0% at the bottom edge -> ~0% through the lower third -> 100% at
-          // the middle.
+          // Gentle continuous fade: a line is dark at the bottom of the screen
+          // and eases up to full as it climbs to just above the middle.
           const opacity = scrollY.interpolate({
-            inputRange: [absTop - viewH, absTop - viewH * 0.62, absTop - viewH * 0.5],
-            outputRange: [0, 0.08, 1],
+            inputRange: [absTop - viewH * 0.86, absTop - viewH * 0.46],
+            outputRange: [0, 1],
             extrapolate: 'clamp',
           });
           return (
@@ -84,7 +77,6 @@ export function ProseReveal({
           );
         })
       ) : (
-        // Before measurement: reserve the block's height, invisibly.
         <Text style={[styles.line, styles.hidden]}>{text}</Text>
       )}
     </Animated.View>
