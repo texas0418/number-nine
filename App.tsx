@@ -18,6 +18,7 @@ import { getProgress, isDaySolved, listSolvedDays } from './src/db';
 import { currentStreak, dayKeyFromMs } from './src/models';
 import { initPurchases } from './src/proAccess';
 import { initAudio, setStaticLevel } from './src/audio';
+import { maybeAskForReview } from './src/review';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 
 type Screen = 'title' | 'story' | 'daily' | 'settings' | 'gallery';
@@ -39,6 +40,16 @@ function Root() {
     const sub = Linking.addEventListener('url', (e) => handle(e.url));
     return () => sub.remove();
   }, []);
+
+  // The AFTERGLOW review ask: only ever on the title screen — never over the
+  // fiction, never at the paywall. Eligibility: Broadcast One completed, or a
+  // 3-night signal streak. Asks once; the OS rate-limits further.
+  useEffect(() => {
+    if (screen !== 'title') return;
+    const done = getProgress(BROADCAST_ONE.id)?.completedMs != null;
+    const streak = currentStreak(listSolvedDays(), dayKeyFromMs(Date.now()));
+    maybeAskForReview({ chapterOneDone: done, streak });
+  }, [screen]);
 
   if (screen === 'gallery') return <GalleryScreen onBack={back} />;
   if (screen === 'story') return <StoryScreen onBack={back} />;

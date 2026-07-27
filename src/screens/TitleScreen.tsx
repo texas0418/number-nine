@@ -50,8 +50,8 @@ export default function TitleScreen({
         <MenuRow label="the set" hint="settings · about" onPress={onSettings} />
       </View>
 
-      <Text style={styles.footer} maxFontSizeMultiplier={1.2} numberOfLines={1}>
-        headphones recommended · play in the dark
+      <Text style={styles.footer} maxFontSizeMultiplier={1.3}>
+        headphones recommended{'\n'}play in the dark
       </Text>
     </View>
   );
@@ -98,11 +98,14 @@ const styles = StyleSheet.create({
   rowHint: { fontFamily: fonts.mono, fontSize: 11, color: colors.faint, marginTop: 4 },
   footer: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 34,
     alignSelf: 'center',
     fontFamily: fonts.mono,
     fontSize: 10,
+    lineHeight: 16,
     letterSpacing: 1,
     color: colors.faint,
+    textAlign: 'center',
+    paddingHorizontal: 24,
   },
 });
