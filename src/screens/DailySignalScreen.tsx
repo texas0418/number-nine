@@ -242,9 +242,9 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-/** One cipher cell. Empty cells flicker faintly through random letters (the
- *  decode machine hunting); a newly assigned letter scrambles briefly before
- *  settling. Revealed/settled letters hold still. */
+/** One cipher cell. Only the pre-revealed HINT cells animate: on load each
+ *  spins through the alphabet a couple of times, slot-machine style, and
+ *  lands on its letter (staggered per cell). Everything else holds still. */
 function Cell({
   num,
   guess,
@@ -260,40 +260,29 @@ function Cell({
   sizes: ReturnType<typeof boxSizes>;
   onPress: () => void;
 }) {
-  const [flick, setFlick] = useState('');
-  const [settling, setSettling] = useState(false);
-  const prevGuess = useRef(guess);
+  const [spin, setSpin] = useState<string | null>(null);
+  const spun = useRef(false);
 
-  // Ambient flicker while empty.
   useEffect(() => {
-    if (guess || revealed) return;
-    const id = setInterval(
-      () => setFlick(AZ[Math.floor(Math.random() * 26)]),
-      700 + ((num * 97) % 500), // desynchronized per cell
-    );
-    return () => clearInterval(id);
-  }, [guess, revealed, num]);
-
-  // Burst scramble when a letter lands on this cell. State changes happen only
-  // inside interval ticks (async), never synchronously in the effect body.
-  useEffect(() => {
-    if (guess === prevGuess.current) return;
-    prevGuess.current = guess;
-    if (!guess) return;
-    let n = 0;
-    const id = setInterval(() => {
-      setSettling(true);
-      setFlick(AZ[Math.floor(Math.random() * 26)]);
-      if (++n >= 8) {
-        clearInterval(id);
-        setSettling(false);
-      }
-    }, 36);
-    return () => clearInterval(id);
-  }, [guess]);
-
-  const showing = settling ? flick : guess ?? (revealed ? '' : flick);
-  const isGhost = !guess && !revealed && !settling;
+    if (!revealed || !guess || spun.current) return;
+    spun.current = true;
+    const total = 52 + AZ.indexOf(guess); // two full turns, then land
+    let i = 0;
+    let id: ReturnType<typeof setInterval> | null = null;
+    const start = setTimeout(() => {
+      id = setInterval(() => {
+        setSpin(AZ[i % 26]);
+        if (++i > total) {
+          if (id) clearInterval(id);
+          setSpin(null); // settle on the real letter
+        }
+      }, 34);
+    }, (num % 7) * 120); // staggered starts across the grid
+    return () => {
+      clearTimeout(start);
+      if (id) clearInterval(id);
+    };
+  }, [revealed, guess, num]);
 
   return (
     <Pressable
@@ -310,11 +299,11 @@ function Cell({
           styles.cellLetter,
           { fontSize: sizes.cellFont, height: Math.round(sizes.cellFont * 1.35) },
           revealed && { color: colors.muted },
-          isGhost && styles.ghost,
+          spin != null && styles.spinning,
         ]}
         allowFontScaling={false}
       >
-        {showing || ' '}
+        {spin ?? guess ?? ' '}
       </Text>
       <Text
         style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial }]}
@@ -367,7 +356,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cellLetter: { fontFamily: fonts.mono, color: colors.prose },
-  ghost: { color: colors.faint, opacity: 0.5 },
+  spinning: { color: colors.dialDim },
   cellNum: { fontFamily: fonts.mono, color: colors.faint },
   keys: { marginTop: 'auto', marginBottom: 34 },
   keyRow: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: 6 },
