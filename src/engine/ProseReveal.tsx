@@ -64,11 +64,14 @@ export function ProseReveal({
       {measured ? (
         measured.lines.map((ln, i) => {
           const absTop = measured.top + ln.y;
-          // Fade begins as the line enters from the bottom edge and is fully
-          // lit by the middle of the screen.
+          // Ease-in: a line is fully invisible across the bottom of the screen
+          // and only resolves crisply in the last stretch before mid-screen,
+          // so lines appear one at a time rather than a stack of ghost lines.
+          // 0% at the bottom edge -> ~0% through the lower third -> 100% at
+          // the middle.
           const opacity = scrollY.interpolate({
-            inputRange: [absTop - viewH, absTop - viewH * 0.5],
-            outputRange: [0, 1],
+            inputRange: [absTop - viewH, absTop - viewH * 0.62, absTop - viewH * 0.5],
+            outputRange: [0, 0.08, 1],
             extrapolate: 'clamp',
           });
           return (

@@ -12,9 +12,10 @@ import { SCENES } from './scenes';
 import { colors } from '../theme';
 
 // Real photography is delivered properly exposed (and already dark/moody), so
-// it shows at high opacity; a top scrim band protects the reading zone where
-// the first lines of each room sit over lighter wall.
-const BASE_OPACITY = 0.72;
+// it shows nearly at full strength — the room needs to be legible AS a room.
+// A light uniform scrim + a small band under the floating header keep chrome
+// and the (upper-half) reading text crisp without hiding the image.
+const BASE_OPACITY = 0.92;
 
 export function SceneBackdrop({ sceneId }: { sceneId: SceneId | null }) {
   const [shown, setShown] = useState<SceneId | null>(sceneId);
@@ -49,11 +50,8 @@ export function SceneBackdrop({ sceneId }: { sceneId: SceneId | null }) {
         />
       )}
       <View style={styles.scrim} />
-      {/* Faux top gradient (stacked bands, no gradient lib): darkens the upper
-          reading zone so first lines stay crisp over lighter wall. */}
-      <View style={[styles.band, styles.band1]} />
-      <View style={[styles.band, styles.band2]} />
-      <View style={[styles.band, styles.band3]} />
+      {/* Small band only under the floating header so chrome stays legible. */}
+      <View style={styles.headerBand} />
     </View>
   );
 }
@@ -66,10 +64,15 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.bg,
-    opacity: 0.14,
+    opacity: 0.12,
   },
-  band: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: colors.bg },
-  band1: { height: '22%', opacity: 0.5 },
-  band2: { height: '34%', opacity: 0.3 },
-  band3: { height: '48%', opacity: 0.18 },
+  headerBand: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '16%',
+    backgroundColor: colors.bg,
+    opacity: 0.3,
+  },
 });

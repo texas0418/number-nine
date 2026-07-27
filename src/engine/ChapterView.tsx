@@ -203,11 +203,11 @@ function BlockReveal({
     if (exempt) return 1 as unknown as Animated.AnimatedInterpolation<number>;
     if (top == null || viewH === 0)
       return 0 as unknown as Animated.AnimatedInterpolation<number>;
-    // Fade begins as the block enters from the bottom edge and is fully lit by
-    // the middle of the screen (matches the per-line prose reveal).
+    // Ease-in matching the per-line prose reveal: invisible across the bottom,
+    // resolves near mid-screen. 0% at the bottom edge, 100% at the middle.
     return scrollY.interpolate({
-      inputRange: [top - viewH, top - viewH * 0.5],
-      outputRange: [0, 1],
+      inputRange: [top - viewH, top - viewH * 0.62, top - viewH * 0.5],
+      outputRange: [0, 0.08, 1],
       extrapolate: 'clamp',
     });
   }, [scrollY, viewH, top, exempt]);
