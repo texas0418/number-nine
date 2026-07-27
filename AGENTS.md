@@ -27,6 +27,29 @@ text turns because the story's space turns, never for style), and it's a
 BOOK, not an app (justified serif, room labels, thoughts as centered
 italics, whitespace as fear, wrong answers get atmosphere not error copy).
 
+# Puzzle mechanics palette for Broadcasts Two–Six (Simon, 2026-07-27)
+
+Beyond codes: later broadcasts should draw on MATH, other puzzle logic, and
+the PHONE'S PHYSICAL ABILITIES. The device is a haunted instrument.
+
+- Math/logic: frequency and date arithmetic, modular/clock math (very
+  numbers-station), logic-grid deduction, sequences; answers computed, never
+  found. Rule COMPOSITION (B1's tin box / MARGARET pattern) stays the model.
+- Sensors (expo-sensors, all fail-open with an accessibility fallback path):
+  gyroscope/accelerometer — physically ROTATE the phone to turn a dial or
+  level a bubble; face the phone DOWN to read something on the "back" of a
+  page; tilt to pour/align; shake. Magnetometer — face the aerial north.
+- Display: brightness (expo-brightness) — a message visible only with the
+  lamp "turned down" (screen dimmed) or full bright; contrast/afterimage
+  tricks in the art.
+- Haptic-only Morse: codes you FEEL, not see or hear; count the knocks.
+- Time-of-day: the station keeps schedule — something is only true at 23:14.
+- Rotation typography (already in engine): extend to content that changes
+  when the device is physically inverted.
+- Constraints: no permission-hungry mechanics (mic/camera only with a strong
+  reason), every hardware puzzle needs a fallback for motor/vision
+  accessibility, and everything stays fail-open + offline.
+
 # Puzzle doctrine (Simon's bar: DEVICE 6 took him DAYS on some puzzles)
 
 - A gate's answer never appears within three blocks of the gate (tested in
