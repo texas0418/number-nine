@@ -64,8 +64,10 @@ export function ProseReveal({
       {measured ? (
         measured.lines.map((ln, i) => {
           const absTop = measured.top + ln.y;
+          // Fade begins as the line enters from the bottom edge and is fully
+          // lit by the middle of the screen.
           const opacity = scrollY.interpolate({
-            inputRange: [absTop - viewH * 0.6, absTop - viewH * 0.38],
+            inputRange: [absTop - viewH, absTop - viewH * 0.5],
             outputRange: [0, 1],
             extrapolate: 'clamp',
           });

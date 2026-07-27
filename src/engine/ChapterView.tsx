@@ -203,13 +203,10 @@ function BlockReveal({
     if (exempt) return 1 as unknown as Animated.AnimatedInterpolation<number>;
     if (top == null || viewH === 0)
       return 0 as unknown as Animated.AnimatedInterpolation<number>;
-    // Reveal LATE (device feedback: it came in too early / as soon as you
-    // scrolled). A block stays fully invisible until its top has climbed to
-    // ~60% down the screen, and only reaches full opacity at ~38% down — so
-    // the reader must scroll it up into the middle reading band before it
-    // resolves. Fades back out symmetrically on scroll-up. (Tunable knob.)
+    // Fade begins as the block enters from the bottom edge and is fully lit by
+    // the middle of the screen (matches the per-line prose reveal).
     return scrollY.interpolate({
-      inputRange: [top - viewH * 0.6, top - viewH * 0.38],
+      inputRange: [top - viewH, top - viewH * 0.5],
       outputRange: [0, 1],
       extrapolate: 'clamp',
     });
