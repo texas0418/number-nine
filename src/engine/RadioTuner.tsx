@@ -45,11 +45,18 @@ export function RadioTuner({
   const khzRef = useRef(khz);
   const lockedRef = useRef(solved);
 
+  // kHz at the moment the finger lands — drags are RELATIVE to it. (Absolute
+  // locationX positioning had a bug: re-grabbing landed the touch on the
+  // needle child view, whose locationX ≈ 0 snapped the dial back to band-low.)
+  const grantKhz = useRef(0);
+
   const pan = useMemo(() => {
-    const applyDrag = (fraction: number) => {
+    const applyDelta = (dx: number) => {
       if (lockedRef.current) return;
-      const clamped = Math.max(0, Math.min(1, fraction));
-      const next = Math.round(bandLowKhz + clamped * (bandHighKhz - bandLowKhz));
+      const deltaKhz = (dx / DIAL_WIDTH) * (bandHighKhz - bandLowKhz);
+      const next = Math.round(
+        Math.max(bandLowKhz, Math.min(bandHighKhz, grantKhz.current + deltaKhz)),
+      );
       khzRef.current = next;
       setKhz(next);
       const strength = signalStrength(next, targetKhz, bandLowKhz, bandHighKhz);
@@ -69,10 +76,10 @@ export function RadioTuner({
     return PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (evt) =>
-        applyDrag(evt.nativeEvent.locationX / DIAL_WIDTH),
-      onPanResponderMove: (evt) =>
-        applyDrag(evt.nativeEvent.locationX / DIAL_WIDTH),
+      onPanResponderGrant: () => {
+        grantKhz.current = khzRef.current;
+      },
+      onPanResponderMove: (_evt, gs) => applyDelta(gs.dx),
       onPanResponderRelease: settle,
       onPanResponderTerminate: settle,
     });
