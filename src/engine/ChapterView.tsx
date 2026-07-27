@@ -43,6 +43,7 @@ import {
 import { RadioTuner } from './RadioTuner';
 import { Keypad } from './Keypad';
 import { SceneBackdrop } from './SceneBackdrop';
+import { ProseReveal } from './ProseReveal';
 
 export function ChapterView({
   chapter,
@@ -152,17 +153,30 @@ export function ChapterView({
         }}
         scrollEventThrottle={16}
       >
-        {blocks.slice(0, count).map((block, i) => (
-          <BlockReveal
-            key={i}
-            scrollY={scrollY}
-            viewH={viewH}
-            exempt={isGate(block) || block.kind === 'chapterEnd'}
-            onMeasure={recordTop(i)}
-          >
-            {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
-          </BlockReveal>
-        ))}
+        {blocks.slice(0, count).map((block, i) =>
+          // Narration reveals line by line (its own scroll-driven opacity per
+          // line); every other block reveals as a whole.
+          block.kind === 'prose' ? (
+            <ProseReveal
+              key={i}
+              text={block.text}
+              faded={block.faded}
+              scrollY={scrollY}
+              viewH={viewH}
+              onMeasure={recordTop(i)}
+            />
+          ) : (
+            <BlockReveal
+              key={i}
+              scrollY={scrollY}
+              viewH={viewH}
+              exempt={isGate(block) || block.kind === 'chapterEnd'}
+              onMeasure={recordTop(i)}
+            >
+              {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
+            </BlockReveal>
+          ),
+        )}
       </Animated.ScrollView>
     </View>
   );
