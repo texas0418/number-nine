@@ -22,6 +22,8 @@ everything else is synthesized by `scripts/gen-foley.py`,
   (Free)" (royalty-free download).
 - **hinge-creak.wav** — from "Door hinge creak sound effect" (royalty-free
   download, replaced the gen-foley.py synth version 2026-07-28).
+- **scrape.wav** — from "Realistic Brick Sound Effect" (royalty-free
+  download, replaced the gen-foley.py synth version 2026-07-28).
 
 PRE-SHIP: confirm the exact source page + license for each of the four SFX
 above (they came from Simon's downloads folder; the filenames are the only
@@ -29,8 +31,7 @@ provenance recorded). Replace any that cannot be verified.
 
 ## Synthesized (no license needed)
 
-ident, phone-ring, safe-open, lamp-off, page-turn, scrape, knock,
-tune-whistle, station-morse, station-music, station-voice, and the four
-music-box bells — all generated from scripts in `scripts/`. (gen-foley.py
-also generates a fallback hinge-creak, currently superseded by the
-recording above.)
+ident, phone-ring, safe-open, lamp-off, page-turn, knock, tune-whistle,
+station-morse, station-music, station-voice, and the four music-box bells —
+all generated from scripts in `scripts/`. (gen-foley.py keeps commented-out
+fallbacks for hinge-creak and scrape, superseded by the recordings above.)

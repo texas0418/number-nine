@@ -45,9 +45,7 @@ export const BROADCAST_ONE: Chapter = {
       kind: 'prose',
       text: 'The parcel waited on the hall table: a shortwave receiver wrapped in oilcloth, a logbook with water-swollen pages, and a single brass key. Edwin signed for all three. The delivery man would not meet his eyes, and left the way people leave a room where something has just been said that should not have been.',
     },
-    // The theme carries in from the title screen and dies here — from the
-    // study on, the house's own sounds have the page to themselves.
-    { kind: 'plate', image: 'obj-receiver', caption: 'the receiver · war surplus, working', cue: 'music-out' },
+    { kind: 'plate', image: 'obj-receiver', caption: 'the receiver · war surplus, working' },
 
     // --- The study: effects, and the safe (PUZZLE 1) ----------------------
     { kind: 'room', text: 'The Study', scene: 'study', cue: 'key-unlock' },
@@ -91,7 +89,8 @@ export const BROADCAST_ONE: Chapter = {
       answer: '1963',
       prompt: 'the desk safe · one figure, then three wheels',
       unlockedText: 'the wheels give · the door swings on the year that ended them both',
-      solveCue: 'safe-open',
+      // default solveCue: the success bell — one solve sound for every code
+      // lock (Simon 2026-07-28: "the slate settle sound is the one for all puzzles")
     },
     {
       kind: 'prose',
@@ -129,8 +128,9 @@ export const BROADCAST_ONE: Chapter = {
     // --- Descent to the cellar (PUZZLE 2 lead-in), typeset as stairs -------
     {
       kind: 'prose',
+      // No static here (device QA: "radio sounds increase after the listening
+      // log") — the bed belongs to the receiver, and the receiver is below.
       text: 'The receiver wanted a mains socket, and the only one still live was in the cellar, where the marsh pressed closest to the walls and the house kept its cold like a held breath.',
-      cue: 'static-swell',
     },
     {
       kind: 'staircase',
@@ -335,7 +335,6 @@ export const BROADCAST_ONE: Chapter = {
     {
       kind: 'prose',
       text: 'Edwin Marsh did not catch his train in the morning. There would be no more ordinary mornings — only broadcasts now, one a night, counting down the last of them. He sat in the cold hall with the receiver warm against his ear and listened, because listening was the one thing the Marsh brothers had ever truly known how to do.',
-      cue: 'music-in', // the theme returns for the close and carries to the title
     },
     { kind: 'chapterEnd', title: 'END OF BROADCAST ONE' },
   ],
