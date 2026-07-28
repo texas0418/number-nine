@@ -164,7 +164,11 @@ export function RotaryDial({
   return (
     <View style={styles.wrap}>
       <View style={styles.dial} {...(done ? {} : pan.panHandlers)}>
-        <View style={[styles.ring, { transform: [{ rotate: `${ringTurn}deg` }] }]}>
+        {/* pointerEvents none: touches must always TARGET THE DIAL VIEW so
+            locationX/Y stay dial-relative — a touch landing on a hole child
+            reported hole-local coords, the radius check rejected them, and
+            the dial went completely dead (device QA round 2). */}
+        <View style={[styles.ring, { transform: [{ rotate: `${ringTurn}deg` }] }]} pointerEvents="none">
           {DIGITS.map((d) => {
             const a = (holeAngle(d) * Math.PI) / 180;
             const x = SIZE / 2 + HOLE_R * Math.sin(a) - HOLE_W / 2;
@@ -183,7 +187,7 @@ export function RotaryDial({
             );
           })}
         </View>
-        <View style={styles.stop} />
+        <View style={styles.stop} pointerEvents="none" />
         <View style={styles.hub} pointerEvents="none">
           <View style={styles.dialedRow}>
             {Array.from({ length: answer.length }, (_, i) => (

@@ -1,13 +1,15 @@
 // src/engine/KnockBlock.tsx
 // The TOUCH-ECHO puzzle: press your palm to the wall and the house knocks in
-// grouped counts — haptic-first, with a low thud under each knock and a faint
-// pulse in the tread ornament (the accessibility channel). Then knock the
-// groups back with your finger: taps separated by a beat of stillness become
-// groups. No digits are ever shown; the knowledge lives in your hand.
+// grouped counts — HAPTICS AND A FAINT PULSE ONLY (device QA: audio start-up
+// lag made thuds trail the hand; "codes you FEEL" is the doctrine anyway;
+// the pulse is the accessibility channel for haptics-off readers). Then
+// knock the groups back — anywhere on the wall itself, no labeled control
+// (QA round 2: a "knock back" button made it too easy). Taps separated by a
+// beat of stillness become groups. Only YOUR knocks make a sound.
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue, playSfx, playSfxPattern, setStaticLevel } from '../audio';
+import { cue, playSfx, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -43,38 +45,34 @@ export function KnockBlock({
   const [current, setCurrent] = useState(0); // taps in the open group
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const gapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const cancelPattern = useRef<(() => void) | null>(null);
 
   useEffect(
     () => () => {
       timers.current.forEach(clearTimeout);
       if (gapTimer.current) clearTimeout(gapTimer.current);
-      cancelPattern.current?.();
     },
     [],
   );
 
-  // The wall speaks: the whole pattern is scheduled on pre-created players
-  // (haptic and thud land TOGETHER — a fresh player per knock lagged the
-  // hand by ~100ms and made the groups uncountable).
+  // The wall speaks — into the reader's HAND. No audio: haptic + pulse only.
   const listen = () => {
     if (playing || done) return;
     setPlaying(true);
     setEcho([]);
     setCurrent(0);
-    const delays: number[] = [];
     let at = 350;
     groups.forEach((n) => {
       for (let k = 0; k < n; k++) {
-        delays.push(at);
+        timers.current.push(
+          setTimeout(() => {
+            Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
+            setPulse(true);
+            timers.current.push(setTimeout(() => setPulse(false), 130));
+          }, at),
+        );
         at += KNOCK_MS;
       }
       at += GROUP_PAUSE_MS;
-    });
-    cancelPattern.current = playSfxPattern('knock-dry', delays, 0.7, () => {
-      Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
-      setPulse(true);
-      timers.current.push(setTimeout(() => setPulse(false), 130));
     });
     timers.current.push(setTimeout(() => setPlaying(false), at - GROUP_PAUSE_MS + 300));
   };
@@ -112,14 +110,18 @@ export function KnockBlock({
     gapTimer.current = setTimeout(() => closeGroup(taps, echo), GROUP_GAP_MS);
   };
 
+  // The whole panel IS the wall: any tap on it (outside the palm control)
+  // is a knock. No labeled pad, no tap counter — the reader must realize
+  // the wall wants answering.
   return (
-    <View style={styles.body}>
+    <Pressable style={styles.body} onPress={tapBack} disabled={done || playing}>
+      <View style={[styles.plaster, pulse && styles.plasterPulse]} pointerEvents="none" />
       <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
         {done ? unlockedText : prompt}
       </Text>
       {!done && (
         <>
-          <View style={styles.groupRow}>
+          <View style={styles.groupRow} pointerEvents="none">
             {groups.map((_, i) => (
               <View
                 key={i}
@@ -132,32 +134,23 @@ export function KnockBlock({
             ))}
           </View>
           <Pressable onPress={listen} style={styles.wall} disabled={playing}>
-            <View style={[styles.wallInner, pulse && styles.wallPulse]}>
+            <View style={styles.wallInner}>
               <Text style={styles.wallText} allowFontScaling={false}>
                 {playing ? 'the wall is speaking' : '◉ press your palm to the wall'}
               </Text>
             </View>
           </Pressable>
-          <Pressable onPress={tapBack} style={styles.knockPad} disabled={playing}>
-            <Text style={styles.knockPadText} allowFontScaling={false}>
-              knock back
-            </Text>
-            <View style={styles.tapRow}>
-              {Array.from({ length: Math.max(current, 1) }, (_, i) => (
-                <View key={i} style={[styles.tapDot, i < current && styles.tapLit]} />
-              ))}
-            </View>
-          </Pressable>
         </>
       )}
-    </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   body: {
     alignSelf: 'center',
-    width: 260,
+    width: 270,
+    minHeight: 210, // room to knock: the panel itself is the wall
     backgroundColor: colors.panel,
     borderColor: colors.panelBorder,
     borderWidth: StyleSheet.hairlineWidth,
@@ -165,6 +158,15 @@ const styles = StyleSheet.create({
     padding: 18,
     marginVertical: 24,
   },
+  plaster: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 10,
+  },
+  plasterPulse: { backgroundColor: colors.panelBorder },
   prompt: {
     fontFamily: fonts.mono,
     fontSize: 12,
@@ -184,31 +186,14 @@ const styles = StyleSheet.create({
   },
   groupDone: { backgroundColor: colors.dial },
   groupLive: { borderColor: colors.dial },
-  wall: { marginBottom: 12 },
+  wall: { marginTop: 'auto' },
   wallInner: {
     borderColor: colors.panelBorder,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 8,
-    paddingVertical: 14,
+    paddingVertical: 12,
     alignItems: 'center',
     backgroundColor: colors.bg,
   },
-  wallPulse: { backgroundColor: colors.panelBorder },
   wallText: { fontFamily: fonts.mono, fontSize: 12, color: colors.lockGlow },
-  knockPad: {
-    borderColor: colors.panelBorder,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 8,
-    paddingVertical: 18,
-    alignItems: 'center',
-  },
-  knockPadText: { fontFamily: fonts.mono, fontSize: 11, color: colors.muted, marginBottom: 8 },
-  tapRow: { flexDirection: 'row', gap: 6, minHeight: 8 },
-  tapDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.bg,
-  },
-  tapLit: { backgroundColor: colors.dialDim },
 });
