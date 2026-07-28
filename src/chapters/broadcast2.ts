@@ -250,7 +250,9 @@ export const BROADCAST_TWO: Chapter = {
       unlockedText: 'carrier found · higher by exactly what she was owed',
       stopsCue: 'wire-hum', // she takes the wire for herself
     },
-    { kind: 'voice', text: 'GOOD EVENING, LISTENER. YOU KEPT THE HOUR. SHE ALWAYS SAID YOU WOULD.', mirrored: false, cue: 'ident' },
+    // No ident cue: it reveals INTO view at the solve, so its chime lands on
+    // the lock anyway (QA). She arrives without her song tonight — worse.
+    { kind: 'voice', text: 'GOOD EVENING, LISTENER. YOU KEPT THE HOUR. SHE ALWAYS SAID YOU WOULD.', mirrored: false },
     {
       kind: 'prose',
       text: 'The counting began, and it was wrong in a way that took him a moment to name: short. Eight groups, spoken slowly, spaced like stones set down one by one on a table between two people, and then — nothing. Not the ident. Not static. The open channel breathed and waited and did not fill itself.',
