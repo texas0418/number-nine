@@ -131,12 +131,16 @@ export function ClockDial({
   return (
     <View style={styles.wrap}>
       <View style={styles.clock} {...(done ? {} : pan.panHandlers)}>
+        {/* Everything drawn on the face is touch-transparent: a finger
+            crossing a tick/numeral mid-drag must not steal the coordinate
+            space (QA: hands locked up, then jumped). */}
         {Array.from({ length: 24 }, (_, i) => {
           const a = (i * 15 * Math.PI) / 180;
           const r = SIZE / 2 - 14;
           return (
             <View
               key={i}
+              pointerEvents="none"
               style={[
                 styles.tick,
                 i % 6 === 0 && styles.tickMajor,
@@ -157,6 +161,7 @@ export function ClockDial({
             <Text
               key={hr}
               allowFontScaling={false}
+              suppressHighlighting
               style={[
                 styles.numeral,
                 {

@@ -54,6 +54,10 @@ export function CompassBlock({
   const dragStart = useRef({ angle: 0, offset: 0 });
   const holdSince = useRef<number | null>(null);
   const doneRef = useRef(solved);
+  // The gate must be EARNED: if the phone happens to face the bearing when
+  // the compass appears, it must not solve itself (QA: "already solved").
+  // A hold only counts after the needle has been off-target at least once.
+  const armed = useRef(false);
 
   const effective = () =>
     (((sensor.current ?? drift.current) + touchOffset.current) % 360 + 360) % 360;
@@ -69,7 +73,8 @@ export function CompassBlock({
       const h = effective();
       setHeading(h);
       const off = Math.abs(((h - targetDeg + 540) % 360) - 180);
-      if (off <= toleranceDeg) {
+      if (off > toleranceDeg * 2) armed.current = true;
+      if (off <= toleranceDeg && armed.current) {
         if (holdSince.current === null) holdSince.current = Date.now();
         else if (Date.now() - holdSince.current >= HOLD_MS) {
           doneRef.current = true;
@@ -120,8 +125,14 @@ export function CompassBlock({
   return (
     <View style={styles.wrap}>
       <View style={styles.compass} {...(done ? {} : pan.panHandlers)}>
-        <View style={[styles.lubber, near && { backgroundColor: colors.lockGlow }]} />
-        <View style={[styles.card, { transform: [{ rotate: `${-heading}deg` }] }]}>
+        <View
+          style={[styles.lubber, near && { backgroundColor: colors.lockGlow }]}
+          pointerEvents="none"
+        />
+        <View
+          style={[styles.card, { transform: [{ rotate: `${-heading}deg` }] }]}
+          pointerEvents="none"
+        >
           {POINTS.map((p) => {
             const a = (p.deg * Math.PI) / 180;
             const r = SIZE / 2 - 30;

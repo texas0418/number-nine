@@ -10,7 +10,6 @@ import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { isRadioLocked, signalStrength } from '../models';
 import { watchTwist } from '../device';
 import {
-  playIdent,
   playSfx,
   setStaticLevelNow,
   setTunerScan,
@@ -77,13 +76,14 @@ export function RadioTuner({
       setStaticLevelNow(0.06 + 0.24 * (1 - s));
       setTunerScan(s);
       if (isRadioLocked(next, targetKhz)) {
-        // the carrier catches even when found by hand-turning alone
+        // the carrier catches even when found by hand-turning alone; the
+        // lock itself is QUIET — the ident belongs to HER voice, one block
+        // below (QA: chimes at the moment of solve read as clutter)
         lockedRef.current = true;
         setLocked(true);
         setKhz(targetKhz);
         stopTunerScan();
         setStaticLevelNow(0.04);
-        playIdent();
         Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
         onSolved();
       }
@@ -134,7 +134,6 @@ export function RadioTuner({
       setLocked(true);
       setKhz(targetKhz);
       setStaticLevelNow(0.04);
-      playIdent();
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       onSolved();
     };

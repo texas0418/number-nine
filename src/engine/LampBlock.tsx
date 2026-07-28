@@ -113,12 +113,15 @@ export function LampBlock({
         </Animated.View>
         {!done && (
           <View style={styles.wickRail} {...pan.panHandlers}>
-            <View style={[styles.wickFlame, { transform: [{ translateY: wick * WICK_TRAVEL * 0.5 }] }]}>
+            <View
+              pointerEvents="none"
+              style={[styles.wickFlame, { transform: [{ translateY: wick * WICK_TRAVEL * 0.5 }] }]}
+            >
               <Text style={styles.wickGlyph} allowFontScaling={false}>
                 {dark ? '·' : '❋'}
               </Text>
             </View>
-            <Text style={styles.wickLabel} allowFontScaling={false}>
+            <Text style={styles.wickLabel} allowFontScaling={false} pointerEvents="none">
               the lamp
             </Text>
           </View>

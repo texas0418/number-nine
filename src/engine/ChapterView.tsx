@@ -183,6 +183,11 @@ export function ChapterView({
         continue;
       }
       if (top > line) continue;
+      // A re-armable block that has scrolled clean off the page ABOVE still
+      // sits "past the fire line" — it must not fire from up there (QA: the
+      // cards' page-turn kept sounding at the compass). It stays un-fired,
+      // so walking back up to it plays it again.
+      if (REARM_CUES.has(b.cue) && top + (g.heights.get(i) ?? 300) < g.y) continue;
       g.fired.add(i);
       // Never (re)start a loop an already-solved gate was meant to stop —
       // on a re-read, the answered telephone must NOT ring forever.
