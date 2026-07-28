@@ -115,16 +115,40 @@ export function ChapterView({
     setStaticLevel(level);
   };
 
+  // Diegetic one-shots that belong to a PLACE on the page (the study door,
+  // the log's pages, the stairs): they re-arm when the reader scrolls away,
+  // so walking back through the space plays the space again.
+  const REARM_CUES = useMemo(() => new Set(['key-unlock', 'page-turn', 'footsteps']), []);
+  // cue -> gate indices whose solving stops that cue (e.g. answering the
+  // telephone stops the ringing).
+  const stoppedBy = useMemo(() => {
+    const m = new Map<string, number[]>();
+    blocks.forEach((b, i) => {
+      if ('stopsCue' in b && b.stopsCue) m.set(b.stopsCue, [...(m.get(b.stopsCue) ?? []), i]);
+    });
+    return m;
+  }, [blocks]);
+
   const fireCues = () => {
     const g = geom.current;
     if (g.viewH === 0) return;
     const line = g.y + g.viewH * 0.72;
     for (let i = 0; i < count; i++) {
       const b = blocks[i];
-      if (!('cue' in b) || !b.cue || g.fired.has(i)) continue;
+      if (!('cue' in b) || !b.cue) continue;
       const top = g.tops.get(i);
-      if (top !== undefined && top <= line) {
+      if (top === undefined) continue;
+      if (g.fired.has(i)) {
+        // Re-arm place-bound one-shots once the block has dropped well below
+        // the fire line again (reader scrolled back up past it).
+        if (REARM_CUES.has(b.cue) && top > line + g.viewH * 0.25) g.fired.delete(i);
+        continue;
+      }
+      if (top <= line) {
         g.fired.add(i);
+        // Never (re)start a loop an already-solved gate was meant to stop —
+        // on a re-read, the answered telephone must NOT ring forever.
+        if (stoppedBy.get(b.cue)?.some((gi) => solved.has(gi))) continue;
         cue(b.cue);
       }
     }
