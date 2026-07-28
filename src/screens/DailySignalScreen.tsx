@@ -123,9 +123,9 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     } else if (next.size >= puzzle.answerByNum.size) {
       // every number has a letter but the transcription is wrong somewhere
       setRefused(true);
-      setStaticLevel(0.38);
+      setStaticLevel(0.26);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Error);
-      setTimeout(() => setStaticLevel(0.12), 600);
+      setTimeout(() => setStaticLevel(0.08), 600);
     }
   };
 

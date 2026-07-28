@@ -79,7 +79,7 @@ export function RadioTuner({
       khzRef.current = next;
       setKhz(next);
       const strength = signalStrength(next, targetKhz, bandLowKhz, bandHighKhz);
-      setStaticLevelNow(0.1 + 0.35 * (1 - strength));
+      setStaticLevelNow(0.06 + 0.24 * (1 - strength)); // quieter band (device QA)
       setTunerScan(strength);
       // eslint-disable-next-line react-hooks/purity -- gesture handler, never runs during render
       const now = Date.now();
@@ -98,7 +98,7 @@ export function RadioTuner({
       lockedRef.current = true;
       setLocked(true);
       setKhz(targetKhz);
-      setStaticLevelNow(0.06);
+      setStaticLevelNow(0.04);
       playIdent();
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       onSolved();

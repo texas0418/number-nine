@@ -329,7 +329,7 @@ export function playIdent(): void {
 export function cue(name: string): void {
   // The static bed is ATMOSPHERE — it must never drown the diegetic one-shots
   // (device feedback: "all I hear is static"). Levels kept low.
-  if (name === 'static-swell') setStaticLevel(0.28);
+  if (name === 'static-swell') setStaticLevel(0.18); // was 0.28 — device QA: too loud
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
