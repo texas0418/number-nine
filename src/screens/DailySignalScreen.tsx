@@ -38,7 +38,7 @@ import {
   recordSolve,
   setKv,
 } from '../db';
-import { playIdent, setStaticLevel } from '../audio';
+import { fadeMusicTo, playIdent, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -119,6 +119,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       deleteKv(kvKey);
       setStreak(currentStreak(listSolvedDays(), todayKey));
       playIdent();
+      fadeMusicTo(0.16); // a low sting of the theme under the reward panel
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
     } else if (next.size >= puzzle.answerByNum.size) {
       // every number has a letter but the transcription is wrong somewhere

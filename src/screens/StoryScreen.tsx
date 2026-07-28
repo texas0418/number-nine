@@ -2,17 +2,24 @@
 // Hosts the typographic engine for one chapter, persisting the furthest
 // revealed block so the reader resumes exactly at the locked door they left.
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ChapterView } from '../engine/ChapterView';
 import { BROADCAST_ONE } from '../chapters/broadcast1';
 import { getProgress, saveProgress } from '../db';
-import { setStaticLevel } from '../audio';
+import { fadeMusicTo, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 export default function StoryScreen({ onBack }: { onBack: () => void }) {
   const chapter = BROADCAST_ONE;
   const [initial] = useState(() => getProgress(chapter.id)?.blockIndex ?? 0);
+
+  // A fresh reading carries the title theme through the chapter card and the
+  // hall (the chapter's music-out cue retires it). Resuming mid-chapter goes
+  // straight back into the house's quiet.
+  useEffect(() => {
+    if (initial > 0) fadeMusicTo(0);
+  }, [initial]);
 
   const advance = useCallback(
     (blockIndex: number) =>

@@ -41,11 +41,15 @@ function Root() {
     return () => sub.remove();
   }, []);
 
-  // The title theme plays ONLY over the set switched off; the fiction and the
-  // signal keep their own quiet (device QA: "more variation in sounds").
+  // The theme bookends the fiction: full on the title screen, carried into
+  // the story (the chapter's own music-in/music-out cues take over from
+  // there), low under an already-received signal, silent everywhere else.
   useEffect(() => {
     if (screen === 'title') startMusic();
-    else stopMusic();
+    else if (screen === 'daily') {
+      if (isDaySolved(dayKeyFromMs(Date.now()))) startMusic(0.16);
+      else stopMusic();
+    } else if (screen !== 'story') stopMusic();
   }, [screen]);
 
   // The AFTERGLOW review ask: only ever on the title screen — never over the

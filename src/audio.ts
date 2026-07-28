@@ -150,19 +150,42 @@ export function stopSfx(name: string): void {
 }
 
 // ------------------------------------------------------------------- music
-// The title-screen theme ("Ghost", Tim Beek — see CREDITS.md). Only ever on
-// the title screen: the fiction keeps its own quiet.
+// The theme ("Ghost", Tim Beek — see CREDITS.md) BOOKENDS the fiction: title
+// screen, the chapter card + hall, then it hands off to the static bed (the
+// middle keeps its silence — that's the scary part), and returns under the
+// finale and the daily solved panel. In-chapter entrances/exits are the
+// 'music-in' / 'music-out' block cues.
 
-export function startMusic(volume = 0.3): void {
+let musicFadeTimer: ReturnType<typeof setInterval> | null = null;
+let musicTarget = 0;
+
+function ensureMusicPlayer(): any | null {
   const a = audio();
-  if (!a) return;
+  if (!a) return null;
   try {
     if (!musicPlayer) {
       musicPlayer = a.createAudioPlayer(require('../assets/audio/title-theme.m4a'));
       musicPlayer.loop = true;
+      musicPlayer.volume = 0;
     }
-    musicPlayer.volume = volume;
-    musicPlayer.play();
+    return musicPlayer;
+  } catch {
+    return null;
+  }
+}
+
+function clearMusicFade(): void {
+  if (musicFadeTimer) clearInterval(musicFadeTimer);
+  musicFadeTimer = null;
+}
+
+export function startMusic(volume = 0.3): void {
+  const p = ensureMusicPlayer();
+  if (!p) return;
+  try {
+    clearMusicFade();
+    p.volume = volume;
+    p.play();
     musicOn = true;
     watchAppState();
   } catch {
@@ -172,8 +195,43 @@ export function startMusic(volume = 0.3): void {
 
 export function stopMusic(): void {
   musicOn = false;
+  clearMusicFade();
   try {
     musicPlayer?.pause();
+  } catch {
+    /* fail open */
+  }
+}
+
+/** Glide the theme toward `volume` (~1.5s full swing); 0 pauses at the end. */
+export function fadeMusicTo(volume: number): void {
+  const p = volume > 0 ? ensureMusicPlayer() : musicPlayer;
+  if (!p) return;
+  try {
+    musicTarget = Math.max(0, Math.min(1, volume));
+    if (musicTarget > 0) {
+      p.play();
+      musicOn = true;
+      watchAppState();
+    }
+    if (musicFadeTimer) return; // existing glide will chase the new target
+    musicFadeTimer = setInterval(() => {
+      try {
+        const v = p.volume as number;
+        const next = v + Math.sign(musicTarget - v) * 0.02;
+        const done = Math.abs(musicTarget - v) <= 0.02;
+        p.volume = done ? musicTarget : next;
+        if (done) {
+          if (musicTarget === 0) {
+            p.pause();
+            musicOn = false;
+          }
+          clearMusicFade();
+        }
+      } catch {
+        clearMusicFade();
+      }
+    }, 100);
   } catch {
     /* fail open */
   }
@@ -277,6 +335,8 @@ export function cue(name: string): void {
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
   else if (name === 'footsteps') playSfx('footsteps', 0.5); // under the prose, not over it
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
+  else if (name === 'music-in') fadeMusicTo(0.3); // the theme returns (finale)
+  else if (name === 'music-out') fadeMusicTo(0); // hands off to the static bed
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 
