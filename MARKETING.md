@@ -112,6 +112,24 @@ Mirror DEVICE 6's cadence so each beat is its own story:
 - [ ] Privacy + support pages live (house pattern: `number-nine-privacy`,
       `number-nine-support` repos)
 
+## Trademark guardrails (DEVICE 6 / Simogo)
+
+"DEVICE 6" is Simogo's mark. The line we hold (decided 2026-07-27):
+
+- **OK (nominative use):** naming DEVICE 6 in press conversations, interviews,
+  social posts, and the ARG explainer as lineage/inspiration — plain text
+  references ("in the tradition of DEVICE 6"), always as their mark, never
+  styled in their logotype.
+- **NEVER:** in App Store metadata — name, subtitle, description, keywords,
+  promotional text, screenshots. Store keyword use of a competitor's mark is
+  both an ASC rejection risk and the classic trademark-infringement fact
+  pattern.
+- **NEVER:** anything implying affiliation, endorsement, or a sequel ("from
+  the world of…", "the spiritual successor Simogo fans have waited for" in
+  our OWN voice is out; quoting a reviewer who says it is fine, attributed).
+- No Simogo logos or trade dress anywhere; our night-phosphor identity is
+  deliberately not their warm-paper look.
+
 ## What NOT to do
 
 - No gameplay-recording trailers. No paid UA (CPI is out of reach and the
