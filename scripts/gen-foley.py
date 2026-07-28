@@ -145,10 +145,11 @@ def flick(dur, seed, gain):
     return out
 
 
-write_wav(
-    "page-turn.wav",
-    flick(0.22, 52, 0.3) + sil(0.1) + flick(0.2, 53, 0.34) + sil(0.12) + flick(0.3, 54, 0.26),
-)
+# NOTE: page-turn.wav is now a SOURCED RECORDING (see CREDITS.md) — not
+# written here anymore. Fallback if the recording is ever lost:
+#   write_wav("page-turn.wav",
+#             flick(0.22, 52, 0.3) + sil(0.1) + flick(0.2, 53, 0.34)
+#             + sil(0.12) + flick(0.3, 54, 0.26))
 
 
 # ------------------------------------------------------------ tune whistle

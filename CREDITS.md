@@ -24,6 +24,8 @@ everything else is synthesized by `scripts/gen-foley.py`,
   download, replaced the gen-foley.py synth version 2026-07-28).
 - **scrape.wav** — from "Realistic Brick Sound Effect" (royalty-free
   download, replaced the gen-foley.py synth version 2026-07-28).
+- **page-turn.wav** — from "Page Turn Sound FX" by Lux Aeterna Audio
+  (royalty-free download, replaced the gen-foley.py synth version 2026-07-28).
 
 PRE-SHIP: confirm the exact source page + license for each of the four SFX
 above (they came from Simon's downloads folder; the filenames are the only
@@ -31,7 +33,7 @@ provenance recorded). Replace any that cannot be verified.
 
 ## Synthesized (no license needed)
 
-ident, phone-ring, safe-open, lamp-off, page-turn, knock, tune-whistle,
-station-morse, station-music, station-voice, and the four music-box bells —
-all generated from scripts in `scripts/`. (gen-foley.py keeps commented-out
-fallbacks for hinge-creak and scrape, superseded by the recordings above.)
+ident, phone-ring, safe-open, lamp-off, knock, tune-whistle, station-morse,
+station-music, station-voice, and the four music-box bells — all generated
+from scripts in `scripts/`. (gen-foley.py keeps commented-out fallbacks for
+hinge-creak, scrape, and page-turn, superseded by the recordings above.)
