@@ -25,7 +25,7 @@ import {
   View,
 } from 'react-native';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
-import { cue, setStaticLevel, stopSfx } from '../audio';
+import { cue, setStaticLevel, stopOneShot, stopSfx } from '../audio';
 import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
@@ -66,7 +66,13 @@ export function ChapterView({
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [viewH, setViewH] = useState(0);
-  const geom = useRef({ y: 0, viewH: 0, tops: new Map<number, number>(), fired: new Set<number>() });
+  const geom = useRef({
+    y: 0,
+    viewH: 0,
+    tops: new Map<number, number>(),
+    heights: new Map<number, number>(),
+    fired: new Set<number>(),
+  });
 
   // Room blocks that set an ambient backdrop, in order.
   const roomScenes = useMemo(
@@ -139,9 +145,15 @@ export function ChapterView({
       const top = g.tops.get(i);
       if (top === undefined) continue;
       if (g.fired.has(i)) {
-        // Re-arm place-bound one-shots once the block has dropped well below
-        // the fire line again (reader scrolled back up past it).
-        if (REARM_CUES.has(b.cue) && top > line + g.viewH * 0.25) g.fired.delete(i);
+        if (REARM_CUES.has(b.cue)) {
+          // The sound stops the moment its block is off the page, in either
+          // direction — the space is only audible while you are in it.
+          const h = g.heights.get(i) ?? 300;
+          if (top + h < g.y || top > g.y + g.viewH) stopOneShot(b.cue);
+          // Re-arm once the block has dropped well below the fire line again
+          // (reader scrolled back up past it) so returning replays it.
+          if (top > line + g.viewH * 0.25) g.fired.delete(i);
+        }
         continue;
       }
       if (top <= line) {
@@ -184,8 +196,9 @@ export function ChapterView({
     });
   };
 
-  const recordTop = (index: number) => (y: number) => {
+  const recordTop = (index: number) => (y: number, height?: number) => {
     geom.current.tops.set(index, y);
+    if (height !== undefined) geom.current.heights.set(index, height);
     fireCues();
   };
 
@@ -244,7 +257,7 @@ function BlockReveal({
   scrollY: Animated.Value;
   viewH: number;
   exempt: boolean;
-  onMeasure: (y: number) => void;
+  onMeasure: (y: number, height?: number) => void;
   children: React.ReactNode;
 }) {
   const [top, setTop] = useState<number | null>(null);
@@ -267,7 +280,7 @@ function BlockReveal({
       onLayout={(e: LayoutChangeEvent) => {
         const y = e.nativeEvent.layout.y;
         setTop(y);
-        onMeasure(y);
+        onMeasure(y, e.nativeEvent.layout.height);
       }}
     >
       {children}
