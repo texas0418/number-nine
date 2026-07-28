@@ -45,7 +45,7 @@ export function KnockBlock({
   const [current, setCurrent] = useState(0); // taps in the open group
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const gapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const state = useRef({ playing: false, done: solved, lastActivity: 0 });
+  const state = useRef({ playing: false, done: solved, lastActivity: 0, awake: false });
 
   // The wall speaks — into the reader's HAND. No audio: haptic + pulse only.
   const listen = () => {
@@ -76,20 +76,18 @@ export function KnockBlock({
     );
   };
 
-  // No button, no instruction (QA: the palm control made it too easy): the
-  // wall knocks UNBIDDEN — once on arrival, then again after every stretch
-  // of unanswered stillness. The repetition IS the replay; the house has
-  // waited nineteen years and is not in a hurry.
+  // No button, no instruction (QA): the wall SLEEPS until the reader's
+  // first touch wakes it — then the pattern plays, and after every stretch
+  // of unanswered stillness it patiently plays again. The repetition IS the
+  // replay; the house has waited nineteen years and is not in a hurry.
   useEffect(() => {
     if (done) return;
-    const first = setTimeout(listen, 1400);
     const patient = setInterval(() => {
       const s = state.current;
-      if (s.done || s.playing) return;
+      if (!s.awake || s.done || s.playing) return;
       if (Date.now() - s.lastActivity > 9000) listen();
     }, 3000);
     return () => {
-      clearTimeout(first);
       clearInterval(patient);
       timers.current.forEach(clearTimeout);
       if (gapTimer.current) clearTimeout(gapTimer.current);
@@ -123,6 +121,14 @@ export function KnockBlock({
   // The reader knocks back: a tap joins the open group; stillness closes it.
   const tapBack = () => {
     if (done || playing) return;
+    // The FIRST touch doesn't knock — it wakes the wall (QA: the reader
+    // lays a hand on it, and the house begins).
+    if (!state.current.awake) {
+      state.current.awake = true;
+      state.current.lastActivity = Date.now();
+      listen();
+      return;
+    }
     // fully silent gate (QA r3): the exchange is felt, never heard
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
     state.current.lastActivity = Date.now();
