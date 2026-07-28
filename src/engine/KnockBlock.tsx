@@ -45,18 +45,12 @@ export function KnockBlock({
   const [current, setCurrent] = useState(0); // taps in the open group
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const gapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(
-    () => () => {
-      timers.current.forEach(clearTimeout);
-      if (gapTimer.current) clearTimeout(gapTimer.current);
-    },
-    [],
-  );
+  const state = useRef({ playing: false, done: solved, lastActivity: 0 });
 
   // The wall speaks — into the reader's HAND. No audio: haptic + pulse only.
   const listen = () => {
-    if (playing || done) return;
+    if (state.current.playing || state.current.done) return;
+    state.current.playing = true;
     setPlaying(true);
     setEcho([]);
     setCurrent(0);
@@ -74,8 +68,34 @@ export function KnockBlock({
       }
       at += GROUP_PAUSE_MS;
     });
-    timers.current.push(setTimeout(() => setPlaying(false), at - GROUP_PAUSE_MS + 300));
+    timers.current.push(
+      setTimeout(() => {
+        state.current.playing = false;
+        setPlaying(false);
+      }, at - GROUP_PAUSE_MS + 300),
+    );
   };
+
+  // No button, no instruction (QA: the palm control made it too easy): the
+  // wall knocks UNBIDDEN — once on arrival, then again after every stretch
+  // of unanswered stillness. The repetition IS the replay; the house has
+  // waited nineteen years and is not in a hurry.
+  useEffect(() => {
+    if (done) return;
+    const first = setTimeout(listen, 1400);
+    const patient = setInterval(() => {
+      const s = state.current;
+      if (s.done || s.playing) return;
+      if (Date.now() - s.lastActivity > 9000) listen();
+    }, 3000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(patient);
+      timers.current.forEach(clearTimeout);
+      if (gapTimer.current) clearTimeout(gapTimer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done]);
 
   const fail = () => {
     setStaticLevel(0.24);
@@ -87,10 +107,12 @@ export function KnockBlock({
 
   const closeGroup = (taps: number, closed: number[]) => {
     const next = [...closed, taps];
+    state.current.lastActivity = Date.now();
     setEcho(next);
     setCurrent(0);
     if (next.length < groups.length) return;
     if (next.length === groups.length && next.every((n, i) => n === groups[i])) {
+      state.current.done = true;
       setDone(true);
       cue(solveCue);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
@@ -103,6 +125,7 @@ export function KnockBlock({
     if (done || playing) return;
     // fully silent gate (QA r3): the exchange is felt, never heard
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
+    state.current.lastActivity = Date.now();
     const taps = current + 1;
     setCurrent(taps);
     if (gapTimer.current) clearTimeout(gapTimer.current);
@@ -120,27 +143,18 @@ export function KnockBlock({
         {done ? unlockedText : prompt}
       </Text>
       {!done && (
-        <>
-          <View style={styles.groupRow} pointerEvents="none">
-            {groups.map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.groupDot,
-                  i < echo.length && styles.groupDone,
-                  i === echo.length && current > 0 && styles.groupLive,
-                ]}
-              />
-            ))}
-          </View>
-          <Pressable onPress={listen} style={styles.wall} disabled={playing}>
-            <View style={styles.wallInner}>
-              <Text style={styles.wallText} allowFontScaling={false}>
-                {playing ? 'the wall is speaking' : '◉ press your palm to the wall'}
-              </Text>
-            </View>
-          </Pressable>
-        </>
+        <View style={styles.groupRow} pointerEvents="none">
+          {groups.map((_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.groupDot,
+                i < echo.length && styles.groupDone,
+                i === echo.length && current > 0 && styles.groupLive,
+              ]}
+            />
+          ))}
+        </View>
       )}
     </Pressable>
   );
@@ -186,14 +200,4 @@ const styles = StyleSheet.create({
   },
   groupDone: { backgroundColor: colors.dial },
   groupLive: { borderColor: colors.dial },
-  wall: { marginTop: 'auto' },
-  wallInner: {
-    borderColor: colors.panelBorder,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-    backgroundColor: colors.bg,
-  },
-  wallText: { fontFamily: fonts.mono, fontSize: 12, color: colors.lockGlow },
 });

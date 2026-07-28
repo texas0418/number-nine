@@ -281,12 +281,22 @@ export const BROADCAST_TWO: Chapter = {
       kind: 'prose',
       text: 'A sending key. Home-made, beautiful, the contacts worn bright — worn, which meant used, which meant his brother had built the answer years ago and never once dared it. The wire outside sang its thin note into the still dark. The channel stayed open. The little clock gave its tick, and its tock, like a tongue clicking gently at a hesitating child.',
     },
-    { kind: 'plate', image: 'obj-key', caption: 'the sending key · built years ago, for this' },
+    {
+      // The chapter's one irreversible act belongs to the READER's hand
+      // (the letter-tear rule): the page will not continue until the key
+      // is pressed. An act, not a puzzle.
+      kind: 'seal',
+      id: 'b2-send',
+      image: 'obj-key',
+      caption: 'the sending key · the channel is open · the clock keeps ticking',
+      tornCaption: 'sent · a knock, returned through the dark, nineteen years late',
+      solveCue: 'morse-key',
+    },
     { kind: 'thought', text: 'Nineteen years of listening, and the whole time the house had only ever wanted one thing said back.' },
     {
+      // No cue: the morse already sounded under the reader's own press.
       kind: 'prose',
       text: 'Edwin Marsh put two fingers on his brother’s key, and answered.',
-      cue: 'morse-key',
     },
     {
       kind: 'prose',

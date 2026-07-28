@@ -113,7 +113,7 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
   const b2 = BROADCAST_TWO.blocks;
   const CODE_ENTRY = ['keypad', 'safe', 'cipher'];
   const b2Gates = b2.filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind));
-  ok('b2 has nine gates plus the fork (incl. the letter seal)', b2Gates.length === 10);
+  ok('b2 has ten gates plus the fork (letter seal + sending key)', b2Gates.length === 11);
   // Doctrine (Simon 2026-07-28): at most ONE code-entry puzzle per broadcast
   // from B2 on.
   const codeCount = b2.filter((b) => CODE_ENTRY.includes(b.kind)).length;

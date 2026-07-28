@@ -47,10 +47,17 @@ export function LampBlock({
   const [wick, setWick] = useState(0); // 0 bright .. 1 turned right down
   const wickStart = useRef(0);
   const dimAnim = useRef(new Animated.Value(0)).current;
+  // The dark must be EARNED: a screen still dim from a previous read (or a
+  // reader who always plays dim) must not pre-solve the page — the lamp has
+  // to be seen lit once before turning it down means anything (QA).
+  const sawBright = useRef(false);
 
   useEffect(() => {
     if (done) return;
-    const stop = watchLamp((level) => setScreenDark(level < DARK_ENOUGH));
+    const stop = watchLamp((level) => {
+      if (level >= 0.45) sawBright.current = true;
+      setScreenDark(sawBright.current && level < DARK_ENOUGH);
+    });
     return stop;
   }, [done]);
 
