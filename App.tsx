@@ -27,6 +27,7 @@ const SCREENS: Screen[] = ['title', 'story', 'daily', 'settings', 'gallery'];
 
 function Root() {
   const [screen, setScreen] = useState<Screen>('title');
+  const [chapterId, setChapterId] = useState(1);
   const back = () => setScreen('title');
 
   // numbernine://screen/<name> — used by the layout audit (and future
@@ -58,7 +59,7 @@ function Root() {
   }, [screen]);
 
   if (screen === 'gallery') return <GalleryScreen onBack={back} />;
-  if (screen === 'story') return <StoryScreen onBack={back} />;
+  if (screen === 'story') return <StoryScreen chapterId={chapterId} onBack={back} />;
   if (screen === 'daily') return <DailySignalScreen onBack={back} />;
   if (screen === 'settings') return <SettingsScreen onBack={back} />;
 
@@ -72,6 +73,12 @@ function Root() {
       todaySolved={isDaySolved(todayKey)}
       onStory={() => {
         setStaticLevel(0); // no ambient bed — static enters with the receiver
+        setChapterId(1);
+        setScreen('story');
+      }}
+      onStoryTwo={() => {
+        setStaticLevel(0);
+        setChapterId(2);
         setScreen('story');
       }}
       onDaily={() => setScreen('daily')}

@@ -52,6 +52,20 @@ the PHONE'S PHYSICAL ABILITIES. The device is a haunted instrument.
 
 # Puzzle doctrine (Simon's bar: DEVICE 6 took him DAYS on some puzzles)
 
+- ONE code-entry puzzle per broadcast, maximum, from Broadcast Two onward
+  (Simon, 2026-07-28). "Code-entry" = anything where the answer is typed on
+  a keypad/letter pad (keypad, safe, cipher). Every other gate must be a
+  different act: hardware/sensor, ear/touch echo, observation, analog
+  manipulation, deduction expressed through a widget that is not typing.
+  B1 predates the rule and keeps its ten gates.
+- Difficulty ramps PER BROADCAST (Simon, 2026-07-28): each broadcast must be
+  measurably harder than the one before — more rules composed, clues
+  scattered further (including into EARLIER broadcasts and the daily
+  signal), less prompting. B1 ends at two composed rules; B2's finale
+  composes three; B6 should demand a full notepad and cross-chapter
+  archaeology. Never make a later broadcast's opening gate easier than the
+  previous broadcast's finale.
+
 - A gate's answer never appears within three blocks of the gate (tested in
   test-models.ts). Clues live far away, ideally in a different chapter region.
 - Every gate needs >= 2 scattered clues, at least one cross-modal (a logbook

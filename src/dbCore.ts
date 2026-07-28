@@ -53,6 +53,7 @@ export const GET_PROGRESS_SQL =
 export const ALL_PROGRESS_SQL =
   'SELECT * FROM chapter_progress ORDER BY chapter_id';
 export const RESET_PROGRESS_SQL = 'DELETE FROM chapter_progress';
+export const RESET_CHAPTER_SQL = 'DELETE FROM chapter_progress WHERE chapter_id = ?';
 
 export const INSERT_SOLVE_SQL =
   'INSERT OR IGNORE INTO daily_solves (day_key, solved_ms) VALUES (?, ?)';

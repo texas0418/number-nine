@@ -17,6 +17,7 @@ import {
   GET_SOLVE_SQL,
   INSERT_SOLVE_SQL,
   MIGRATIONS,
+  RESET_CHAPTER_SQL,
   RESET_PROGRESS_SQL,
   SET_KV_SQL,
   UPSERT_PROGRESS_SQL,
@@ -70,6 +71,11 @@ export function listProgress(): ChapterProgress[] {
 
 export function resetProgress(): void {
   getDb().runSync(RESET_PROGRESS_SQL);
+}
+
+/** Erase ONE broadcast's progress (replay it) without touching the others. */
+export function resetChapter(chapterId: number): void {
+  getDb().runSync(RESET_CHAPTER_SQL, [chapterId]);
 }
 
 // ------------------------------------------------------------ daily solves

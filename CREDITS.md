@@ -26,6 +26,13 @@ everything else is synthesized by `scripts/gen-foley.py`,
   download, replaced the gen-foley.py synth version 2026-07-28).
 - **page-turn.wav** — from "Page Turn Sound FX" by Lux Aeterna Audio
   (royalty-free download, replaced the gen-foley.py synth version 2026-07-28).
+- **B2 set, Simon-edited (2026-07-28):** knock.wav (Banging Pipes),
+  pips.wav ("Telephones Aa — Three Pips", GPO speaking-clock type),
+  clock-tick.wav, dial-return.wav (rotary phone dialing),
+  morse-key.wav (morse key clicks), wire-hum.wav, marsh-wind.wav —
+  all edited by Simon from stated royalty-free sources (raw files kept in
+  ~/Downloads/Sounds). Replaced the gen-foley.py synth versions of
+  dial-return / clock-tick / pips.
 
 PRE-SHIP: confirm the exact source page + license for each of the four SFX
 above (they came from Simon's downloads folder; the filenames are the only

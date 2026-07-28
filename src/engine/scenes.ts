@@ -10,12 +10,20 @@ export const SCENES: Record<SceneId, number> = {
   hall: require('../../assets/scenes/hall.jpg'),
   study: require('../../assets/scenes/study.jpg'),
   cellar: require('../../assets/scenes/cellar.jpg'),
+  // B2 (placeholder-grade until real art lands; scripts/gen-b2-scenes.py)
+  marsh: require('../../assets/scenes/marsh.jpg'),
   'obj-receiver': require('../../assets/scenes/obj-receiver.jpg'),
   'obj-telephone': require('../../assets/scenes/obj-telephone.jpg'),
   'obj-logbook': require('../../assets/scenes/obj-logbook.jpg'),
   'obj-safe': require('../../assets/scenes/obj-safe.jpg'),
+  'obj-letter': require('../../assets/scenes/obj-letter.jpg'),
+  'obj-cards': require('../../assets/scenes/obj-cards.jpg'),
+  'obj-clock': require('../../assets/scenes/obj-clock.jpg'),
+  'obj-compass': require('../../assets/scenes/obj-compass.jpg'),
+  'obj-mast': require('../../assets/scenes/obj-mast.jpg'),
+  'obj-key': require('../../assets/scenes/obj-key.jpg'),
 };
 
-/** The three room backdrops (full-screen ambient), distinct from object plates. */
+/** Room backdrops (full-screen ambient), distinct from object plates. */
 export const isBackdrop = (id: SceneId): boolean =>
-  id === 'hall' || id === 'study' || id === 'cellar';
+  id === 'hall' || id === 'study' || id === 'cellar' || id === 'marsh';

@@ -22,7 +22,7 @@ export type ChapterBlock =
   | { kind: 'logbook'; lines: string[]; cue?: AudioCue }
   // An inline framed object image (the receiver, the telephone, the safe…).
   | { kind: 'plate'; image: SceneId; caption?: string; cue?: AudioCue }
-  | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string }
+  | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string; stopsCue?: AudioCue }
   | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
@@ -34,6 +34,29 @@ export type ChapterBlock =
   // An OBSERVATION puzzle: touch the hidden detail in a photograph.
   // `target` is a normalized rect {x,y,w,h} within the image.
   | { kind: 'hotspot'; id: string; image: SceneId; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // A TOUCH-ECHO puzzle: the phone knocks in grouped counts (haptic-first);
+  // the reader knocks the same groups back. `groups` = knocks per group.
+  | { kind: 'knock'; id: string; groups: number[]; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // A SEALED thing (an envelope, a parcel): one tap tears it open — an act,
+  // not a puzzle, like the fork — and the page continues below.
+  | { kind: 'seal'; id: string; image: SceneId; caption: string; tornCaption: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The OVERLEAF: a page with writing on its back. Physically turning the
+  // phone face-down (or dragging the dog-ear) turns the page; tap
+  // `targetWord` on the verso to pass. `backPrompt` is the caption while
+  // the verso is up (a nudge that the page wants touching).
+  | { kind: 'flip'; id: string; front: string[]; back: string[]; targetWord: string; prompt: string; backPrompt?: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // SHY INK: `hiddenLine` resolves only when the lamp is turned down —
+  // system brightness below threshold, or the in-page wick dragged low.
+  // Tap `targetWord` in the revealed line to pass.
+  | { kind: 'lamp'; id: string; aboveText: string[]; hiddenLine: string; targetWord: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // A GPO ROTARY DIAL: dial the digits by dragging holes to the finger
+  // stop. `answer` is the dialed digit string (letters live on the ring).
+  | { kind: 'rotary'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Set the hands of a 24-hour clock. Answer in minutes-of-day.
+  | { kind: 'clock'; id: string; answerHour: number; answerMinute: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Face the needle: hold the compass on `targetDeg` (0 = north) within
+  // `toleranceDeg` for a beat. Magnetometer feeds it; the ring drags too.
+  | { kind: 'compass'; id: string; targetDeg: number; toleranceDeg: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */
@@ -41,10 +64,17 @@ export type SceneId =
   | 'hall'
   | 'study'
   | 'cellar'
+  | 'marsh'
   | 'obj-receiver'
   | 'obj-telephone'
   | 'obj-logbook'
-  | 'obj-safe';
+  | 'obj-safe'
+  | 'obj-letter'
+  | 'obj-cards'
+  | 'obj-clock'
+  | 'obj-compass'
+  | 'obj-mast'
+  | 'obj-key';
 
 export const AUDIO_CUES = [
   'static-swell',
@@ -59,6 +89,13 @@ export const AUDIO_CUES = [
   'footsteps',
   'hinge-creak',
   'scrape',
+  'pips',
+  'wire-hum',
+  'marsh-wind',
+  'morse-key',
+  'knock-far',
+  'letter-tear',
+  'pips-muffled',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

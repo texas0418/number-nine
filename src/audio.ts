@@ -45,6 +45,17 @@ const SFX_FILES: Record<string, number> = {
   'station-morse': require('../assets/audio/station-morse.wav'),
   'station-music': require('../assets/audio/station-music.wav'),
   'station-voice': require('../assets/audio/station-voice.wav'),
+  'dial-return': require('../assets/audio/dial-return.wav'),
+  'clock-tick': require('../assets/audio/clock-tick.wav'),
+  pips: require('../assets/audio/pips.wav'),
+  'wire-hum': require('../assets/audio/wire-hum.wav'),
+  'marsh-wind': require('../assets/audio/marsh-wind.wav'),
+  'morse-key': require('../assets/audio/morse-key.wav'),
+  'knock-dry': require('../assets/audio/knock-dry.wav'),
+  'knock-far': require('../assets/audio/knock-far.wav'),
+  'letter-tear': require('../assets/audio/letter-tear.wav'),
+  'page-flip': require('../assets/audio/page-flip.wav'),
+  'pips-muffled': require('../assets/audio/pips-muffled.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -127,6 +138,64 @@ export function playSfx(name: string, volume = 0.9): void {
   }
 }
 
+/** Schedule a rhythm of one-shots with PRE-CREATED players so each beat
+ *  starts with no spin-up latency (device QA: fresh-player creation lagged
+ *  the haptics by ~100ms and made knock groups uncountable). `onBeat` fires
+ *  with each beat for haptics/visuals — and still fires when audio is
+ *  unavailable, so the felt channel never depends on the heard one.
+ *  Returns a cancel function. */
+export function playSfxPattern(
+  name: string,
+  delaysMs: number[],
+  volume = 0.7,
+  onBeat?: (i: number) => void,
+): () => void {
+  const a = audio();
+  const mod = SFX_FILES[name];
+  const timers: ReturnType<typeof setTimeout>[] = [];
+  if (!a || mod === undefined) {
+    for (let i = 0; i < delaysMs.length; i++)
+      timers.push(setTimeout(() => onBeat?.(i), delaysMs[i]));
+    return () => timers.forEach(clearTimeout);
+  }
+  try {
+    const players = delaysMs.map(() => {
+      const p = a.createAudioPlayer(mod);
+      p.volume = volume;
+      return p;
+    });
+    const releaseAll = () => {
+      for (const p of players) {
+        try {
+          p.remove?.();
+          p.release?.();
+        } catch {
+          /* fail open */
+        }
+      }
+    };
+    for (let i = 0; i < delaysMs.length; i++)
+      timers.push(
+        setTimeout(() => {
+          try {
+            players[i].play();
+          } catch {
+            /* fail open */
+          }
+          onBeat?.(i);
+        }, delaysMs[i]),
+      );
+    const releaseTimer = setTimeout(releaseAll, Math.max(...delaysMs) + 9000);
+    return () => {
+      timers.forEach(clearTimeout);
+      clearTimeout(releaseTimer);
+      releaseAll();
+    };
+  } catch {
+    return () => {};
+  }
+}
+
 /** Silence any still-playing one-shots of this cue (the page moved on). */
 export function stopOneShot(name: string): void {
   const live = activeOneShots.get(name);
@@ -157,6 +226,12 @@ export function startSfxLoop(name: string, volume = 0.5): void {
   } catch {
     /* fail open */
   }
+}
+
+/** Stop every looping effect — leaving the story mid-chapter must not carry
+ *  a ringing phone or the marsh wind back to the title screen. */
+export function stopAllLoops(): void {
+  for (const name of [...activeLoops]) stopSfx(name);
 }
 
 /** Stop a looping effect — the moment the line clicks open. */
@@ -356,6 +431,15 @@ export function cue(name: string): void {
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
+  else if (name === 'marsh-wind') startSfxLoop('marsh-wind', 0.3); // until a road is chosen
+  else if (name === 'wire-hum') startSfxLoop('wire-hum', 0.22); // until the carrier locks
+  else if (name === 'morse-key') playSfx('morse-key', 0.45); // he answers, under the prose
+  else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
+  else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
+  else if (name === 'pips-muffled') {
+    stopOneShot('pips'); // the receiver is DOWN — the clean pips end there…
+    playSfx('pips-muffled', 0.35); // …and continue through the sleeve
+  }
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape

@@ -44,6 +44,13 @@ import { RadioTuner } from './RadioTuner';
 import { Keypad } from './Keypad';
 import { MelodyBox } from './MelodyBox';
 import { Hotspot } from './Hotspot';
+import { KnockBlock } from './KnockBlock';
+import { FlipBlock } from './FlipBlock';
+import { SealPlate } from './SealPlate';
+import { LampBlock } from './LampBlock';
+import { RotaryDial } from './RotaryDial';
+import { ClockDial } from './ClockDial';
+import { CompassBlock } from './CompassBlock';
 import { SceneBackdrop } from './SceneBackdrop';
 import { ProseReveal } from './ProseReveal';
 
@@ -120,16 +127,22 @@ export function ChapterView({
       if (blocks[i].kind !== 'radio') continue;
       const top = g.tops.get(i);
       if (top === undefined) continue;
-      const onScreen = top < g.y + g.viewH && top > g.y - RECEIVER_SPAN;
+      // Enter at the reading zone (not the screen edge): peeking over the
+      // bottom mustn't start the static under the stair footsteps (QA).
+      const onScreen = top < g.y + g.viewH * 0.75 && top > g.y - RECEIVER_SPAN;
       if (onScreen) level = Math.max(level, solved.has(i) ? 0.04 : 0.18);
     }
     setStaticLevel(level);
   };
 
   // Diegetic one-shots that belong to a PLACE on the page (the study door,
-  // the log's pages, the stairs): they re-arm when the reader scrolls away,
-  // so walking back through the space plays the space again.
-  const REARM_CUES = useMemo(() => new Set(['key-unlock', 'page-turn', 'footsteps']), []);
+  // the log's pages, the stairs, the sending key): they re-arm when the
+  // reader scrolls away, so walking back through the space plays the space
+  // again — from either direction.
+  const REARM_CUES = useMemo(
+    () => new Set(['key-unlock', 'page-turn', 'footsteps', 'morse-key']),
+    [],
+  );
   // cue -> gate indices whose solving stops that cue (e.g. answering the
   // telephone stops the ringing).
   const stoppedBy = useMemo(() => {
@@ -140,20 +153,22 @@ export function ChapterView({
     return m;
   }, [blocks]);
 
-  // Already-fired, place-bound block: stop its sound the moment the block
-  // leaves the page — but only on the TRANSITION off-page, so a long-gone
-  // block cannot keep silencing a later block that shares the cue — and
-  // re-arm it once it has dropped well below the fire line again, so
-  // walking back through the space replays it.
-  const rearmOrStop = (i: number, cueName: string, top: number, line: number) => {
+  // Already-fired, place-bound block: the sound stops the moment its block
+  // leaves the page (either direction) and re-arms right there — returning
+  // to the place replays it, whether the reader comes from above or below.
+  // Stop fires only on the TRANSITION off-page, so a long-gone block cannot
+  // keep silencing a later block that shares the cue.
+  const rearmOrStop = (i: number, cueName: string, top: number, _line: number) => {
     const g = geom.current;
     if (!REARM_CUES.has(cueName)) return;
     const h = g.heights.get(i) ?? 300;
-    if (g.sounding.has(i) && (top + h < g.y || top > g.y + g.viewH)) {
+    const offPage = top + h < g.y || top > g.y + g.viewH;
+    if (!offPage) return;
+    if (g.sounding.has(i)) {
       g.sounding.delete(i);
       stopOneShot(cueName);
     }
-    if (top > line + g.viewH * 0.25) g.fired.delete(i);
+    g.fired.delete(i);
   };
 
   const fireCues = () => {
@@ -170,6 +185,11 @@ export function ChapterView({
         continue;
       }
       if (top > line) continue;
+      // A re-armable block that has scrolled clean off the page ABOVE still
+      // sits "past the fire line" — it must not fire from up there (QA: the
+      // cards' page-turn kept sounding at the compass). It stays un-fired,
+      // so walking back up to it plays it again.
+      if (REARM_CUES.has(b.cue) && top + (g.heights.get(i) ?? 300) < g.y) continue;
       g.fired.add(i);
       // Never (re)start a loop an already-solved gate was meant to stop —
       // on a re-read, the answered telephone must NOT ring forever.
@@ -410,6 +430,97 @@ function renderGate(
           solveCue={block.solveCue}
           solved={gateSolved}
           onSolved={() => solveGate(index)}
+        />
+      );
+    default:
+      return renderInstrumentGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** The Broadcast Two instrument gates — the phone's physical senses. */
+function renderInstrumentGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'knock':
+      return (
+        <KnockBlock
+          groups={block.groups}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'seal':
+      return (
+        <SealPlate
+          image={block.image}
+          caption={block.caption}
+          tornCaption={block.tornCaption}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'flip':
+      return (
+        <FlipBlock
+          front={block.front}
+          back={block.back}
+          targetWord={block.targetWord}
+          prompt={block.prompt}
+          backPrompt={block.backPrompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'lamp':
+      return (
+        <LampBlock
+          aboveText={block.aboveText}
+          hiddenLine={block.hiddenLine}
+          targetWord={block.targetWord}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'rotary':
+      return (
+        <RotaryDial
+          answer={block.answer}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'clock':
+      return (
+        <ClockDial
+          answerHour={block.answerHour}
+          answerMinute={block.answerMinute}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'compass':
+      return (
+        <CompassBlock
+          targetDeg={block.targetDeg}
+          toleranceDeg={block.toleranceDeg}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
         />
       );
     default:

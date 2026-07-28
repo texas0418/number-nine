@@ -243,3 +243,65 @@ def garbled_voice(dur=1.7, seed=66):
 
 
 write_wav("station-voice.wav", garbled_voice())
+
+
+# ------------------------------------------------- B2 instrument sounds
+# The rotary dial springing home: a decelerating ratchet clatter.
+def dial_return(dur=0.65, seed=95):
+    rng = random.Random(seed)
+    out = []
+    t = 0.0
+    gap = 0.018
+    while t < dur:
+        n = int(0.012 * RATE)
+        prev = 0.0
+        for i in range(n):
+            prev = 0.5 * prev + 0.5 * (rng.random() * 2 - 1)
+            out.append(prev * math.exp(-i / (n * 0.4)) * 0.38)
+        out += sil(gap)
+        t += 0.012 + gap
+        gap *= 1.13  # the spring runs down
+    return out
+
+
+write_wav("dial-return.wav", dial_return())
+
+# A clock hand clicking over one graduation.
+write_wav("clock-tick.wav", knock_hit(96, 0.18))
+
+# The speaking clock's three pips ("at the third stroke...").
+def pips(f=950, n_pips=3, on=0.12, off=0.55, gain=0.3):
+    out = []
+    ramp = int(0.004 * RATE)
+    for p in range(n_pips):
+        n = int(on * RATE)
+        for i in range(n):
+            env = min(1, i / ramp, (n - i) / ramp)
+            out.append(math.sin(2 * math.pi * f * i / RATE) * gain * env)
+        if p < n_pips - 1:
+            out += sil(off)
+    return out
+
+
+write_wav("pips.wav", pips())
+
+
+# A sealed envelope torn open: an irregular fibrous rip with a starting snap.
+def tear(dur=0.7, seed=97):
+    rng = random.Random(seed)
+    n = int(dur * RATE)
+    out, lp, catch = [], 0.0, 0.6
+    for i in range(n):
+        t = i / n
+        x = rng.random() * 2 - 1
+        lp = 0.5 * lp + 0.5 * x
+        hp = x - lp
+        if rng.random() < 0.006:
+            catch = 1.0  # fibres letting go in little jerks
+        catch *= 0.97
+        env = (0.9 if t < 0.08 else 0.55) * math.sin(math.pi * min(1, t * 1.12)) ** 0.7
+        out.append((hp * 0.55 + lp * 0.2) * (0.35 + catch) * env * 0.5)
+    return out
+
+
+write_wav("letter-tear.wav", tear())
