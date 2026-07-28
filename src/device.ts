@@ -225,6 +225,37 @@ export function watchInversion(cb: (inverted: boolean) => void): () => void {
   }
 }
 
+/** Subscribe to STEP BOUNCES while walking (accelerometer magnitude peaks
+ *  at stride cadence). Coarse by design — a pocket-held phone bounces once
+ *  per pace. No sensor → never fires; taps carry the gate. */
+export function watchStepBounce(cb: () => void): () => void {
+  const s = sensors();
+  if (!s?.Accelerometer) return () => {};
+  try {
+    s.Accelerometer.setUpdateInterval(90);
+    let lastStep = 0;
+    const sub = s.Accelerometer.addListener(
+      (d: { x?: number; y?: number; z?: number }) => {
+        const mag = Math.hypot(d?.x ?? 0, d?.y ?? 0, d?.z ?? 0);
+        const now = Date.now();
+        if (mag > 1.25 && now - lastStep > 420) {
+          lastStep = now;
+          cb();
+        }
+      },
+    );
+    return () => {
+      try {
+        sub.remove();
+      } catch {
+        /* fail open */
+      }
+    };
+  } catch {
+    return () => {};
+  }
+}
+
 /** Subscribe to MAINS power (the charger = the set's hunger). Calls back
  *  with true while plugged in. No native module → never fires; the widget's
  *  hold-the-plug fallback carries the gate. */

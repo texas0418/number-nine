@@ -47,6 +47,9 @@ import { Hotspot } from './Hotspot';
 import { KnockBlock } from './KnockBlock';
 import { FlipBlock } from './FlipBlock';
 import { SealPlate } from './SealPlate';
+import { ChordBlock, MainsBlock, ShakeBlock, StillnessBlock } from './InstructionGates';
+import { InvertBlock } from './InvertBlock';
+import { PaceBlock } from './PaceBlock';
 import { LampBlock } from './LampBlock';
 import { RotaryDial } from './RotaryDial';
 import { ClockDial } from './ClockDial';
@@ -386,6 +389,17 @@ function renderGate(
         />
       );
     case 'keypad':
+      return (
+        <Keypad
+          answer={block.answer}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          feltGroups={block.feltGroups}
+          solveCue={block.solveCue}
+          solved={gateSolved}
+          onSolved={() => solveGate(index)}
+        />
+      );
     case 'safe':
       return (
         <Keypad
@@ -517,6 +531,82 @@ function renderInstrumentGate(
         <CompassBlock
           targetDeg={block.targetDeg}
           toleranceDeg={block.toleranceDeg}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    default:
+      return renderInstructionGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** Broadcast Three's instruments — the station's instructions made physical. */
+function renderInstructionGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'stillness':
+      return (
+        <StillnessBlock
+          holdMs={block.holdMs}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'shake':
+      return (
+        <ShakeBlock
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'invert':
+      return (
+        <InvertBlock
+          upright={block.upright}
+          inverted={block.inverted}
+          targetWord={block.targetWord}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'mains':
+      return (
+        <MainsBlock
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'chord':
+      return (
+        <ChordBlock
+          holdMs={block.holdMs}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'paces':
+      return (
+        <PaceBlock
+          bearingDeg={block.bearingDeg}
+          toleranceDeg={block.toleranceDeg}
+          paces={block.paces}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}
