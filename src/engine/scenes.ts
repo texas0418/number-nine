@@ -12,6 +12,10 @@ export const SCENES: Record<SceneId, number> = {
   cellar: require('../../assets/scenes/cellar.jpg'),
   // B2 (placeholder-grade until real art lands; scripts/gen-b2-scenes.py)
   marsh: require('../../assets/scenes/marsh.jpg'),
+  // B3 (placeholders; scripts/gen-b3-scenes.py)
+  churchyard: require('../../assets/scenes/churchyard.jpg'),
+  'obj-valve': require('../../assets/scenes/obj-valve.jpg'),
+  'obj-grave': require('../../assets/scenes/obj-grave.jpg'),
   'obj-receiver': require('../../assets/scenes/obj-receiver.jpg'),
   'obj-telephone': require('../../assets/scenes/obj-telephone.jpg'),
   'obj-logbook': require('../../assets/scenes/obj-logbook.jpg'),
@@ -26,4 +30,4 @@ export const SCENES: Record<SceneId, number> = {
 
 /** Room backdrops (full-screen ambient), distinct from object plates. */
 export const isBackdrop = (id: SceneId): boolean =>
-  id === 'hall' || id === 'study' || id === 'cellar' || id === 'marsh';
+  id === 'hall' || id === 'study' || id === 'cellar' || id === 'marsh' || id === 'churchyard';

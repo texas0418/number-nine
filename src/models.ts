@@ -81,6 +81,9 @@ export type SceneId =
   | 'study'
   | 'cellar'
   | 'marsh'
+  | 'churchyard'
+  | 'obj-valve'
+  | 'obj-grave'
   | 'obj-receiver'
   | 'obj-telephone'
   | 'obj-logbook'
@@ -122,6 +125,11 @@ export interface Chapter {
   id: number; // 1..6
   title: string; // "Broadcast One"
   blocks: ChapterBlock[];
+  /** The PRESSURE VALVE (doctrine: nudges, never instructions): per-gate
+   *  margin notes in Halloran's second-log hand, keyed by gate id. The
+   *  engine surfaces one only after the reader has been stuck at that gate
+   *  for a long while — atmosphere removing a wall, never a walkthrough. */
+  hints?: Record<string, string>;
 }
 
 /** Radio gates count as solved when tuned within this many kHz of target. */

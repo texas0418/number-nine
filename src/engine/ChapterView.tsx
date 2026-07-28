@@ -15,8 +15,9 @@
    height, measured block tops, fired-cue set) is read ONLY inside the scroll
    listener and onLayout/onMeasure handlers, never during render. Reading it in
    render would be the bug this rule guards against; here it is by design. */
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Text,
   Animated,
   LayoutChangeEvent,
   NativeScrollEvent,
@@ -26,6 +27,7 @@ import {
 } from 'react-native';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
 import { cue, setStaticLevel, stopOneShot, stopSfx } from '../audio';
+import { colors, fonts } from '../theme';
 import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
@@ -73,6 +75,25 @@ export function ChapterView({
     solvedGatesBefore(blocks, initialBlockIndex),
   );
   const count = visibleCount(blocks, solved);
+
+  // The PRESSURE VALVE: if the frontier gate hasn't moved in a long while,
+  // a margin note in Halloran's other hand surfaces beneath it (authored
+  // per gate in chapter.hints). Solving anything resets the patience.
+  const STUCK_MS = 150000;
+  const frontier = count - 1;
+  const frontierIsGate = frontier >= 0 && isGate(blocks[frontier]) && !solved.has(frontier);
+  // (no reset needed: the render checks hintAt === frontier, so a stale
+  // value from a previous gate is simply ignored)
+  const [hintAt, setHintAt] = useState<number | null>(null);
+  useEffect(() => {
+    if (!frontierIsGate) return;
+    const b = blocks[frontier];
+    const id = 'id' in b ? (b as { id: string }).id : null;
+    if (!id || !chapter.hints?.[id]) return;
+    const t = setTimeout(() => setHintAt(frontier), STUCK_MS);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frontier, frontierIsGate]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [viewH, setViewH] = useState(0);
@@ -274,6 +295,12 @@ export function ChapterView({
               {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
             </BlockReveal>
           ),
+        )}
+        {hintAt !== null && hintAt === frontier && (
+          <Text style={styles.marginNote} maxFontSizeMultiplier={1.4}>
+            {'margin, in the smaller hand:\n· '}
+            {chapter.hints?.[(blocks[frontier] as { id?: string }).id ?? '']}
+          </Text>
         )}
       </Animated.ScrollView>
     </View>
@@ -622,4 +649,15 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   scroll: { flex: 1, backgroundColor: 'transparent' },
   content: { paddingHorizontal: 26, paddingTop: 104, paddingBottom: 120 },
+  marginNote: {
+    fontFamily: fonts.mono,
+    fontSize: 11,
+    lineHeight: 18,
+    color: colors.faint,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    paddingHorizontal: 30,
+    marginTop: -6,
+    marginBottom: 18,
+  },
 });
