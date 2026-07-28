@@ -25,9 +25,9 @@ export default function SettingsScreen({ onBack }: { onBack: () => void }) {
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back}>‹ the set</Text>
+          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
         </Pressable>
-        <Text style={styles.title}>THE SET</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>THE SET</Text>
         <View style={{ width: 44 }} />
       </View>
 

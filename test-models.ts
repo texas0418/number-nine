@@ -7,7 +7,7 @@ import {
   prevDayKey,
   signalStrength,
 } from './src/models';
-import { visibleCount, solvedGatesBefore } from './src/engine/reveal';
+import { progressIndex, solvedGatesBefore, visibleCount } from './src/engine/reveal';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 
 let failures = 0;
@@ -42,11 +42,44 @@ ok('streak handles unsorted input',
 
 // --- chapter reveal math -------------------------------------------------
 const blocks = BROADCAST_ONE.blocks;
+const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher', 'melody', 'hotspot'];
+const ANSWER_KINDS = ['keypad', 'safe', 'cipher', 'melody'];
 const gateIdxs = blocks
   .map((b, i) => ({ b, i }))
-  .filter(({ b }) => b.kind === 'radio' || b.kind === 'fork')
+  .filter(({ b }) => GATE_KINDS.includes(b.kind))
   .map(({ i }) => i);
-ok('broadcast one has two gates', gateIdxs.length === 2);
+// Ten puzzles (find-safe, safe, radio, cipher, melody, brick, tin, telephone,
+// count, last-word) + 1 fork.
+ok('broadcast one has ten solve-puzzles plus the fork', gateIdxs.length === 11);
+const puzzleCount = blocks.filter(
+  (b) => ANSWER_KINDS.includes(b.kind) || b.kind === 'radio' || b.kind === 'hotspot',
+).length;
+ok('broadcast one has at least nine puzzles', puzzleCount >= 9);
+// Variety doctrine: not just codes — observation (hotspot) and ear (melody)
+// mechanics must be present alongside the entry locks.
+const mechanics = new Set(
+  blocks.filter((b) => GATE_KINDS.includes(b.kind) && b.kind !== 'fork').map((b) => b.kind),
+);
+ok('puzzles span at least six mechanics', mechanics.size >= 6);
+ok('has a non-code observation puzzle', mechanics.has('hotspot'));
+ok('has a non-code ear puzzle', mechanics.has('melody'));
+
+// Puzzle doctrine: no gate's literal answer may appear in the three blocks
+// preceding it (clues must live far from their locks).
+const answerNear = gateIdxs.some((gi) => {
+  const b = blocks[gi];
+  const key =
+    b.kind === 'radio'
+      ? String(b.targetKhz)
+      : ANSWER_KINDS.includes(b.kind)
+        ? (b as { answer: string }).answer
+        : null;
+  if (!key) return false;
+  return blocks.slice(Math.max(0, gi - 3), gi).some((prev) =>
+    JSON.stringify(prev).toUpperCase().includes(key.toUpperCase()),
+  );
+});
+ok('no gate answer within three blocks of its gate', !answerNear);
 ok('reveal stops at first gate',
   visibleCount(blocks, new Set()) === gateIdxs[0] + 1);
 ok('reveal stops at second gate once first solved',
@@ -56,6 +89,17 @@ ok('all blocks visible when gates solved',
 ok('resume reconstructs solved gates',
   [...solvedGatesBefore(blocks, blocks.length)].join(',') === gateIdxs.join(','));
 ok('fresh start reconstructs none', solvedGatesBefore(blocks, 0).size === 0);
+
+// Regression (resume-skipped-a-puzzle bug): after solving ONLY the first gate,
+// the persisted index must NOT mark the second gate solved on resume.
+{
+  const oneSolved = new Set([gateIdxs[0]]);
+  const saved = progressIndex(blocks, oneSolved);
+  ok('progressIndex points at the next unsolved gate', saved === gateIdxs[1]);
+  const restored = solvedGatesBefore(blocks, saved);
+  ok('resume after one solve restores exactly one gate',
+    restored.size === 1 && restored.has(gateIdxs[0]) && !restored.has(gateIdxs[1]));
+}
 ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEnd');
 
 if (failures) {

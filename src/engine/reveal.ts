@@ -5,14 +5,26 @@
 
 import type { ChapterBlock } from '../models';
 
+export const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher', 'melody', 'hotspot'] as const;
+
 export const isGate = (b: ChapterBlock): boolean =>
-  b.kind === 'radio' || b.kind === 'fork';
+  (GATE_KINDS as readonly string[]).includes(b.kind);
 
 /** Blocks visible given the set of solved gate indices: everything up to and
  *  including the first unsolved gate. */
 export function visibleCount(blocks: ChapterBlock[], solved: Set<number>): number {
   for (let i = 0; i < blocks.length; i++)
     if (isGate(blocks[i]) && !solved.has(i)) return i + 1;
+  return blocks.length;
+}
+
+/** PERSISTENCE index: the first UNSOLVED gate's index (or blocks.length when
+ *  none remain). Persist THIS, not visibleCount — visibleCount includes the
+ *  pending gate, so restoring from it marked that gate as already solved
+ *  (the resume-skips-a-puzzle bug). */
+export function progressIndex(blocks: ChapterBlock[], solved: Set<number>): number {
+  for (let i = 0; i < blocks.length; i++)
+    if (isGate(blocks[i]) && !solved.has(i)) return i;
   return blocks.length;
 }
 

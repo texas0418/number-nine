@@ -2,17 +2,24 @@
 // Hosts the typographic engine for one chapter, persisting the furthest
 // revealed block so the reader resumes exactly at the locked door they left.
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ChapterView } from '../engine/ChapterView';
 import { BROADCAST_ONE } from '../chapters/broadcast1';
 import { getProgress, saveProgress } from '../db';
-import { setStaticLevel } from '../audio';
+import { fadeMusicTo, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 export default function StoryScreen({ onBack }: { onBack: () => void }) {
   const chapter = BROADCAST_ONE;
   const [initial] = useState(() => getProgress(chapter.id)?.blockIndex ?? 0);
+
+  // A fresh reading carries the title theme through the chapter card and the
+  // hall (the chapter's music-out cue retires it). Resuming mid-chapter goes
+  // straight back into the house's quiet.
+  useEffect(() => {
+    if (initial > 0) fadeMusicTo(0);
+  }, [initial]);
 
   const advance = useCallback(
     (blockIndex: number) =>
@@ -32,29 +39,38 @@ export default function StoryScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.header}>
-        <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back}>‹ the set</Text>
-        </Pressable>
-        <Text style={styles.title}>{chapter.title}</Text>
-        <View style={styles.spacer} />
-      </View>
+      {/* ChapterView fills the whole screen so the room backdrop is full-bleed
+          behind everything; the header floats over it. */}
       <ChapterView
         chapter={chapter}
         initialBlockIndex={initial}
         onAdvance={advance}
         onComplete={complete}
       />
+      <View style={styles.header} pointerEvents="box-none">
+        <Pressable onPress={onBack} hitSlop={12}>
+          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
+        </Pressable>
+        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+          {chapter.title}
+        </Text>
+        <View style={styles.spacer} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62 },
+  root: { flex: 1, backgroundColor: colors.bg },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 26,
+    paddingTop: 62,
     paddingBottom: 14,
   },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },

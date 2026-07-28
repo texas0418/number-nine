@@ -11,8 +11,9 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BG = (11, 14, 12)
-GLOW = (22, 30, 25)
-BONE = (207, 216, 208)
+GLOW = (30, 42, 34)
+BLOOM = (168, 196, 176)
+BONE = (224, 235, 226)
 PHOSPHOR = (143, 163, 148)
 AMBER = (217, 185, 106)
 TICK = (61, 74, 65)
@@ -26,20 +27,29 @@ def base(size):
     # soft radial glow behind the glyph — the lit dial lamp in a dark room
     glow = Image.new("L", (size * S, size * S), 0)
     gd = ImageDraw.Draw(glow)
-    cx, cy, r = size * S // 2, int(size * S * 0.46), int(size * S * 0.42)
-    gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=110)
+    cx, cy, r = size * S // 2, int(size * S * 0.46), int(size * S * 0.44)
+    gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=170)
     glow = glow.filter(ImageFilter.GaussianBlur(size * S // 8))
     img.paste(Image.new("RGB", img.size, GLOW), (0, 0), glow)
     return img
 
 
-def draw_nine(img, size, color, y_frac=0.44):
+def draw_nine(img, size, color, y_frac=0.44, bloom=0):
     d = ImageDraw.Draw(img)
     font = ImageFont.truetype(FONT, int(size * S * 0.78))
     box = d.textbbox((0, 0), "9", font=font)
     w, h = box[2] - box[0], box[3] - box[1]
     x = (size * S - w) // 2 - box[0]
     y = int(size * S * y_frac) - box[1] - h // 2
+    if bloom:
+        # phosphor bloom: soft blurred copies of the glyph under the crisp one
+        mask = Image.new("L", img.size, 0)
+        ImageDraw.Draw(mask).text((x, y), "9", font=font, fill=255)
+        wide = mask.filter(ImageFilter.GaussianBlur(size * S * 0.045))
+        tight = mask.filter(ImageFilter.GaussianBlur(size * S * 0.012))
+        layer = Image.new("RGB", img.size, BLOOM)
+        img.paste(layer, (0, 0), wide.point(lambda a: a * 0.55))
+        img.paste(layer, (0, 0), tight.point(lambda a: a * 0.85))
     d.text((x, y), "9", font=font, fill=color)
     return d
 
@@ -67,7 +77,7 @@ def ticks(d, size):
 
 def icon(path, size):
     img = base(size)
-    d = draw_nine(img, size, BONE)
+    d = draw_nine(img, size, BONE, bloom=1)
     ticks(d, size)
     needle(img, d, size)
     img.resize((size, size), Image.LANCZOS).save(path)
@@ -77,7 +87,7 @@ def icon(path, size):
 def splash(path, size):
     # splash mark: the 9 alone, phosphor-dim, no chrome
     img = Image.new("RGB", (size * S, size * S), BG)
-    draw_nine(img, size, PHOSPHOR, y_frac=0.5)
+    draw_nine(img, size, PHOSPHOR, y_frac=0.5, bloom=1)
     img.resize((size, size), Image.LANCZOS).save(path)
     print(f"wrote {path}")
 
