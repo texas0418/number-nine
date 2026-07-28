@@ -28,7 +28,9 @@ export const BROADCAST_ONE: Chapter = {
   id: 1,
   title: 'BROADCAST ONE',
   blocks: [
-    { kind: 'chapterCard', number: 'BROADCAST ONE', title: 'The Licence', cue: 'ident' },
+    // No cue on the card: entering the book should be silent under the theme
+    // — the ident belongs to the STATION, and the station hasn't found him yet.
+    { kind: 'chapterCard', number: 'BROADCAST ONE', title: 'The Licence' },
 
     // --- The estrangement (and, planted early, the years on the stone) -----
     { kind: 'room', text: 'The Hall', scene: 'hall' },
