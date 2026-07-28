@@ -127,7 +127,9 @@ export function ChapterView({
       if (blocks[i].kind !== 'radio') continue;
       const top = g.tops.get(i);
       if (top === undefined) continue;
-      const onScreen = top < g.y + g.viewH && top > g.y - RECEIVER_SPAN;
+      // Enter at the reading zone (not the screen edge): peeking over the
+      // bottom mustn't start the static under the stair footsteps (QA).
+      const onScreen = top < g.y + g.viewH * 0.75 && top > g.y - RECEIVER_SPAN;
       if (onScreen) level = Math.max(level, solved.has(i) ? 0.04 : 0.18);
     }
     setStaticLevel(level);
