@@ -71,6 +71,10 @@ export function KnockBlock({
     timers.current.push(
       setTimeout(() => {
         state.current.playing = false;
+        // the pattern's own ending counts as activity — otherwise a ~12s
+        // pattern outruns the 9s stillness clock and the wall repeats
+        // back-to-back, leaving no window to answer in (QA)
+        state.current.lastActivity = Date.now();
         setPlaying(false);
       }, at - GROUP_PAUSE_MS + 300),
     );
