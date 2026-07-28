@@ -25,7 +25,7 @@ import {
   View,
 } from 'react-native';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
-import { cue, stopSfx } from '../audio';
+import { cue, setStaticLevel, stopOneShot, stopSfx } from '../audio';
 import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
@@ -66,7 +66,18 @@ export function ChapterView({
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [viewH, setViewH] = useState(0);
-  const geom = useRef({ y: 0, viewH: 0, tops: new Map<number, number>(), fired: new Set<number>() });
+  const geom = useRef({
+    y: 0,
+    viewH: 0,
+    tops: new Map<number, number>(),
+    heights: new Map<number, number>(),
+    fired: new Set<number>(),
+    // Blocks whose one-shot is (possibly) still sounding: stop-on-exit must
+    // fire ONLY on the transition off-page. A long-gone block calling stop
+    // every scroll tick silenced any LATER block sharing the same cue name
+    // (the second staircase's footsteps died at birth).
+    sounding: new Set<number>(),
+  });
 
   // Room blocks that set an ambient backdrop, in order.
   const roomScenes = useMemo(
@@ -98,19 +109,75 @@ export function ChapterView({
     }
   };
 
+  // The static bed belongs to the RECEIVER, and only while it is on the
+  // page: full while the set is untuned, a faint hiss once locked, gone when
+  // the reader scrolls away. (A one-shot swell cue left it hissing forever.)
+  const RECEIVER_SPAN = 380; // ≈ tuner widget height in pt
+  const updateReceiverBed = () => {
+    const g = geom.current;
+    let level = 0;
+    for (let i = 0; i < count; i++) {
+      if (blocks[i].kind !== 'radio') continue;
+      const top = g.tops.get(i);
+      if (top === undefined) continue;
+      const onScreen = top < g.y + g.viewH && top > g.y - RECEIVER_SPAN;
+      if (onScreen) level = Math.max(level, solved.has(i) ? 0.04 : 0.18);
+    }
+    setStaticLevel(level);
+  };
+
+  // Diegetic one-shots that belong to a PLACE on the page (the study door,
+  // the log's pages, the stairs): they re-arm when the reader scrolls away,
+  // so walking back through the space plays the space again.
+  const REARM_CUES = useMemo(() => new Set(['key-unlock', 'page-turn', 'footsteps']), []);
+  // cue -> gate indices whose solving stops that cue (e.g. answering the
+  // telephone stops the ringing).
+  const stoppedBy = useMemo(() => {
+    const m = new Map<string, number[]>();
+    blocks.forEach((b, i) => {
+      if ('stopsCue' in b && b.stopsCue) m.set(b.stopsCue, [...(m.get(b.stopsCue) ?? []), i]);
+    });
+    return m;
+  }, [blocks]);
+
+  // Already-fired, place-bound block: stop its sound the moment the block
+  // leaves the page — but only on the TRANSITION off-page, so a long-gone
+  // block cannot keep silencing a later block that shares the cue — and
+  // re-arm it once it has dropped well below the fire line again, so
+  // walking back through the space replays it.
+  const rearmOrStop = (i: number, cueName: string, top: number, line: number) => {
+    const g = geom.current;
+    if (!REARM_CUES.has(cueName)) return;
+    const h = g.heights.get(i) ?? 300;
+    if (g.sounding.has(i) && (top + h < g.y || top > g.y + g.viewH)) {
+      g.sounding.delete(i);
+      stopOneShot(cueName);
+    }
+    if (top > line + g.viewH * 0.25) g.fired.delete(i);
+  };
+
   const fireCues = () => {
     const g = geom.current;
     if (g.viewH === 0) return;
     const line = g.y + g.viewH * 0.72;
     for (let i = 0; i < count; i++) {
       const b = blocks[i];
-      if (!('cue' in b) || !b.cue || g.fired.has(i)) continue;
+      if (!('cue' in b) || !b.cue) continue;
       const top = g.tops.get(i);
-      if (top !== undefined && top <= line) {
-        g.fired.add(i);
-        cue(b.cue);
+      if (top === undefined) continue;
+      if (g.fired.has(i)) {
+        rearmOrStop(i, b.cue, top, line);
+        continue;
       }
+      if (top > line) continue;
+      g.fired.add(i);
+      // Never (re)start a loop an already-solved gate was meant to stop —
+      // on a re-read, the answered telephone must NOT ring forever.
+      if (stoppedBy.get(b.cue)?.some((gi) => solved.has(gi))) continue;
+      if (REARM_CUES.has(b.cue)) g.sounding.add(i);
+      cue(b.cue);
     }
+    updateReceiverBed();
     updateScene();
   };
 
@@ -142,8 +209,9 @@ export function ChapterView({
     });
   };
 
-  const recordTop = (index: number) => (y: number) => {
+  const recordTop = (index: number) => (y: number, height?: number) => {
     geom.current.tops.set(index, y);
+    if (height !== undefined) geom.current.heights.set(index, height);
     fireCues();
   };
 
@@ -202,7 +270,7 @@ function BlockReveal({
   scrollY: Animated.Value;
   viewH: number;
   exempt: boolean;
-  onMeasure: (y: number) => void;
+  onMeasure: (y: number, height?: number) => void;
   children: React.ReactNode;
 }) {
   const [top, setTop] = useState<number | null>(null);
@@ -225,7 +293,7 @@ function BlockReveal({
       onLayout={(e: LayoutChangeEvent) => {
         const y = e.nativeEvent.layout.y;
         setTop(y);
-        onMeasure(y);
+        onMeasure(y, e.nativeEvent.layout.height);
       }}
     >
       {children}

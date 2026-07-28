@@ -96,6 +96,11 @@ export function initAudio(): void {
   }
 }
 
+// Live one-shot players by cue name, so a place-bound sound can be CUT the
+// moment its block scrolls off the page (device QA: footsteps kept walking
+// after the stairs were gone).
+const activeOneShots = new Map<string, Set<any>>();
+
 /** Fire a one-shot by name on a fresh player (reliable repeats), then release. */
 export function playSfx(name: string, volume = 0.9): void {
   const a = audio();
@@ -105,7 +110,11 @@ export function playSfx(name: string, volume = 0.9): void {
     const p = a.createAudioPlayer(mod);
     p.volume = volume;
     p.play();
+    let live = activeOneShots.get(name);
+    if (!live) activeOneShots.set(name, (live = new Set()));
+    live.add(p);
     setTimeout(() => {
+      live.delete(p);
       try {
         p.remove?.();
         p.release?.();
@@ -116,6 +125,20 @@ export function playSfx(name: string, volume = 0.9): void {
   } catch {
     /* fail open */
   }
+}
+
+/** Silence any still-playing one-shots of this cue (the page moved on). */
+export function stopOneShot(name: string): void {
+  const live = activeOneShots.get(name);
+  if (!live) return;
+  for (const p of live) {
+    try {
+      p.pause();
+    } catch {
+      /* fail open */
+    }
+  }
+  live.clear(); // their release timers still clean the players up
 }
 
 /** Start a looping effect (e.g. the hall telephone ringing on and on). */
@@ -329,7 +352,7 @@ export function playIdent(): void {
 export function cue(name: string): void {
   // The static bed is ATMOSPHERE — it must never drown the diegetic one-shots
   // (device feedback: "all I hear is static"). Levels kept low.
-  if (name === 'static-swell') setStaticLevel(0.28);
+  if (name === 'static-swell') setStaticLevel(0.18); // was 0.28 — device QA: too loud
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered

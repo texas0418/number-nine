@@ -52,10 +52,10 @@ export function MelodyBox({
     } else {
       // a full wrong phrase: static swallows it, box resets after a beat
       busy.current = true;
-      setStaticLevel(0.38);
+      setStaticLevel(0.26);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Error);
       setTimeout(() => {
-        setStaticLevel(0.08);
+        setStaticLevel(0.05);
         setEntry('');
         busy.current = false;
       }, 700);
