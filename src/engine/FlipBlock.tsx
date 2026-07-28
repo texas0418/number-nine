@@ -22,6 +22,7 @@ export function FlipBlock({
   back,
   targetWord,
   prompt,
+  backPrompt,
   unlockedText,
   solved,
   onSolved,
@@ -31,6 +32,7 @@ export function FlipBlock({
   back: string[];
   targetWord: string;
   prompt: string;
+  backPrompt?: string;
   unlockedText: string;
   solved: boolean;
   onSolved: () => void;
@@ -41,7 +43,7 @@ export function FlipBlock({
   const wasDown = useRef(false);
 
   const turnOver = () => {
-    playSfx('page-turn', 0.5);
+    playSfx('page-flip', 0.6); // ONE sheet turning, not leafing (device QA)
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Light);
     setShowingBack((s) => !s);
   };
@@ -97,7 +99,7 @@ export function FlipBlock({
         )}
       </View>
       <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
-        {done ? unlockedText : prompt}
+        {done ? unlockedText : showingBack ? (backPrompt ?? prompt) : prompt}
       </Text>
     </View>
   );

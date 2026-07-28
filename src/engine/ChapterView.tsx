@@ -46,6 +46,7 @@ import { MelodyBox } from './MelodyBox';
 import { Hotspot } from './Hotspot';
 import { KnockBlock } from './KnockBlock';
 import { FlipBlock } from './FlipBlock';
+import { SealPlate } from './SealPlate';
 import { LampBlock } from './LampBlock';
 import { RotaryDial } from './RotaryDial';
 import { ClockDial } from './ClockDial';
@@ -442,6 +443,16 @@ function renderInstrumentGate(
           {...common}
         />
       );
+    case 'seal':
+      return (
+        <SealPlate
+          image={block.image}
+          caption={block.caption}
+          tornCaption={block.tornCaption}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
     case 'flip':
       return (
         <FlipBlock
@@ -449,6 +460,7 @@ function renderInstrumentGate(
           back={block.back}
           targetWord={block.targetWord}
           prompt={block.prompt}
+          backPrompt={block.backPrompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}
           {...common}

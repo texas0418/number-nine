@@ -37,10 +37,14 @@ export type ChapterBlock =
   // A TOUCH-ECHO puzzle: the phone knocks in grouped counts (haptic-first);
   // the reader knocks the same groups back. `groups` = knocks per group.
   | { kind: 'knock'; id: string; groups: number[]; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // A SEALED thing (an envelope, a parcel): one tap tears it open — an act,
+  // not a puzzle, like the fork — and the page continues below.
+  | { kind: 'seal'; id: string; image: SceneId; caption: string; tornCaption: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // The OVERLEAF: a page with writing on its back. Physically turning the
   // phone face-down (or dragging the dog-ear) turns the page; tap
-  // `targetWord` on the verso to pass.
-  | { kind: 'flip'; id: string; front: string[]; back: string[]; targetWord: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // `targetWord` on the verso to pass. `backPrompt` is the caption while
+  // the verso is up (a nudge that the page wants touching).
+  | { kind: 'flip'; id: string; front: string[]; back: string[]; targetWord: string; prompt: string; backPrompt?: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // SHY INK: `hiddenLine` resolves only when the lamp is turned down —
   // system brightness below threshold, or the in-page wick dragged low.
   // Tap `targetWord` in the revealed line to pass.
@@ -89,6 +93,8 @@ export const AUDIO_CUES = [
   'wire-hum',
   'marsh-wind',
   'morse-key',
+  'knock-far',
+  'letter-tear',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

@@ -51,6 +51,10 @@ const SFX_FILES: Record<string, number> = {
   'wire-hum': require('../assets/audio/wire-hum.wav'),
   'marsh-wind': require('../assets/audio/marsh-wind.wav'),
   'morse-key': require('../assets/audio/morse-key.wav'),
+  'knock-dry': require('../assets/audio/knock-dry.wav'),
+  'knock-far': require('../assets/audio/knock-far.wav'),
+  'letter-tear': require('../assets/audio/letter-tear.wav'),
+  'page-flip': require('../assets/audio/page-flip.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -130,6 +134,64 @@ export function playSfx(name: string, volume = 0.9): void {
     }, 9000); // past the longest one-shot (footsteps ~5s) — releasing early cut its tail
   } catch {
     /* fail open */
+  }
+}
+
+/** Schedule a rhythm of one-shots with PRE-CREATED players so each beat
+ *  starts with no spin-up latency (device QA: fresh-player creation lagged
+ *  the haptics by ~100ms and made knock groups uncountable). `onBeat` fires
+ *  with each beat for haptics/visuals — and still fires when audio is
+ *  unavailable, so the felt channel never depends on the heard one.
+ *  Returns a cancel function. */
+export function playSfxPattern(
+  name: string,
+  delaysMs: number[],
+  volume = 0.7,
+  onBeat?: (i: number) => void,
+): () => void {
+  const a = audio();
+  const mod = SFX_FILES[name];
+  const timers: ReturnType<typeof setTimeout>[] = [];
+  if (!a || mod === undefined) {
+    for (let i = 0; i < delaysMs.length; i++)
+      timers.push(setTimeout(() => onBeat?.(i), delaysMs[i]));
+    return () => timers.forEach(clearTimeout);
+  }
+  try {
+    const players = delaysMs.map(() => {
+      const p = a.createAudioPlayer(mod);
+      p.volume = volume;
+      return p;
+    });
+    const releaseAll = () => {
+      for (const p of players) {
+        try {
+          p.remove?.();
+          p.release?.();
+        } catch {
+          /* fail open */
+        }
+      }
+    };
+    for (let i = 0; i < delaysMs.length; i++)
+      timers.push(
+        setTimeout(() => {
+          try {
+            players[i].play();
+          } catch {
+            /* fail open */
+          }
+          onBeat?.(i);
+        }, delaysMs[i]),
+      );
+    const releaseTimer = setTimeout(releaseAll, Math.max(...delaysMs) + 9000);
+    return () => {
+      timers.forEach(clearTimeout);
+      clearTimeout(releaseTimer);
+      releaseAll();
+    };
+  } catch {
+    return () => {};
   }
 }
 
@@ -371,6 +433,7 @@ export function cue(name: string): void {
   else if (name === 'marsh-wind') startSfxLoop('marsh-wind', 0.3); // until a road is chosen
   else if (name === 'wire-hum') startSfxLoop('wire-hum', 0.22); // until the carrier locks
   else if (name === 'morse-key') playSfx('morse-key', 0.65); // he answers
+  else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape

@@ -284,3 +284,24 @@ def pips(f=950, n_pips=3, on=0.12, off=0.55, gain=0.3):
 
 
 write_wav("pips.wav", pips())
+
+
+# A sealed envelope torn open: an irregular fibrous rip with a starting snap.
+def tear(dur=0.7, seed=97):
+    rng = random.Random(seed)
+    n = int(dur * RATE)
+    out, lp, catch = [], 0.0, 0.6
+    for i in range(n):
+        t = i / n
+        x = rng.random() * 2 - 1
+        lp = 0.5 * lp + 0.5 * x
+        hp = x - lp
+        if rng.random() < 0.006:
+            catch = 1.0  # fibres letting go in little jerks
+        catch *= 0.97
+        env = (0.9 if t < 0.08 else 0.55) * math.sin(math.pi * min(1, t * 1.12)) ** 0.7
+        out.append((hp * 0.55 + lp * 0.2) * (0.35 + catch) * env * 0.5)
+    return out
+
+
+write_wav("letter-tear.wav", tear())

@@ -36,6 +36,7 @@ export const BROADCAST_TWO: Chapter = {
     {
       kind: 'prose',
       text: 'He put the kettle on because the body insists on its small ceremonies even in a house like this one, and while it worked itself up to a whistle he heard, under the floor or in the walls — patient, deliberate, unhurried as everything in this place was unhurried — a knocking.',
+      cue: 'knock-far', // the reader hears what Edwin hears: far off, through plaster
     },
     {
       kind: 'prose',
@@ -54,12 +55,23 @@ export const BROADCAST_TWO: Chapter = {
     },
 
     // --- The study: the letter that was never posted ----------------------
-    { kind: 'room', text: 'The Study', scene: 'study', cue: 'key-unlock' },
+    // No key cue: nothing in this house is locked to HIM anymore, which is
+    // the quieter horror.
+    { kind: 'room', text: 'The Study', scene: 'study' },
     {
       kind: 'prose',
       text: 'The study kept its pipe-sweet cold. Under the desk blotter, squared with the care of a man who squared everything, lay an envelope. It was addressed to Edwin in his brother’s hand and it had never been posted, which meant it had been waiting here longer than the solicitor, longer than the probate men, longer than any of the tidy machinery that shifts a dead man’s things.',
     },
-    { kind: 'plate', image: 'obj-letter', caption: 'the letter · addressed, sealed, never sent' },
+    {
+      // The reveal stops at the sealed envelope; the reader is the one who
+      // finally opens what Halloran never dared to send.
+      kind: 'seal',
+      id: 'b2-letter-seal',
+      image: 'obj-letter',
+      caption: 'the letter · addressed, sealed, never sent',
+      tornCaption: 'the letter · opened, nineteen years late',
+      solveCue: 'letter-tear',
+    },
     {
       kind: 'flip',
       id: 'b2-overleaf',
@@ -78,6 +90,7 @@ export const BROADCAST_TWO: Chapter = {
       ],
       targetWord: 'unanswered',
       prompt: 'the letter · paper this thin carries writing on both faces',
+      backPrompt: 'the pencil pressed hardest on one word',
       unlockedText: 'the page turns in his hands · his brother wrote the important part where the light could not find it',
     },
     {

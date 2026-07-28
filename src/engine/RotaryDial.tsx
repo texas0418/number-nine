@@ -1,11 +1,16 @@
 // src/engine/RotaryDial.tsx
-/* eslint-disable react-hooks/refs -- grab/dialed/done refs feed gesture
-   handlers only; render reads the mirrored useState values. */
+/* eslint-disable react-hooks/refs -- gesture state (grab, travel, dialed)
+   lives in refs read only by handlers; render reads mirrored useState. */
 // A GPO rotary telephone dial, drawn in the page's own ink. Put a finger in
 // a hole and PULL it clockwise to the stop — the travel is the dialing, just
 // as it was in 1963. The letter ring uses the British layout of the era
 // (2 ABC · 3 DEF · 4 GHI · 5 JKL · 6 MN · 7 PRS · 8 TUV · 9 WXY · 0 OQ), so
 // a name can be dialed as its letters. Wrong numbers reach a dead line.
+//
+// Device-QA rebuild (2026-07-28): the PanResponder is created ONCE (a
+// per-render rebuild killed live gestures — the ring never turned); grabs
+// require the touch to LAND ON THE HOLE RING (an angle-only match let the
+// hub trigger holes); travel is tracked in a ref and read on release.
 
 import { useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
@@ -19,8 +24,10 @@ try {
   Haptics = null;
 }
 
-const SIZE = 250;
-const HOLE_R = 96; // radius of the hole ring
+const SIZE = 260;
+const HOLE_R = 98; // radius of the hole ring
+const HOLE_W = 48;
+const RING_BAND = 34; // how far off the hole ring a grab may land
 const STOP_DEG = 40; // the finger stop, clockwise from 12
 const LETTERS: Record<string, string> = {
   '1': '',
@@ -41,12 +48,6 @@ const holeAngle = (d: string): number => {
   return (320 - i * 27 + 360) % 360; // 1 sits high-right; 0 takes the long pull
 };
 
-/** Touch angle in degrees clockwise from 12 o'clock, from view-local x/y. */
-const angleOf = (x: number, y: number): number => {
-  const deg = (Math.atan2(x - SIZE / 2, SIZE / 2 - y) * 180) / Math.PI;
-  return (deg + 360) % 360;
-};
-
 export function RotaryDial({
   answer,
   prompt,
@@ -65,15 +66,19 @@ export function RotaryDial({
   const [done, setDone] = useState(solved);
   const [dialed, setDialed] = useState('');
   const [ringTurn, setRingTurn] = useState(0); // live rotation while pulling
-  const grab = useRef<{ digit: string; startAngle: number; travelNeeded: number } | null>(null);
+  const grab = useRef<{ digit: string; lastAngle: number; travel: number; needed: number } | null>(
+    null,
+  );
   const doneRef = useRef(solved);
   const dialedRef = useRef('');
+  const answerRef = useRef(answer);
+  answerRef.current = answer;
 
   const judge = (next: string) => {
     dialedRef.current = next;
     setDialed(next);
-    if (next.length < answer.length) return;
-    if (next === answer) {
+    if (next.length < answerRef.current.length) return;
+    if (next === answerRef.current) {
       doneRef.current = true;
       setDone(true);
       cue(solveCue);
@@ -91,46 +96,58 @@ export function RotaryDial({
     }
   };
 
+  // Angle in degrees clockwise from 12 o'clock, and radius, from view-local x/y.
+  const polar = (x: number, y: number) => {
+    const dx = x - SIZE / 2;
+    const dy = y - SIZE / 2;
+    const deg = ((Math.atan2(dx, -dy) * 180) / Math.PI + 360) % 360;
+    return { deg, r: Math.hypot(dx, dy) };
+  };
+
   const pan = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => !doneRef.current,
         onMoveShouldSetPanResponder: () => !doneRef.current,
         onPanResponderGrant: (e) => {
-          const a = angleOf(e.nativeEvent.locationX, e.nativeEvent.locationY);
-          // the hole under the finger, if any is close enough to grab
+          const { deg, r } = polar(e.nativeEvent.locationX, e.nativeEvent.locationY);
+          grab.current = null;
+          if (Math.abs(r - HOLE_R) > RING_BAND) return; // hub and rim are inert
           let best: string | null = null;
-          let bestDist = 20;
+          let bestDist = 16;
           for (const d of DIGITS) {
-            const diff = Math.abs(((holeAngle(d) - a + 540) % 360) - 180);
+            const diff = Math.abs(((holeAngle(d) - deg + 540) % 360) - 180);
             if (diff < bestDist) {
               bestDist = diff;
               best = d;
             }
           }
-          grab.current = best
-            ? {
-                digit: best,
-                startAngle: a,
-                travelNeeded: (STOP_DEG - holeAngle(best) + 360) % 360,
-              }
-            : null;
+          if (best)
+            grab.current = {
+              digit: best,
+              lastAngle: deg,
+              travel: 0,
+              needed: (STOP_DEG - holeAngle(best) + 360) % 360,
+            };
         },
         onPanResponderMove: (e) => {
           const g = grab.current;
           if (!g) return;
-          const a = angleOf(e.nativeEvent.locationX, e.nativeEvent.locationY);
-          const travel = (a - g.startAngle + 360) % 360;
-          setRingTurn(Math.min(travel, g.travelNeeded));
+          const { deg } = polar(e.nativeEvent.locationX, e.nativeEvent.locationY);
+          // accumulate signed clockwise travel, tolerant of noisy jumps
+          let step = ((deg - g.lastAngle + 540) % 360) - 180;
+          if (Math.abs(step) > 90) step = 0; // a wild jump, not a pull
+          g.lastAngle = deg;
+          g.travel = Math.max(0, Math.min(g.needed, g.travel + step));
+          setRingTurn(g.travel);
         },
         onPanResponderRelease: () => {
           const g = grab.current;
           grab.current = null;
           setRingTurn(0);
-          if (!g) return;
+          if (!g || g.travel < 12) return; // taps and nudges stay silent
           playSfx('dial-return', 0.55);
-          // reached the stop (with a forgiving last few degrees)?
-          if (ringTurn >= g.travelNeeded - 16) {
+          if (g.travel >= g.needed - 16) {
             Haptics?.selectionAsync?.();
             judge(dialedRef.current + g.digit);
           }
@@ -140,9 +157,8 @@ export function RotaryDial({
           setRingTurn(0);
         },
       }),
-    // ringTurn is read in release via state closure refresh each render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ringTurn, answer],
+    [],
   );
 
   return (
@@ -151,8 +167,8 @@ export function RotaryDial({
         <View style={[styles.ring, { transform: [{ rotate: `${ringTurn}deg` }] }]}>
           {DIGITS.map((d) => {
             const a = (holeAngle(d) * Math.PI) / 180;
-            const x = SIZE / 2 + HOLE_R * Math.sin(a) - 21;
-            const y = SIZE / 2 - HOLE_R * Math.cos(a) - 21;
+            const x = SIZE / 2 + HOLE_R * Math.sin(a) - HOLE_W / 2;
+            const y = SIZE / 2 - HOLE_R * Math.cos(a) - HOLE_W / 2;
             return (
               <View key={d} style={[styles.hole, { left: x, top: y }]}>
                 <Text style={styles.holeDigit} allowFontScaling={false}>
@@ -168,7 +184,7 @@ export function RotaryDial({
           })}
         </View>
         <View style={styles.stop} />
-        <View style={styles.hub}>
+        <View style={styles.hub} pointerEvents="none">
           <View style={styles.dialedRow}>
             {Array.from({ length: answer.length }, (_, i) => (
               <View key={i} style={[styles.dialedDot, i < dialed.length && styles.dialedLit]} />
@@ -196,22 +212,21 @@ const styles = StyleSheet.create({
   ring: { position: 'absolute', width: SIZE, height: SIZE },
   hole: {
     position: 'absolute',
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: HOLE_W,
+    height: HOLE_W,
+    borderRadius: HOLE_W / 2,
     backgroundColor: colors.bg,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.panelBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  holeDigit: { fontFamily: fonts.mono, fontSize: 15, color: colors.prose },
-  holeLetters: { fontFamily: fonts.mono, fontSize: 7, letterSpacing: 1, color: colors.faint },
+  holeDigit: { fontFamily: fonts.mono, fontSize: 17, color: colors.prose },
+  holeLetters: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1, color: colors.muted },
   stop: {
     position: 'absolute',
-    // sits just outside the hole ring at the stop angle
-    left: SIZE / 2 + (HOLE_R + 26) * Math.sin((STOP_DEG * Math.PI) / 180) - 4,
-    top: SIZE / 2 - (HOLE_R + 26) * Math.cos((STOP_DEG * Math.PI) / 180) - 12,
+    left: SIZE / 2 + (HOLE_R + 28) * Math.sin((STOP_DEG * Math.PI) / 180) - 4,
+    top: SIZE / 2 - (HOLE_R + 28) * Math.cos((STOP_DEG * Math.PI) / 180) - 12,
     width: 8,
     height: 24,
     borderRadius: 3,
@@ -219,11 +234,11 @@ const styles = StyleSheet.create({
   },
   hub: {
     position: 'absolute',
-    left: SIZE / 2 - 46,
-    top: SIZE / 2 - 46,
-    width: 92,
-    height: 92,
-    borderRadius: 46,
+    left: SIZE / 2 - 42,
+    top: SIZE / 2 - 42,
+    width: 84,
+    height: 84,
+    borderRadius: 42,
     backgroundColor: colors.bg,
     borderColor: colors.panelBorder,
     borderWidth: StyleSheet.hairlineWidth,

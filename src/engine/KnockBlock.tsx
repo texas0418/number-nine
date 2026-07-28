@@ -7,7 +7,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue, playSfx, setStaticLevel } from '../audio';
+import { cue, playSfx, playSfxPattern, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -18,8 +18,8 @@ try {
 }
 
 const GROUP_GAP_MS = 900; // stillness that closes a group while echoing
-const KNOCK_MS = 260; // spacing of the wall's own knocks
-const GROUP_PAUSE_MS = 1100; // the wall's pause between groups
+const KNOCK_MS = 470; // spacing of the wall's own knocks — countable by feel
+const GROUP_PAUSE_MS = 1200; // the wall's pause between groups
 
 export function KnockBlock({
   groups,
@@ -43,35 +43,38 @@ export function KnockBlock({
   const [current, setCurrent] = useState(0); // taps in the open group
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const gapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelPattern = useRef<(() => void) | null>(null);
 
   useEffect(
     () => () => {
       timers.current.forEach(clearTimeout);
       if (gapTimer.current) clearTimeout(gapTimer.current);
+      cancelPattern.current?.();
     },
     [],
   );
 
-  const knockOnce = () => {
-    playSfx('knock', 0.85);
-    Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
-    setPulse(true);
-    timers.current.push(setTimeout(() => setPulse(false), 130));
-  };
-
-  // The wall speaks: knock out every group with pauses between them.
+  // The wall speaks: the whole pattern is scheduled on pre-created players
+  // (haptic and thud land TOGETHER — a fresh player per knock lagged the
+  // hand by ~100ms and made the groups uncountable).
   const listen = () => {
     if (playing || done) return;
     setPlaying(true);
     setEcho([]);
     setCurrent(0);
+    const delays: number[] = [];
     let at = 350;
     groups.forEach((n) => {
       for (let k = 0; k < n; k++) {
-        timers.current.push(setTimeout(knockOnce, at));
+        delays.push(at);
         at += KNOCK_MS;
       }
       at += GROUP_PAUSE_MS;
+    });
+    cancelPattern.current = playSfxPattern('knock-dry', delays, 0.7, () => {
+      Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
+      setPulse(true);
+      timers.current.push(setTimeout(() => setPulse(false), 130));
     });
     timers.current.push(setTimeout(() => setPlaying(false), at - GROUP_PAUSE_MS + 300));
   };
@@ -100,7 +103,7 @@ export function KnockBlock({
   // The reader knocks back: a tap joins the open group; stillness closes it.
   const tapBack = () => {
     if (done || playing) return;
-    playSfx('knock', 0.6);
+    playSfx('knock-dry', 0.6);
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
     const taps = current + 1;
     setCurrent(taps);
