@@ -45,6 +45,9 @@ const SFX_FILES: Record<string, number> = {
   'station-morse': require('../assets/audio/station-morse.wav'),
   'station-music': require('../assets/audio/station-music.wav'),
   'station-voice': require('../assets/audio/station-voice.wav'),
+  'dial-return': require('../assets/audio/dial-return.wav'),
+  'clock-tick': require('../assets/audio/clock-tick.wav'),
+  pips: require('../assets/audio/pips.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they

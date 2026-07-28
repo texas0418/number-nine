@@ -44,6 +44,12 @@ import { RadioTuner } from './RadioTuner';
 import { Keypad } from './Keypad';
 import { MelodyBox } from './MelodyBox';
 import { Hotspot } from './Hotspot';
+import { KnockBlock } from './KnockBlock';
+import { FlipBlock } from './FlipBlock';
+import { LampBlock } from './LampBlock';
+import { RotaryDial } from './RotaryDial';
+import { ClockDial } from './ClockDial';
+import { CompassBlock } from './CompassBlock';
 import { SceneBackdrop } from './SceneBackdrop';
 import { ProseReveal } from './ProseReveal';
 
@@ -410,6 +416,86 @@ function renderGate(
           solveCue={block.solveCue}
           solved={gateSolved}
           onSolved={() => solveGate(index)}
+        />
+      );
+    default:
+      return renderInstrumentGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** The Broadcast Two instrument gates — the phone's physical senses. */
+function renderInstrumentGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'knock':
+      return (
+        <KnockBlock
+          groups={block.groups}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'flip':
+      return (
+        <FlipBlock
+          front={block.front}
+          back={block.back}
+          targetWord={block.targetWord}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'lamp':
+      return (
+        <LampBlock
+          aboveText={block.aboveText}
+          hiddenLine={block.hiddenLine}
+          targetWord={block.targetWord}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'rotary':
+      return (
+        <RotaryDial
+          answer={block.answer}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'clock':
+      return (
+        <ClockDial
+          answerHour={block.answerHour}
+          answerMinute={block.answerMinute}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'compass':
+      return (
+        <CompassBlock
+          targetDeg={block.targetDeg}
+          toleranceDeg={block.toleranceDeg}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
         />
       );
     default:

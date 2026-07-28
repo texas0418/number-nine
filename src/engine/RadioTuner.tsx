@@ -5,9 +5,10 @@
 // RADIO_LOCK_TOLERANCE_KHZ the signal locks: haptic thunk, station ident,
 // and the story continues below.
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { isRadioLocked, signalStrength } from '../models';
+import { watchTwist } from '../device';
 import {
   playIdent,
   playSfx,
@@ -56,6 +57,40 @@ export function RadioTuner({
   // locationX positioning had a bug: re-grabbing landed the touch on the
   // needle child view, whose locationX ≈ 0 snapped the dial back to band-low.)
   const grantKhz = useRef(0);
+  const thumbDown = useRef(false);
+
+  // TILT ASSIST (B2 mechanics palette): physically turning the phone sweeps
+  // the band — the set turns its face to the signal. Purely additive: the
+  // drag always works, so no-gyro and motor-accessibility paths are intact.
+  useEffect(() => {
+    if (locked) return;
+    const stop = watchTwist((rateZ) => {
+      if (lockedRef.current || thumbDown.current) return;
+      if (Math.abs(rateZ) < 0.08) return; // deadband: reading isn't tuning
+      const next = Math.round(
+        Math.max(bandLowKhz, Math.min(bandHighKhz, khzRef.current - rateZ * 6)),
+      );
+      if (next === khzRef.current) return;
+      khzRef.current = next;
+      setKhz(next);
+      const s = signalStrength(next, targetKhz, bandLowKhz, bandHighKhz);
+      setStaticLevelNow(0.06 + 0.24 * (1 - s));
+      setTunerScan(s);
+      if (isRadioLocked(next, targetKhz)) {
+        // the carrier catches even when found by hand-turning alone
+        lockedRef.current = true;
+        setLocked(true);
+        setKhz(targetKhz);
+        stopTunerScan();
+        setStaticLevelNow(0.04);
+        playIdent();
+        Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
+        onSolved();
+      }
+    });
+    return stop;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locked, bandLowKhz, bandHighKhz, targetKhz]);
   // Phantom-station bookkeeping: last needle position and per-station
   // cooldowns, so sweeping past a neighbour plays its blip once, not a burst.
   const lastBlip = useRef(new Map<number, number>());
@@ -109,11 +144,18 @@ export function RadioTuner({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         grantKhz.current = khzRef.current;
+        thumbDown.current = true;
         startTunerScan();
       },
       onPanResponderMove: (_evt, gs) => applyDelta(gs.dx),
-      onPanResponderRelease: settle,
-      onPanResponderTerminate: settle,
+      onPanResponderRelease: () => {
+        thumbDown.current = false;
+        settle();
+      },
+      onPanResponderTerminate: () => {
+        thumbDown.current = false;
+        settle();
+      },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bandLowKhz, bandHighKhz, targetKhz]);

@@ -11,6 +11,7 @@ export default function TitleScreen({
   streak,
   todaySolved,
   onStory,
+  onStoryTwo,
   onDaily,
   onSettings,
 }: {
@@ -19,6 +20,7 @@ export default function TitleScreen({
   streak: number;
   todaySolved: boolean;
   onStory: () => void;
+  onStoryTwo: () => void;
   onDaily: () => void;
   onSettings: () => void;
 }) {
@@ -37,9 +39,9 @@ export default function TitleScreen({
       <View style={styles.menu}>
         <MenuRow label={storyLabel} hint="the story · chapter one is free" onPress={onStory} />
         <MenuRow
-          label={unlocked ? 'broadcasts two — six' : 'broadcasts two — six · locked'}
-          hint={unlocked ? 'unlocked' : 'one purchase, no ads, ever'}
-          onPress={onStory}
+          label={unlocked ? 'broadcast two' : 'broadcasts two — six · locked'}
+          hint={unlocked ? 'the aerial' : 'one purchase, no ads, ever'}
+          onPress={unlocked ? onStoryTwo : onStory}
           dim={!unlocked}
         />
         <MenuRow

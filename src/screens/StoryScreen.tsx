@@ -4,14 +4,27 @@
 
 import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import type { Chapter } from '../models';
 import { ChapterView } from '../engine/ChapterView';
 import { BROADCAST_ONE } from '../chapters/broadcast1';
+import { BROADCAST_TWO } from '../chapters/broadcast2';
 import { getProgress, saveProgress } from '../db';
 import { setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
-export default function StoryScreen({ onBack }: { onBack: () => void }) {
-  const chapter = BROADCAST_ONE;
+const CHAPTERS: Record<number, Chapter> = {
+  [BROADCAST_ONE.id]: BROADCAST_ONE,
+  [BROADCAST_TWO.id]: BROADCAST_TWO,
+};
+
+export default function StoryScreen({
+  chapterId = 1,
+  onBack,
+}: {
+  chapterId?: number;
+  onBack: () => void;
+}) {
+  const chapter = CHAPTERS[chapterId] ?? BROADCAST_ONE;
   const [initial] = useState(() => getProgress(chapter.id)?.blockIndex ?? 0);
 
   const advance = useCallback(

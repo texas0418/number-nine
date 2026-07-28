@@ -7,8 +7,10 @@ import {
   prevDayKey,
   signalStrength,
 } from './src/models';
-import { progressIndex, solvedGatesBefore, visibleCount } from './src/engine/reveal';
+import { GATE_KINDS as ENGINE_GATE_KINDS, progressIndex, solvedGatesBefore, visibleCount } from './src/engine/reveal';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
+import { BROADCAST_TWO } from './src/chapters/broadcast2';
+import type { ChapterBlock } from './src/models';
 
 let failures = 0;
 const ok = (name: string, cond: boolean, detail = '') => {
@@ -65,21 +67,25 @@ ok('has a non-code observation puzzle', mechanics.has('hotspot'));
 ok('has a non-code ear puzzle', mechanics.has('melody'));
 
 // Puzzle doctrine: no gate's literal answer may appear in the three blocks
-// preceding it (clues must live far from their locks).
-const answerNear = gateIdxs.some((gi) => {
-  const b = blocks[gi];
-  const key =
-    b.kind === 'radio'
-      ? String(b.targetKhz)
-      : ANSWER_KINDS.includes(b.kind)
-        ? (b as { answer: string }).answer
-        : null;
-  if (!key) return false;
-  return blocks.slice(Math.max(0, gi - 3), gi).some((prev) =>
-    JSON.stringify(prev).toUpperCase().includes(key.toUpperCase()),
-  );
-});
-ok('no gate answer within three blocks of its gate', !answerNear);
+// preceding it (clues must live far from their locks). Generalized over
+// every answer-bearing gate kind so new mechanics stay honest.
+const answerKeyOf = (b: ChapterBlock): string | null => {
+  if (b.kind === 'radio') return String(b.targetKhz);
+  if (b.kind === 'clock')
+    return `${String(b.answerHour).padStart(2, '0')}${String(b.answerMinute).padStart(2, '0')}`;
+  if ('answer' in b && typeof (b as { answer?: unknown }).answer === 'string')
+    return (b as { answer: string }).answer;
+  return null;
+};
+const answersNearGates = (bs: ChapterBlock[]): boolean =>
+  bs.some((b, gi) => {
+    const key = answerKeyOf(b);
+    if (!key || !(ENGINE_GATE_KINDS as readonly string[]).includes(b.kind)) return false;
+    return bs.slice(Math.max(0, gi - 3), gi).some((prev) =>
+      JSON.stringify(prev).toUpperCase().includes(key.toUpperCase()),
+    );
+  });
+ok('no gate answer within three blocks of its gate', !answersNearGates(blocks));
 ok('reveal stops at first gate',
   visibleCount(blocks, new Set()) === gateIdxs[0] + 1);
 ok('reveal stops at second gate once first solved',
@@ -101,6 +107,40 @@ ok('fresh start reconstructs none', solvedGatesBefore(blocks, 0).size === 0);
     restored.size === 1 && restored.has(gateIdxs[0]) && !restored.has(gateIdxs[1]));
 }
 ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEnd');
+
+// --- Broadcast Two doctrine ----------------------------------------------
+{
+  const b2 = BROADCAST_TWO.blocks;
+  const CODE_ENTRY = ['keypad', 'safe', 'cipher'];
+  const b2Gates = b2.filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind));
+  ok('b2 has eight puzzles plus the fork', b2Gates.length === 9);
+  // Doctrine (Simon 2026-07-28): at most ONE code-entry puzzle per broadcast
+  // from B2 on.
+  const codeCount = b2.filter((b) => CODE_ENTRY.includes(b.kind)).length;
+  ok('b2 has exactly one code-entry puzzle', codeCount === 1);
+  const b2Mechanics = new Set(
+    b2Gates.filter((b) => b.kind !== 'fork').map((b) => b.kind),
+  );
+  const b1Mechanics = new Set(
+    blocks
+      .filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind) && b.kind !== 'fork')
+      .map((b) => b.kind),
+  );
+  // Ramp doctrine: each broadcast raises the bar — more distinct mechanics
+  // than the one before.
+  ok('b2 spans more mechanics than b1', b2Mechanics.size > b1Mechanics.size);
+  ok('b2 answers stay three blocks from their gates', !answersNearGates(b2));
+  ok('b2 ends with chapterEnd', b2[b2.length - 1].kind === 'chapterEnd');
+  ok('b2 knock pattern spells the new frequency', (() => {
+    const knock = b2.find((b) => b.kind === 'knock');
+    const radio = b2.find((b) => b.kind === 'radio');
+    return (
+      knock?.kind === 'knock' &&
+      radio?.kind === 'radio' &&
+      knock.groups.join('') === String(radio.targetKhz)
+    );
+  })());
+}
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);

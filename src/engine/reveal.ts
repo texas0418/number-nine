@@ -5,7 +5,21 @@
 
 import type { ChapterBlock } from '../models';
 
-export const GATE_KINDS = ['radio', 'fork', 'keypad', 'safe', 'cipher', 'melody', 'hotspot'] as const;
+export const GATE_KINDS = [
+  'radio',
+  'fork',
+  'keypad',
+  'safe',
+  'cipher',
+  'melody',
+  'hotspot',
+  'knock',
+  'flip',
+  'lamp',
+  'rotary',
+  'clock',
+  'compass',
+] as const;
 
 export const isGate = (b: ChapterBlock): boolean =>
   (GATE_KINDS as readonly string[]).includes(b.kind);

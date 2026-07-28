@@ -243,3 +243,44 @@ def garbled_voice(dur=1.7, seed=66):
 
 
 write_wav("station-voice.wav", garbled_voice())
+
+
+# ------------------------------------------------- B2 instrument sounds
+# The rotary dial springing home: a decelerating ratchet clatter.
+def dial_return(dur=0.65, seed=95):
+    rng = random.Random(seed)
+    out = []
+    t = 0.0
+    gap = 0.018
+    while t < dur:
+        n = int(0.012 * RATE)
+        prev = 0.0
+        for i in range(n):
+            prev = 0.5 * prev + 0.5 * (rng.random() * 2 - 1)
+            out.append(prev * math.exp(-i / (n * 0.4)) * 0.38)
+        out += sil(gap)
+        t += 0.012 + gap
+        gap *= 1.13  # the spring runs down
+    return out
+
+
+write_wav("dial-return.wav", dial_return())
+
+# A clock hand clicking over one graduation.
+write_wav("clock-tick.wav", knock_hit(96, 0.18))
+
+# The speaking clock's three pips ("at the third stroke...").
+def pips(f=950, n_pips=3, on=0.12, off=0.55, gain=0.3):
+    out = []
+    ramp = int(0.004 * RATE)
+    for p in range(n_pips):
+        n = int(on * RATE)
+        for i in range(n):
+            env = min(1, i / ramp, (n - i) / ramp)
+            out.append(math.sin(2 * math.pi * f * i / RATE) * gain * env)
+        if p < n_pips - 1:
+            out += sil(off)
+    return out
+
+
+write_wav("pips.wav", pips())
