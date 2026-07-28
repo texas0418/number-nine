@@ -148,6 +148,27 @@ export function ClockDial({
             />
           );
         })}
+        {/* A 24-hour dial must SAY so (device QA: the hand at east read as
+            3 o'clock) — numerals at the majors, military style. */}
+        {[0, 6, 12, 18].map((hr) => {
+          const a = (hr * 15 * Math.PI) / 180;
+          const r = SIZE / 2 - 34;
+          return (
+            <Text
+              key={hr}
+              allowFontScaling={false}
+              style={[
+                styles.numeral,
+                {
+                  left: SIZE / 2 + r * Math.sin(a) - 14,
+                  top: SIZE / 2 - r * Math.cos(a) - 9,
+                },
+              ]}
+            >
+              {String(hr).padStart(2, '0')}
+            </Text>
+          );
+        })}
         <View
           style={[styles.hourHand, { transform: [{ rotate: `${hourDeg}deg` }] }]}
           pointerEvents="none"
@@ -182,6 +203,14 @@ const styles = StyleSheet.create({
   },
   tick: { position: 'absolute', width: 2, height: 8, backgroundColor: colors.panelBorder },
   tickMajor: { height: 14, backgroundColor: colors.dialDim },
+  numeral: {
+    position: 'absolute',
+    width: 28,
+    textAlign: 'center',
+    fontFamily: fonts.mono,
+    fontSize: 12,
+    color: colors.muted,
+  },
   // Hands pivot on their BASE (the clock's center): each sits with its foot
   // at the hub and swings via transformOrigin bottom.
   hourHand: {

@@ -95,6 +95,7 @@ export const AUDIO_CUES = [
   'morse-key',
   'knock-far',
   'letter-tear',
+  'pips-muffled',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

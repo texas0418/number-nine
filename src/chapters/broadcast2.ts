@@ -169,7 +169,11 @@ export const BROADCAST_TWO: Chapter = {
       text: 'The recorded girl told him the time in her bright, buttoned voice, each stroke precisely where a stroke should be. He was already writing it down when, behind her — behind a recording, where there is no behind — something breathed in, the way a singer does before the verse.',
     },
     { kind: 'voice', text: 'AT THE THIRD STROKE, EDWIN, IT WILL BE TOO LATE TO LEAVE.', mirrored: false },
-    { kind: 'thought', text: 'He put the receiver down as one puts down a sleeping animal. The pips went on a moment in the cloth of his sleeve.' },
+    {
+      kind: 'thought',
+      text: 'He put the receiver down as one puts down a sleeping animal. The pips went on a moment in the cloth of his sleeve.',
+      cue: 'pips-muffled',
+    },
     { kind: 'plate', image: 'obj-clock', caption: 'the receiver’s clock · stopped, open-handed' },
     {
       kind: 'clock',

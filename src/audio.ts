@@ -55,6 +55,7 @@ const SFX_FILES: Record<string, number> = {
   'knock-far': require('../assets/audio/knock-far.wav'),
   'letter-tear': require('../assets/audio/letter-tear.wav'),
   'page-flip': require('../assets/audio/page-flip.wav'),
+  'pips-muffled': require('../assets/audio/pips-muffled.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -435,6 +436,7 @@ export function cue(name: string): void {
   else if (name === 'morse-key') playSfx('morse-key', 0.45); // he answers, under the prose
   else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
   else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
+  else if (name === 'pips-muffled') playSfx('pips-muffled', 0.35); // through the sleeve
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
