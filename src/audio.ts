@@ -48,6 +48,9 @@ const SFX_FILES: Record<string, number> = {
   'dial-return': require('../assets/audio/dial-return.wav'),
   'clock-tick': require('../assets/audio/clock-tick.wav'),
   pips: require('../assets/audio/pips.wav'),
+  'wire-hum': require('../assets/audio/wire-hum.wav'),
+  'marsh-wind': require('../assets/audio/marsh-wind.wav'),
+  'morse-key': require('../assets/audio/morse-key.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -160,6 +163,12 @@ export function startSfxLoop(name: string, volume = 0.5): void {
   } catch {
     /* fail open */
   }
+}
+
+/** Stop every looping effect — leaving the story mid-chapter must not carry
+ *  a ringing phone or the marsh wind back to the title screen. */
+export function stopAllLoops(): void {
+  for (const name of [...activeLoops]) stopSfx(name);
 }
 
 /** Stop a looping effect — the moment the line clicks open. */
@@ -359,6 +368,9 @@ export function cue(name: string): void {
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
+  else if (name === 'marsh-wind') startSfxLoop('marsh-wind', 0.3); // until a road is chosen
+  else if (name === 'wire-hum') startSfxLoop('wire-hum', 0.22); // until the carrier locks
+  else if (name === 'morse-key') playSfx('morse-key', 0.65); // he answers
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape

@@ -173,7 +173,7 @@ export const BROADCAST_TWO: Chapter = {
       text: 'He went out the back way with the letter in his breast pocket and the marsh took him the moment the door shut, the way water takes a dropped key. The path to the mast was his brother’s path, trodden to a hard ribbon through nineteen years of nights, and walking it Edwin had the sensation of putting on another man’s coat and finding it cut to his own shoulders.',
       cue: 'footsteps',
     },
-    { kind: 'room', text: 'The Marsh', scene: 'marsh' },
+    { kind: 'room', text: 'The Marsh', scene: 'marsh', cue: 'marsh-wind' },
     { kind: 'plate', image: 'obj-mast', caption: 'the mast · his brother’s wire, come down' },
     {
       kind: 'prose',
@@ -191,6 +191,7 @@ export const BROADCAST_TWO: Chapter = {
     {
       kind: 'prose',
       text: 'The wire rose taut and true, and at once — not after a decent interval, not with the shyness of machinery, but at once — it began to sing. A thin aeolian note, wind on a tight string, except that the air over the marsh did not move at all.',
+      cue: 'wire-hum',
     },
 
     // --- The fork: both roads walk him home -------------------------------
@@ -201,6 +202,7 @@ export const BROADCAST_TWO: Chapter = {
       rightLabel: 'THE HOUSE',
       right: 'He went straight back in, telling himself a man may choose his own doorway, and felt the house receive the choice the way a chess player receives a move he has prepared against — graciously, with something underneath the grace.',
       join: 'Either way the evening found him where the evening had always intended: at the top of the cellar stairs with the receiver under his arm, the true time in his pocket, and the wire outside singing into a windless sky.',
+      stopsCue: 'marsh-wind', // a road chosen: the door shuts on the weather
     },
     {
       kind: 'staircase',
@@ -229,6 +231,7 @@ export const BROADCAST_TWO: Chapter = {
       targetKhz: 4715,
       lockedText: 'drag the dial · or turn the whole set in your hands · she is higher than she was',
       unlockedText: 'carrier found · higher by exactly what she was owed',
+      stopsCue: 'wire-hum', // she takes the wire for herself
     },
     { kind: 'voice', text: 'GOOD EVENING, LISTENER. YOU KEPT THE HOUR. SHE ALWAYS SAID YOU WOULD.', mirrored: false, cue: 'ident' },
     {
@@ -264,7 +267,7 @@ export const BROADCAST_TWO: Chapter = {
     {
       kind: 'prose',
       text: 'Edwin Marsh put two fingers on his brother’s key, and answered.',
-      cue: 'unlock',
+      cue: 'morse-key',
     },
     {
       kind: 'prose',

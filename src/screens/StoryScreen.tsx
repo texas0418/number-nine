@@ -2,14 +2,14 @@
 // Hosts the typographic engine for one chapter, persisting the furthest
 // revealed block so the reader resumes exactly at the locked door they left.
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { Chapter } from '../models';
 import { ChapterView } from '../engine/ChapterView';
 import { BROADCAST_ONE } from '../chapters/broadcast1';
 import { BROADCAST_TWO } from '../chapters/broadcast2';
 import { getProgress, saveProgress } from '../db';
-import { setStaticLevel } from '../audio';
+import { setStaticLevel, stopAllLoops } from '../audio';
 import { colors, fonts } from '../theme';
 
 const CHAPTERS: Record<number, Chapter> = {
@@ -26,6 +26,10 @@ export default function StoryScreen({
 }) {
   const chapter = CHAPTERS[chapterId] ?? BROADCAST_ONE;
   const [initial] = useState(() => getProgress(chapter.id)?.blockIndex ?? 0);
+
+  // Leaving the page silences the page: no ringing phone or marsh wind may
+  // follow the reader back to the title screen.
+  useEffect(() => () => stopAllLoops(), []);
 
   const advance = useCallback(
     (blockIndex: number) =>

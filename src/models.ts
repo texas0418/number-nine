@@ -22,7 +22,7 @@ export type ChapterBlock =
   | { kind: 'logbook'; lines: string[]; cue?: AudioCue }
   // An inline framed object image (the receiver, the telephone, the safe…).
   | { kind: 'plate'; image: SceneId; caption?: string; cue?: AudioCue }
-  | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string }
+  | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string; stopsCue?: AudioCue }
   | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
@@ -86,6 +86,9 @@ export const AUDIO_CUES = [
   'hinge-creak',
   'scrape',
   'pips',
+  'wire-hum',
+  'marsh-wind',
+  'morse-key',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 
