@@ -112,7 +112,7 @@ export function playSfx(name: string, volume = 0.9): void {
       } catch {
         /* fail open */
       }
-    }, 5000);
+    }, 9000); // past the longest one-shot (footsteps ~5s) — releasing early cut its tail
   } catch {
     /* fail open */
   }
@@ -333,10 +333,8 @@ export function cue(name: string): void {
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
-  else if (name === 'footsteps') playSfx('footsteps', 0.5); // under the prose, not over it
+  else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
-  else if (name === 'music-in') fadeMusicTo(0.3); // the theme returns (finale)
-  else if (name === 'music-out') fadeMusicTo(0); // hands off to the static bed
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 

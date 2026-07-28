@@ -76,14 +76,11 @@ def creak(dur, f0, f1, seed, gain=0.42):
     return out
 
 
-hinge = mix(
-    creak(0.7, 430, 300, seed=71),
-    sil(0.0),
-) + sil(0.12) + mix(
-    creak(0.45, 340, 250, seed=72, gain=0.3),
-    thunk(85, 0.3, 0.25),
-)
-write_wav("hinge-creak.wav", hinge)
+# NOTE: hinge-creak.wav is now a SOURCED RECORDING (see CREDITS.md) — this
+# script no longer writes it, so a rerun can't clobber the real thing.
+# Fallback if the recording is ever lost:
+#   write_wav("hinge-creak.wav", mix(creak(0.7, 430, 300, seed=71), sil(0.0))
+#             + sil(0.12) + mix(creak(0.45, 340, 250, seed=72, gain=0.3), thunk(85, 0.3, 0.25)))
 
 
 # ------------------------------------------------------------ brick scrape
@@ -106,8 +103,10 @@ def grit(dur=0.85, seed=81):
     return out
 
 
-scrape = mix(grit(), thunk(58, 0.7, 0.28)) + mix(thunk(74, 0.22, 0.5), grit(0.12, seed=82))
-write_wav("scrape.wav", scrape)
+# NOTE: scrape.wav is now a SOURCED RECORDING (see CREDITS.md) — not written
+# here anymore. Fallback if the recording is ever lost:
+#   write_wav("scrape.wav", mix(grit(), thunk(58, 0.7, 0.28))
+#             + mix(thunk(74, 0.22, 0.5), grit(0.12, seed=82)))
 
 
 # ------------------------------------------------------------------- knock
@@ -127,23 +126,30 @@ write_wav("knock.wav", knock_hit(91, 0.55))
 
 
 # --------------------------------------------------------------- page turn
-# Softer, higher, drier than the old swish (QA: the old one read as the
-# static bed swelling, not paper).
-def paper(dur=0.4, seed=52):
+# Leafing through the log: three quick paper flicks, each a short bright
+# swish with a soft edge-crackle at its peak. (QA history: the first swish
+# read as the static bed swelling; a single soft flick was "not good" —
+# multiple flicks read as PAGES. Placeholder until a good recording lands.)
+def flick(dur, seed, gain):
     rng = random.Random(seed)
     n = int(dur * RATE)
     out, lp = [], 0.0
     for i in range(n):
         t = i / n
         x = rng.random() * 2 - 1
-        lp = 0.72 * lp + 0.28 * x
-        hp = x - lp                          # keep only the papery top end
-        env = math.sin(math.pi * t) ** 2.2
-        out.append(hp * env * 0.24)
+        lp = 0.6 * lp + 0.4 * x
+        hp = x - lp                          # papery top end only
+        env = math.sin(math.pi * t) ** 3
+        crackle = 1.6 if 0.42 < t < 0.5 and rng.random() < 0.3 else 1.0
+        out.append(hp * env * gain * crackle)
     return out
 
 
-write_wav("page-turn.wav", paper() + sil(0.03) + paper(0.16, seed=53))
+# NOTE: page-turn.wav is now a SOURCED RECORDING (see CREDITS.md) — not
+# written here anymore. Fallback if the recording is ever lost:
+#   write_wav("page-turn.wav",
+#             flick(0.22, 52, 0.3) + sil(0.1) + flick(0.2, 53, 0.34)
+#             + sil(0.12) + flick(0.3, 54, 0.26))
 
 
 # ------------------------------------------------------------ tune whistle

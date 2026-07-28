@@ -17,7 +17,7 @@ import GalleryScreen from './src/screens/GalleryScreen';
 import { getProgress, isDaySolved, listSolvedDays } from './src/db';
 import { currentStreak, dayKeyFromMs } from './src/models';
 import { initPurchases } from './src/proAccess';
-import { initAudio, setStaticLevel, startMusic, stopMusic } from './src/audio';
+import { initAudio, setStaticLevel, startMusic } from './src/audio';
 import { maybeAskForReview } from './src/review';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 
@@ -41,16 +41,11 @@ function Root() {
     return () => sub.remove();
   }, []);
 
-  // The theme bookends the fiction: full on the title screen, carried into
-  // the story (the chapter's own music-in/music-out cues take over from
-  // there), low under an already-received signal, silent everywhere else.
+  // The theme loops through the ENTIRE game (Simon 2026-07-28; the earlier
+  // bookend design is retired). Static is reserved for receiver moments.
   useEffect(() => {
-    if (screen === 'title') startMusic();
-    else if (screen === 'daily') {
-      if (isDaySolved(dayKeyFromMs(Date.now()))) startMusic(0.16);
-      else stopMusic();
-    } else if (screen !== 'story') stopMusic();
-  }, [screen]);
+    startMusic();
+  }, []);
 
   // The AFTERGLOW review ask: only ever on the title screen — never over the
   // fiction, never at the paywall. Eligibility: Broadcast One completed, or a
@@ -76,7 +71,7 @@ function Root() {
       streak={currentStreak(listSolvedDays(), todayKey)}
       todaySolved={isDaySolved(todayKey)}
       onStory={() => {
-        setStaticLevel(0.1);
+        setStaticLevel(0); // no ambient bed — static enters with the receiver
         setScreen('story');
       }}
       onDaily={() => setScreen('daily')}
