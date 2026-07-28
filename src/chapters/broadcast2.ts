@@ -259,6 +259,7 @@ export const BROADCAST_TWO: Chapter = {
       kind: 'prose',
       text: 'A sending key. Home-made, beautiful, the contacts worn bright — worn, which meant used, which meant his brother had built the answer years ago and never once dared it. The wire outside sang its thin note into the still dark. The channel stayed open. The little clock gave its tick, and its tock, like a tongue clicking gently at a hesitating child.',
     },
+    { kind: 'plate', image: 'obj-key', caption: 'the sending key · built years ago, for this' },
     { kind: 'thought', text: 'Nineteen years of listening, and the whole time the house had only ever wanted one thing said back.' },
     {
       kind: 'prose',

@@ -69,7 +69,8 @@ export type SceneId =
   | 'obj-cards'
   | 'obj-clock'
   | 'obj-compass'
-  | 'obj-mast';
+  | 'obj-mast'
+  | 'obj-key';
 
 export const AUDIO_CUES = [
   'static-swell',

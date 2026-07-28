@@ -21,6 +21,7 @@ export const SCENES: Record<SceneId, number> = {
   'obj-clock': require('../../assets/scenes/obj-clock.jpg'),
   'obj-compass': require('../../assets/scenes/obj-compass.jpg'),
   'obj-mast': require('../../assets/scenes/obj-mast.jpg'),
+  'obj-key': require('../../assets/scenes/obj-key.jpg'),
 };
 
 /** Room backdrops (full-screen ambient), distinct from object plates. */
