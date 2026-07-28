@@ -72,6 +72,11 @@ export function ChapterView({
     tops: new Map<number, number>(),
     heights: new Map<number, number>(),
     fired: new Set<number>(),
+    // Blocks whose one-shot is (possibly) still sounding: stop-on-exit must
+    // fire ONLY on the transition off-page. A long-gone block calling stop
+    // every scroll tick silenced any LATER block sharing the same cue name
+    // (the second staircase's footsteps died at birth).
+    sounding: new Set<number>(),
   });
 
   // Room blocks that set an ambient backdrop, in order.
@@ -146,10 +151,14 @@ export function ChapterView({
       if (top === undefined) continue;
       if (g.fired.has(i)) {
         if (REARM_CUES.has(b.cue)) {
-          // The sound stops the moment its block is off the page, in either
-          // direction — the space is only audible while you are in it.
+          // The sound stops the moment its block leaves the page, in either
+          // direction — but only on the TRANSITION off-page, so it cannot
+          // keep silencing a later block that shares the cue.
           const h = g.heights.get(i) ?? 300;
-          if (top + h < g.y || top > g.y + g.viewH) stopOneShot(b.cue);
+          if (g.sounding.has(i) && (top + h < g.y || top > g.y + g.viewH)) {
+            g.sounding.delete(i);
+            stopOneShot(b.cue);
+          }
           // Re-arm once the block has dropped well below the fire line again
           // (reader scrolled back up past it) so returning replays it.
           if (top > line + g.viewH * 0.25) g.fired.delete(i);
@@ -161,6 +170,7 @@ export function ChapterView({
         // Never (re)start a loop an already-solved gate was meant to stop —
         // on a re-read, the answered telephone must NOT ring forever.
         if (stoppedBy.get(b.cue)?.some((gi) => solved.has(gi))) continue;
+        if (REARM_CUES.has(b.cue)) g.sounding.add(i);
         cue(b.cue);
       }
     }
