@@ -434,6 +434,7 @@ export function cue(name: string): void {
   else if (name === 'wire-hum') startSfxLoop('wire-hum', 0.22); // until the carrier locks
   else if (name === 'morse-key') playSfx('morse-key', 0.65); // he answers
   else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
+  else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape

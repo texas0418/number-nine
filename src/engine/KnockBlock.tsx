@@ -9,7 +9,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue, playSfx, setStaticLevel } from '../audio';
+import { cue, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -101,7 +101,7 @@ export function KnockBlock({
   // The reader knocks back: a tap joins the open group; stillness closes it.
   const tapBack = () => {
     if (done || playing) return;
-    playSfx('knock-dry', 0.6);
+    // fully silent gate (QA r3): the exchange is felt, never heard
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
     const taps = current + 1;
     setCurrent(taps);

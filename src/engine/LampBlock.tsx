@@ -69,6 +69,10 @@ export function LampBlock({
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
+        // hold the gesture against ScrollView theft (see RotaryDial) — the
+        // wick drag is vertical, the easiest of all to steal
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: () => {
           wickStart.current = wick;
         },

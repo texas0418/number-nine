@@ -97,6 +97,9 @@ export function CompassBlock({
       PanResponder.create({
         onStartShouldSetPanResponder: () => !doneRef.current,
         onMoveShouldSetPanResponder: () => !doneRef.current,
+        // hold the gesture against ScrollView theft (see RotaryDial)
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: (e) => {
           dragStart.current = {
             angle: angleOf(e.nativeEvent.locationX, e.nativeEvent.locationY),

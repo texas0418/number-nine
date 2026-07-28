@@ -109,6 +109,11 @@ export function RotaryDial({
       PanResponder.create({
         onStartShouldSetPanResponder: () => !doneRef.current,
         onMoveShouldSetPanResponder: () => !doneRef.current,
+        // NEVER surrender a live pull to the scroll view — circular drags
+        // have vertical components, the ScrollView requests the gesture,
+        // and the default (yes) fired an instant phantom release (QA r3).
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: (e) => {
           const { deg, r } = polar(e.nativeEvent.locationX, e.nativeEvent.locationY);
           grab.current = null;

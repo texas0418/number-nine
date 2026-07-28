@@ -86,6 +86,9 @@ export function ClockDial({
       PanResponder.create({
         onStartShouldSetPanResponder: () => !state.current.done,
         onMoveShouldSetPanResponder: () => !state.current.done,
+        // hold the gesture against ScrollView theft (see RotaryDial)
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: (e) => {
           const a = angleOf(e.nativeEvent.locationX, e.nativeEvent.locationY);
           const hDeg = ((state.current.hour + state.current.minute / 60) * 15) % 360;
