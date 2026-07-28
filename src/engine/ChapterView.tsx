@@ -134,9 +134,13 @@ export function ChapterView({
   };
 
   // Diegetic one-shots that belong to a PLACE on the page (the study door,
-  // the log's pages, the stairs): they re-arm when the reader scrolls away,
-  // so walking back through the space plays the space again.
-  const REARM_CUES = useMemo(() => new Set(['key-unlock', 'page-turn', 'footsteps']), []);
+  // the log's pages, the stairs, the sending key): they re-arm when the
+  // reader scrolls away, so walking back through the space plays the space
+  // again — from either direction.
+  const REARM_CUES = useMemo(
+    () => new Set(['key-unlock', 'page-turn', 'footsteps', 'morse-key']),
+    [],
+  );
   // cue -> gate indices whose solving stops that cue (e.g. answering the
   // telephone stops the ringing).
   const stoppedBy = useMemo(() => {
@@ -147,20 +151,22 @@ export function ChapterView({
     return m;
   }, [blocks]);
 
-  // Already-fired, place-bound block: stop its sound the moment the block
-  // leaves the page — but only on the TRANSITION off-page, so a long-gone
-  // block cannot keep silencing a later block that shares the cue — and
-  // re-arm it once it has dropped well below the fire line again, so
-  // walking back through the space replays it.
-  const rearmOrStop = (i: number, cueName: string, top: number, line: number) => {
+  // Already-fired, place-bound block: the sound stops the moment its block
+  // leaves the page (either direction) and re-arms right there — returning
+  // to the place replays it, whether the reader comes from above or below.
+  // Stop fires only on the TRANSITION off-page, so a long-gone block cannot
+  // keep silencing a later block that shares the cue.
+  const rearmOrStop = (i: number, cueName: string, top: number, _line: number) => {
     const g = geom.current;
     if (!REARM_CUES.has(cueName)) return;
     const h = g.heights.get(i) ?? 300;
-    if (g.sounding.has(i) && (top + h < g.y || top > g.y + g.viewH)) {
+    const offPage = top + h < g.y || top > g.y + g.viewH;
+    if (!offPage) return;
+    if (g.sounding.has(i)) {
       g.sounding.delete(i);
       stopOneShot(cueName);
     }
-    if (top > line + g.viewH * 0.25) g.fired.delete(i);
+    g.fired.delete(i);
   };
 
   const fireCues = () => {

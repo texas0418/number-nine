@@ -432,7 +432,7 @@ export function cue(name: string): void {
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
   else if (name === 'marsh-wind') startSfxLoop('marsh-wind', 0.3); // until a road is chosen
   else if (name === 'wire-hum') startSfxLoop('wire-hum', 0.22); // until the carrier locks
-  else if (name === 'morse-key') playSfx('morse-key', 0.65); // he answers
+  else if (name === 'morse-key') playSfx('morse-key', 0.45); // he answers, under the prose
   else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
   else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
