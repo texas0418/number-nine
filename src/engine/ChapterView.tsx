@@ -140,6 +140,22 @@ export function ChapterView({
     return m;
   }, [blocks]);
 
+  // Already-fired, place-bound block: stop its sound the moment the block
+  // leaves the page — but only on the TRANSITION off-page, so a long-gone
+  // block cannot keep silencing a later block that shares the cue — and
+  // re-arm it once it has dropped well below the fire line again, so
+  // walking back through the space replays it.
+  const rearmOrStop = (i: number, cueName: string, top: number, line: number) => {
+    const g = geom.current;
+    if (!REARM_CUES.has(cueName)) return;
+    const h = g.heights.get(i) ?? 300;
+    if (g.sounding.has(i) && (top + h < g.y || top > g.y + g.viewH)) {
+      g.sounding.delete(i);
+      stopOneShot(cueName);
+    }
+    if (top > line + g.viewH * 0.25) g.fired.delete(i);
+  };
+
   const fireCues = () => {
     const g = geom.current;
     if (g.viewH === 0) return;
@@ -150,29 +166,16 @@ export function ChapterView({
       const top = g.tops.get(i);
       if (top === undefined) continue;
       if (g.fired.has(i)) {
-        if (REARM_CUES.has(b.cue)) {
-          // The sound stops the moment its block leaves the page, in either
-          // direction — but only on the TRANSITION off-page, so it cannot
-          // keep silencing a later block that shares the cue.
-          const h = g.heights.get(i) ?? 300;
-          if (g.sounding.has(i) && (top + h < g.y || top > g.y + g.viewH)) {
-            g.sounding.delete(i);
-            stopOneShot(b.cue);
-          }
-          // Re-arm once the block has dropped well below the fire line again
-          // (reader scrolled back up past it) so returning replays it.
-          if (top > line + g.viewH * 0.25) g.fired.delete(i);
-        }
+        rearmOrStop(i, b.cue, top, line);
         continue;
       }
-      if (top <= line) {
-        g.fired.add(i);
-        // Never (re)start a loop an already-solved gate was meant to stop —
-        // on a re-read, the answered telephone must NOT ring forever.
-        if (stoppedBy.get(b.cue)?.some((gi) => solved.has(gi))) continue;
-        if (REARM_CUES.has(b.cue)) g.sounding.add(i);
-        cue(b.cue);
-      }
+      if (top > line) continue;
+      g.fired.add(i);
+      // Never (re)start a loop an already-solved gate was meant to stop —
+      // on a re-read, the answered telephone must NOT ring forever.
+      if (stoppedBy.get(b.cue)?.some((gi) => solved.has(gi))) continue;
+      if (REARM_CUES.has(b.cue)) g.sounding.add(i);
+      cue(b.cue);
     }
     updateReceiverBed();
     updateScene();
