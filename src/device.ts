@@ -117,6 +117,144 @@ export function watchHeading(cb: (deg: number) => void): () => void {
   }
 }
 
+let batteryMod: any | null | undefined;
+function battery(): any | null {
+  if (batteryMod !== undefined) return batteryMod;
+  if (!hasNative('ExpoBattery')) return (batteryMod = null);
+  try {
+    batteryMod = require('expo-battery');
+  } catch {
+    batteryMod = null;
+  }
+  return batteryMod;
+}
+
+/** Subscribe to STILLNESS: true after the phone has rested (gyro magnitude
+ *  under a whisper) for `holdMs`, false the moment it stirs. B3's "be
+ *  still — she can hear your hands". No sensor → never fires; the widget's
+ *  touch fallback carries it. */
+export function watchStillness(holdMs: number, cb: (still: boolean) => void): () => void {
+  const s = sensors();
+  if (!s?.Gyroscope) return () => {};
+  try {
+    s.Gyroscope.setUpdateInterval(120);
+    let stillSince: number | null = null;
+    let reported = false;
+    const sub = s.Gyroscope.addListener((d: { x?: number; y?: number; z?: number }) => {
+      const mag = Math.hypot(d?.x ?? 0, d?.y ?? 0, d?.z ?? 0);
+      const now = Date.now();
+      if (mag < 0.045) {
+        if (stillSince === null) stillSince = now;
+        if (!reported && now - stillSince >= holdMs) {
+          reported = true;
+          cb(true);
+        }
+      } else {
+        stillSince = null;
+        if (reported) {
+          reported = false;
+          cb(false);
+        }
+      }
+    });
+    return () => {
+      try {
+        sub.remove();
+      } catch {
+        /* fail open */
+      }
+    };
+  } catch {
+    return () => {};
+  }
+}
+
+/** Subscribe to SHAKES: fires once per distinct shake burst (accelerometer
+ *  magnitude spiking well past gravity). Fail-open as ever. */
+export function watchShake(cb: () => void): () => void {
+  const s = sensors();
+  if (!s?.Accelerometer) return () => {};
+  try {
+    s.Accelerometer.setUpdateInterval(80);
+    let lastFire = 0;
+    const sub = s.Accelerometer.addListener((d: { x?: number; y?: number; z?: number }) => {
+      const mag = Math.hypot(d?.x ?? 0, d?.y ?? 0, d?.z ?? 0);
+      const now = Date.now();
+      if (mag > 1.9 && now - lastFire > 450) {
+        lastFire = now;
+        cb();
+      }
+    });
+    return () => {
+      try {
+        sub.remove();
+      } catch {
+        /* fail open */
+      }
+    };
+  } catch {
+    return () => {};
+  }
+}
+
+/** Subscribe to portrait INVERSION (the phone physically upside down).
+ *  Accelerometer y: right-way-up ≈ -1, inverted ≈ +1. */
+export function watchInversion(cb: (inverted: boolean) => void): () => void {
+  const s = sensors();
+  if (!s?.Accelerometer) return () => {};
+  try {
+    s.Accelerometer.setUpdateInterval(150);
+    let wasInverted = false;
+    const sub = s.Accelerometer.addListener((d: { y?: number }) => {
+      if (typeof d?.y !== 'number') return;
+      const inverted = d.y > 0.6;
+      if (inverted !== wasInverted) {
+        wasInverted = inverted;
+        cb(inverted);
+      }
+    });
+    return () => {
+      try {
+        sub.remove();
+      } catch {
+        /* fail open */
+      }
+    };
+  } catch {
+    return () => {};
+  }
+}
+
+/** Subscribe to MAINS power (the charger = the set's hunger). Calls back
+ *  with true while plugged in. No native module → never fires; the widget's
+ *  hold-the-plug fallback carries the gate. */
+export function watchMains(cb: (plugged: boolean) => void): () => void {
+  const b = battery();
+  if (!b?.getBatteryStateAsync) return () => {};
+  let live = true;
+  let sub: { remove?: () => void } | null = null;
+  try {
+    const CHARGING = 2; // Battery.BatteryState.CHARGING
+    const FULL = 3;
+    b.getBatteryStateAsync()
+      .then((st: number) => live && cb(st === CHARGING || st === FULL))
+      .catch(() => {});
+    sub = b.addBatteryStateListener?.(({ batteryState }: { batteryState: number }) => {
+      if (live) cb(batteryState === CHARGING || batteryState === FULL);
+    });
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    live = false;
+    try {
+      sub?.remove?.();
+    } catch {
+      /* fail open */
+    }
+  };
+}
+
 /** Poll the SYSTEM screen brightness (0..1) — read-only, no permission on
  *  iOS. Calls back on change; returns a stop function. When unavailable the
  *  callback simply never fires and the in-page fallback carries the puzzle. */
