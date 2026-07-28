@@ -56,6 +56,9 @@ export const AUDIO_CUES = [
   'phone-ring',
   'lamp-off',
   'page-turn',
+  'footsteps',
+  'hinge-creak',
+  'scrape',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

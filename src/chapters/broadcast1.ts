@@ -76,6 +76,7 @@ export const BROADCAST_ONE: Chapter = {
       target: { x: 0.13, y: 0.33, w: 0.2, h: 0.18 },
       prompt: 'the study wall',
       unlockedText: 'the watercolour swings on a hinge · behind it, steel',
+      solveCue: 'hinge-creak',
     },
     {
       kind: 'prose',
@@ -132,6 +133,7 @@ export const BROADCAST_ONE: Chapter = {
     {
       kind: 'staircase',
       direction: 'down',
+      cue: 'footsteps',
       steps: [
         'The cellar stairs went down eleven steps,',
         'and the dark came up at the sixth,',
@@ -214,6 +216,7 @@ export const BROADCAST_ONE: Chapter = {
       target: { x: 0.01, y: 0.53, w: 0.23, h: 0.17 },
       prompt: 'the cellar wall',
       unlockedText: 'the brick comes away · behind it, a tin box, wartime issue',
+      solveCue: 'scrape',
     },
     {
       kind: 'prose',
@@ -252,6 +255,7 @@ export const BROADCAST_ONE: Chapter = {
     {
       kind: 'staircase',
       direction: 'up',
+      cue: 'footsteps',
       steps: [
         'He took the eleven steps two at a time,',
         'the cold peeling off him like a wet coat,',

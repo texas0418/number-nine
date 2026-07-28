@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
-import { cue, setStaticLevel } from '../audio';
+import { cue, playSfx, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -59,7 +59,8 @@ export function Hotspot({
       onSolved();
     } else {
       // a dull knock on the wrong spot; the room absorbs it
-      setStaticLevel(0.3);
+      playSfx('knock', 0.7);
+      setStaticLevel(0.2);
       Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
       setTimeout(() => setStaticLevel(0.08), 350);
     }

@@ -17,7 +17,7 @@ import GalleryScreen from './src/screens/GalleryScreen';
 import { getProgress, isDaySolved, listSolvedDays } from './src/db';
 import { currentStreak, dayKeyFromMs } from './src/models';
 import { initPurchases } from './src/proAccess';
-import { initAudio, setStaticLevel } from './src/audio';
+import { initAudio, setStaticLevel, startMusic, stopMusic } from './src/audio';
 import { maybeAskForReview } from './src/review';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 
@@ -40,6 +40,13 @@ function Root() {
     const sub = Linking.addEventListener('url', (e) => handle(e.url));
     return () => sub.remove();
   }, []);
+
+  // The title theme plays ONLY over the set switched off; the fiction and the
+  // signal keep their own quiet (device QA: "more variation in sounds").
+  useEffect(() => {
+    if (screen === 'title') startMusic();
+    else stopMusic();
+  }, [screen]);
 
   // The AFTERGLOW review ask: only ever on the title screen — never over the
   // fiction, never at the paywall. Eligibility: Broadcast One completed, or a

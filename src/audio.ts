@@ -7,6 +7,8 @@
 // story and tuner modulate, and the six-note station ident. The full palette
 // (voice, Morse, haptic knocks) is a pre-ship task.
 
+import { AppState } from 'react-native';
+
 let mod: any | null | undefined;
 
 function audio(): any | null {
@@ -36,11 +38,46 @@ const SFX_FILES: Record<string, number> = {
   'bell-2': require('../assets/audio/bell-d5.wav'),
   'bell-3': require('../assets/audio/bell-b4.wav'),
   'bell-4': require('../assets/audio/bell-e4.wav'),
+  footsteps: require('../assets/audio/footsteps.wav'),
+  'hinge-creak': require('../assets/audio/hinge-creak.wav'),
+  scrape: require('../assets/audio/scrape.wav'),
+  knock: require('../assets/audio/knock.wav'),
+  'station-morse': require('../assets/audio/station-morse.wav'),
+  'station-music': require('../assets/audio/station-music.wav'),
+  'station-voice': require('../assets/audio/station-voice.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
 // finish, which made repeat taps (the music-box tines) go silent.
 const loopPlayers: Record<string, any> = {};
+// Loop names currently meant to be sounding — resumed when the app returns
+// to the foreground (iOS pauses every player on background; device QA:
+// "close the app and reopen it, the background noise is gone").
+const activeLoops = new Set<string>();
+let musicPlayer: any | null = null;
+let musicOn = false;
+let whistlePlayer: any | null = null;
+let whistleOn = false;
+let appStateSub: { remove?: () => void } | null = null;
+
+function watchAppState(): void {
+  if (appStateSub) return;
+  try {
+    appStateSub = AppState.addEventListener('change', (state: string) => {
+      if (state !== 'active') return;
+      try {
+        staticPlayer?.play(); // volume carries the level; play() is idempotent
+        if (musicOn) musicPlayer?.play();
+        if (whistleOn) whistlePlayer?.play();
+        for (const name of activeLoops) loopPlayers[name]?.play();
+      } catch {
+        /* fail open */
+      }
+    });
+  } catch {
+    appStateSub = null;
+  }
+}
 
 export function initAudio(): void {
   const a = audio();
@@ -52,6 +89,7 @@ export function initAudio(): void {
     staticPlayer.volume = 0;
     staticPlayer.play();
     identPlayer = a.createAudioPlayer(require('../assets/audio/ident.wav'));
+    watchAppState();
   } catch {
     staticPlayer = null;
     identPlayer = null;
@@ -92,6 +130,7 @@ export function startSfxLoop(name: string, volume = 0.5): void {
     p.volume = volume;
     p.seekTo(0);
     p.play();
+    activeLoops.add(name);
   } catch {
     /* fail open */
   }
@@ -99,11 +138,89 @@ export function startSfxLoop(name: string, volume = 0.5): void {
 
 /** Stop a looping effect — the moment the line clicks open. */
 export function stopSfx(name: string): void {
+  activeLoops.delete(name);
   const p = loopPlayers[name];
   if (!p) return;
   try {
     p.pause();
     p.loop = false;
+  } catch {
+    /* fail open */
+  }
+}
+
+// ------------------------------------------------------------------- music
+// The title-screen theme ("Ghost", Tim Beek — see CREDITS.md). Only ever on
+// the title screen: the fiction keeps its own quiet.
+
+export function startMusic(volume = 0.3): void {
+  const a = audio();
+  if (!a) return;
+  try {
+    if (!musicPlayer) {
+      musicPlayer = a.createAudioPlayer(require('../assets/audio/title-theme.m4a'));
+      musicPlayer.loop = true;
+    }
+    musicPlayer.volume = volume;
+    musicPlayer.play();
+    musicOn = true;
+    watchAppState();
+  } catch {
+    /* fail open */
+  }
+}
+
+export function stopMusic(): void {
+  musicOn = false;
+  try {
+    musicPlayer?.pause();
+  } catch {
+    /* fail open */
+  }
+}
+
+// ------------------------------------------------------------------- tuner
+// The dial sweep should sound like scanning a car radio at night: dead-air
+// static, a heterodyne squeal that rises and falls as a carrier slides by,
+// and phantom neighbours (morse, a waltz, a counting voice) at fixed spots
+// on the band. The RadioTuner drives these; all of it fails open.
+
+export function startTunerScan(): void {
+  const a = audio();
+  if (!a) return;
+  try {
+    if (!whistlePlayer) {
+      whistlePlayer = a.createAudioPlayer(require('../assets/audio/tune-whistle.wav'));
+      whistlePlayer.loop = true;
+    }
+    whistlePlayer.volume = 0;
+    whistlePlayer.play();
+    whistleOn = true;
+  } catch {
+    /* fail open */
+  }
+}
+
+/** Whistle mix for carrier proximity: silent in dead air, loudest just OFF
+ *  the carrier, pitch climbing as the needle closes in (strength 0..1). */
+export function setTunerScan(strength: number): void {
+  if (!whistlePlayer) return;
+  try {
+    const presence = Math.max(0, Math.min(1, (strength - 0.25) / 0.75));
+    const squeal = Math.sin(Math.PI * presence); // swells then dives into the lock
+    whistlePlayer.volume = 0.45 * squeal * squeal;
+    const rate = 0.6 + 1.2 * presence;
+    if (typeof whistlePlayer.setPlaybackRate === 'function') whistlePlayer.setPlaybackRate(rate);
+    else whistlePlayer.playbackRate = rate;
+  } catch {
+    /* fail open */
+  }
+}
+
+export function stopTunerScan(): void {
+  whistleOn = false;
+  try {
+    whistlePlayer?.pause();
   } catch {
     /* fail open */
   }
@@ -158,7 +275,9 @@ export function cue(name: string): void {
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
-  else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, page-turn
+  else if (name === 'footsteps') playSfx('footsteps', 0.5); // under the prose, not over it
+  else if (name === 'page-turn') playSfx('page-turn', 0.5);
+  else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 
 export function stopAll(): void {

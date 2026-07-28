@@ -8,7 +8,14 @@
 import { useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { isRadioLocked, signalStrength } from '../models';
-import { playIdent, setStaticLevelNow } from '../audio';
+import {
+  playIdent,
+  playSfx,
+  setStaticLevelNow,
+  setTunerScan,
+  startTunerScan,
+  stopTunerScan,
+} from '../audio';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -49,11 +56,23 @@ export function RadioTuner({
   // locationX positioning had a bug: re-grabbing landed the touch on the
   // needle child view, whose locationX ≈ 0 snapped the dial back to band-low.)
   const grantKhz = useRef(0);
+  // Phantom-station bookkeeping: last needle position and per-station
+  // cooldowns, so sweeping past a neighbour plays its blip once, not a burst.
+  const lastBlip = useRef(new Map<number, number>());
 
   const pan = useMemo(() => {
+    // Other stations on the band (fractions of the span, clear of the
+    // target): sweeping past them sounds like scanning a car radio at night.
+    const span = bandHighKhz - bandLowKhz;
+    const phantoms: { khz: number; sfx: string }[] = [
+      { khz: Math.round(bandLowKhz + span * 0.18), sfx: 'station-morse' },
+      { khz: Math.round(bandLowKhz + span * 0.42), sfx: 'station-voice' },
+      { khz: Math.round(bandLowKhz + span * 0.8), sfx: 'station-music' },
+    ];
     const applyDelta = (dx: number) => {
       if (lockedRef.current) return;
-      const deltaKhz = (dx / DIAL_WIDTH) * (bandHighKhz - bandLowKhz);
+      const prev = khzRef.current;
+      const deltaKhz = (dx / DIAL_WIDTH) * span;
       const next = Math.round(
         Math.max(bandLowKhz, Math.min(bandHighKhz, grantKhz.current + deltaKhz)),
       );
@@ -61,8 +80,20 @@ export function RadioTuner({
       setKhz(next);
       const strength = signalStrength(next, targetKhz, bandLowKhz, bandHighKhz);
       setStaticLevelNow(0.1 + 0.35 * (1 - strength));
+      setTunerScan(strength);
+      // eslint-disable-next-line react-hooks/purity -- gesture handler, never runs during render
+      const now = Date.now();
+      for (const p of phantoms) {
+        const crossed = prev < p.khz !== next < p.khz || next === p.khz;
+        const cooledAt = lastBlip.current.get(p.khz) ?? 0;
+        if (crossed && now - cooledAt > 2500) {
+          lastBlip.current.set(p.khz, now);
+          playSfx(p.sfx, 0.3);
+        }
+      }
     };
     const settle = () => {
+      stopTunerScan();
       if (lockedRef.current || !isRadioLocked(khzRef.current, targetKhz)) return;
       lockedRef.current = true;
       setLocked(true);
@@ -78,6 +109,7 @@ export function RadioTuner({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
         grantKhz.current = khzRef.current;
+        startTunerScan();
       },
       onPanResponderMove: (_evt, gs) => applyDelta(gs.dx),
       onPanResponderRelease: settle,
