@@ -153,6 +153,8 @@ export const BROADCAST_ONE: Chapter = {
       text: 'The receiver sat on the workbench with its dial lamp lit and its cord coiled beside it, unplugged. The card from the safe was in his breast pocket; he could feel the two underlines through the cloth. He reached for the dial with a steadiness he did not feel.',
     },
     {
+      // No static-swell cue: the engine drives the bed from the receiver's
+      // PRESENCE on screen (device QA: it kept hissing after scrolling away).
       kind: 'radio',
       id: 'b1-tune',
       bandLowKhz: 4400,
@@ -160,7 +162,6 @@ export const BROADCAST_ONE: Chapter = {
       targetKhz: 4625,
       lockedText: 'drag the dial · the static thins where the carrier lives',
       unlockedText: 'carrier locked · she is already singing',
-      cue: 'static-swell',
     },
 
     // --- The broadcast, and the cipher (PUZZLE 3) --------------------------

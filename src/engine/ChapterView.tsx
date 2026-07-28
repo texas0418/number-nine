@@ -25,7 +25,7 @@ import {
   View,
 } from 'react-native';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
-import { cue, stopSfx } from '../audio';
+import { cue, setStaticLevel, stopSfx } from '../audio';
 import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
 import {
   ChapterCardBlock,
@@ -98,6 +98,23 @@ export function ChapterView({
     }
   };
 
+  // The static bed belongs to the RECEIVER, and only while it is on the
+  // page: full while the set is untuned, a faint hiss once locked, gone when
+  // the reader scrolls away. (A one-shot swell cue left it hissing forever.)
+  const RECEIVER_SPAN = 380; // ≈ tuner widget height in pt
+  const updateReceiverBed = () => {
+    const g = geom.current;
+    let level = 0;
+    for (let i = 0; i < count; i++) {
+      if (blocks[i].kind !== 'radio') continue;
+      const top = g.tops.get(i);
+      if (top === undefined) continue;
+      const onScreen = top < g.y + g.viewH && top > g.y - RECEIVER_SPAN;
+      if (onScreen) level = Math.max(level, solved.has(i) ? 0.04 : 0.18);
+    }
+    setStaticLevel(level);
+  };
+
   const fireCues = () => {
     const g = geom.current;
     if (g.viewH === 0) return;
@@ -111,6 +128,7 @@ export function ChapterView({
         cue(b.cue);
       }
     }
+    updateReceiverBed();
     updateScene();
   };
 
