@@ -171,7 +171,7 @@ export const BROADCAST_FOUR: Chapter = {
       revealImage: 'obj-seance-after',
       prompt: 'the plate · EVIDENCE · it wants a shutter, and the camera is in your hands',
       solveCue: 'lamp-off',
-      unlockedText: 'the plate develops · the chair was never empty · it has not been empty for a long time',
+      unlockedText: 'the plate develops · the chair was never empty · whatever keeps it leans into the set, listening',
     },
     {
       kind: 'thought',

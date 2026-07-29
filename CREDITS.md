@@ -33,6 +33,13 @@ everything else is synthesized by `scripts/gen-foley.py`,
   all edited by Simon from stated royalty-free sources (raw files kept in
   ~/Downloads/Sounds). Replaced the gen-foley.py synth versions of
   dial-return / clock-tick / pips.
+- **B4 set (2026-07-29, partial):** spark.wav cut from "Electric spark-
+  Sound effect(HD)" (the isolated snap at 0.32s); whisper.wav PROVISIONAL —
+  cut from "Female Shivering Sound Effect" (banded 350–5200 Hz, +27 dB,
+  breath only, no speech cadence; replace when a true wordless whisper is
+  recorded). murmur.wav remains the gen-b4-foley.py synth. Unused: "Electric
+  Wire Spark..." (weak crackle) and "Girl Begging Screaming..." (kept in
+  Downloads — possible B5/B6 material, nothing wired).
 - **B3 set, cut from Simon's recordings (2026-07-28):**
   rust-break.wav ("Metal Breaking SOUND EFFECT"),
   plaster-fall.wav ("Cracking Wall,Ceiling, Building, Sound Effects Free

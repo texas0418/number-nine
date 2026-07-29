@@ -106,13 +106,17 @@ files — keep them (recrop source).
   survives) + grained to sit with `wall-burst` (near-mono, amber kept),
   which swaps in on solve via Hotspot's `revealImage`.
 
-## Broadcast Four set (PLACEHOLDERS, scripts/gen-b4-scenes.py)
+## Broadcast Four set (real renders 2026-07-29, processed from ~/Downloads)
 
-- `obj-seance.jpg` / `obj-seance-after.jpg` — the b4-plate exposure pair:
-  the study corner (bench, receiver, empty chair) and the same plate once
-  exposed — a pale seated figure, long-exposure wrong. Real renders wanted:
-  same prompt twice, one with a faint overexposed human smear seated in the
-  chair; keep the framing IDENTICAL (the swap must not jump).
+- `obj-seance.jpg` / `obj-seance-after.jpg` — the b4-plate exposure pair,
+  from Simon's matched Gemini renders (yuwl87 = empty, d1urxv = the same
+  frame edited to add the figure; KEEP both originals). Identical square
+  window from both (x 20–748, y 420–1148 of 768×1376 — skips the frame
+  border, drops the watermark), exported 900×900. The figure ships at 62%:
+  `Image.blend(before, after, 0.62)` — since the frames agree everywhere
+  else, the blend fades ONLY the smear ("the eye finds it a half-second
+  late"). Slight darken (0.94), grain 7. gen-b4-scenes.py remains as the
+  regenerable placeholder fallback.
 
 ## Icon / splash
 
