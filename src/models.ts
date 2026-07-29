@@ -107,6 +107,8 @@ export type SceneId =
   | 'churchyard'
   | 'wall-crack'
   | 'wall-burst'
+  | 'obj-seance'
+  | 'obj-seance-after'
   | 'obj-valve'
   | 'obj-grave'
   | 'obj-receiver'

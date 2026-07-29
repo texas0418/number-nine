@@ -9,6 +9,7 @@ import { ChapterView } from '../engine/ChapterView';
 import { BROADCAST_ONE } from '../chapters/broadcast1';
 import { BROADCAST_TWO } from '../chapters/broadcast2';
 import { BROADCAST_THREE } from '../chapters/broadcast3';
+import { BROADCAST_FOUR } from '../chapters/broadcast4';
 import { getProgress, saveProgress } from '../db';
 import { setStaticLevel, stopAllLoops } from '../audio';
 import { colors, fonts } from '../theme';
@@ -17,6 +18,7 @@ const CHAPTERS: Record<number, Chapter> = {
   [BROADCAST_ONE.id]: BROADCAST_ONE,
   [BROADCAST_TWO.id]: BROADCAST_TWO,
   [BROADCAST_THREE.id]: BROADCAST_THREE,
+  [BROADCAST_FOUR.id]: BROADCAST_FOUR,
 };
 
 export default function StoryScreen({
