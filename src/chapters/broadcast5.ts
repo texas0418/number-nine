@@ -38,7 +38,7 @@ export const BROADCAST_FIVE: Chapter = {
     'b5-triangulate': 'find each of them on the band — the log kept their numbers. locked aerials draw their own lines. stand where the lines agree.',
     'b5-verso': 'she writes for the wall’s side of the paper. turn the page with the phone face-down — and read it the way a mirror would.',
     'b5-send': 'the card in the toolbox knows the alphabet. the question is WHO KEEPS THE HOUSE, and the house has had one name for two hundred years.',
-    'b5-ear': 'the register wants no ink. a thumb, held to the worn place the way a seal is pressed — and left there while she does her counting under it.',
+    'b5-ear': 'two of those lines were scraped clean of someone, and the page refuses them cold. the line that never took ink takes the thumb — held, while she counts under it.',
     'b5-where': 'the numbers in your pocket are a place on the earth. any chart that takes latitude will take you there. bring back its name, not its numbers.',
   },
   blocks: [
@@ -196,8 +196,7 @@ export const BROADCAST_FIVE: Chapter = {
       id: 'b5-send',
       word: 'MARSH',
       prompt: 'the key · short is a dit, long is a dah · a pause ends the letter',
-      solveCue: 'ident',
-      unlockedText: 'the name goes out steady · the parish sends back R R R · received · and then, over all of them, she hums her six notes once — the way you repeat a name you mean to remember',
+      unlockedText: 'the name goes out steady · and the whole parish, softly, sends back the same two letters · R R R · received, received, received',
     },
     {
       kind: 'prose',
@@ -207,13 +206,14 @@ export const BROADCAST_FIVE: Chapter = {
     // --- She asks for him --------------------------------------------------
     {
       kind: 'prose',
-      text: 'Then the parish faded — stood aside, rather, the way a congregation parts — and the next thing did not come over the air at all. It came out of the tin: a bound page, ruled, foxed at the corners from hands, and every line of it signed. PORTMAN in a milker’s copperplate. The widow’s spidery hand. The boy, printing. Names above them going back and back, older inks going brown, older hands going strange. The last ruled line was empty, and the paper there was worn faintly shiny, as though many thumbs had rested on exactly that place deciding. Her card lay under it: NO INK. THE PAGE KNOWS A HAND WHEN IT HOLDS ONE.',
+      text: 'Then the parish faded — stood aside, rather, the way a congregation parts — and the next thing did not come over the air at all. It came out of the tin: a bound page, ruled, foxed at the corners from hands, and nearly every line of it signed. PORTMAN in a milker’s copperplate. The widow’s spidery hand. The boy, printing. Names above them going back and back, older inks going brown, older hands going strange. Three ruled lines near the foot looked empty. LOOKED. Held slant to the lamp, two of them carried brown ghosts — the shadows of entries scraped away, worked at with a blade until the paper itself had forgotten as much as paper can. One line had never taken ink at all. Her card lay under it: NO INK. SIGN WHERE NO ONE HAS BEEN UNSIGNED.',
     },
     {
       kind: 'register',
       id: 'b5-ear',
       stopsCue: 'parish',
-      prompt: 'the empty line · your thumb where every thumb has rested · and hold',
+      trueWell: 1,
+      prompt: 'three lines with room · one has never taken ink · your thumb, held, where it belongs',
       unlockedText: 'the page warms · something in it counts your pulse back at you, politely · and then the line is no longer empty — the entry already dry, in her type: {NAME}',
     },
     {
@@ -227,7 +227,7 @@ export const BROADCAST_FIVE: Chapter = {
       kind: 'prose',
       text: 'What came next did not come over the air. The set went to a hush that was almost tender; the tin clicked; and the new card said only CARRY THIS, DO NOT WRITE IT — and though the card bore nothing else, his hand, when he took it, closed on the certain feeling of having been HANDED something. Something with numbers in it. Something that would keep in a pocket the way borrowed words keep.',
     },
-    { kind: 'slip', text: '52 05 42 N · 01 33 31 E' },
+    { kind: 'slip', text: '52 05 02 N · 01 34 19 E' },
     {
       kind: 'fork',
       leftLabel: 'LOOK AT IT NOW',
@@ -237,10 +237,25 @@ export const BROADCAST_FIVE: Chapter = {
       join: 'Latitude and longitude. The marsh has no secrets from a man with his brother’s charts — but the charts were not needed, in the end, so much as the nerve to lay the numbers on one and follow them off the edge of the parish, east and a little south, to where the land runs out into shingle and the shingle keeps its strange roofs.',
     },
 
+    {
+      kind: 'logbook',
+      cue: 'page-turn',
+      lines: [
+        'her numbers — on the card, and, he',
+        'discovered, already in his pocket,',
+        'wherever this machine keeps what it',
+        'carries:',
+        '',
+        '  52 05 02 N · 01 34 19 E',
+        '',
+        'a place on the honest earth.',
+      ],
+    },
+
     // --- The place ----------------------------------------------------------
     {
       kind: 'prose',
-      text: 'He found it. A nose of shingle between river and sea, half a day’s ride south and east, that the charts keep a name for and the marsh-country keeps stories about: the bar of land where the ministry men built their pagoda-roofed laboratories in the last war and abandoned their giant listening mirrors in this one. A place made entirely of aerials and silence. Her return address. The pencil hovered over the last line of the page, which wanted only the name.',
+      text: 'He found it. A nose of shingle between river and sea, half a day’s ride south and east, that the charts keep a name for and the marsh-country keeps stories about: the bar of land where the ministry men built their pagoda-roofed laboratories in the last war and abandoned their giant listening mirrors in this one — and where a lighthouse stands dark at the point, decommissioned, its lamp taken out the way a tooth is taken out. A place made entirely of aerials and silence. Her return address. The pencil hovered over the last line of the page, which wanted only the name.',
     },
     {
       kind: 'cipher',

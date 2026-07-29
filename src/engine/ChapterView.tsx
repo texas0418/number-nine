@@ -871,6 +871,7 @@ function renderListenerGate(
     case 'register':
       return (
         <Register
+          trueWell={block.trueWell}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}

@@ -118,34 +118,40 @@ export function GainBlock({
   solveCue?: string;
 }) {
   const { done, doneRef, solve } = useSolveOnce(solved, onSolved, solveCue);
-  const [level, setLevel] = useState(0); // 0..1
+  const [level, setLevel] = useState(2 / 9); // the VIRTUAL needle, 0..1
   const [movedUi, setMovedUi] = useState(false);
-  const state = useRef({ level: 0, moved: false, baselined: false, dwell: 0, dragW: 0 });
+  const state = useRef({
+    level: 2 / 9,
+    moved: false,
+    orig: null as number | null,
+    dwell: 0,
+    dragW: 0,
+  });
   const target = mark / 9;
   const HALF_BAND = 0.055; // half a mark's width
+  const STEP = 1 / 16; // one rocker click, iOS's own quantum
 
   useEffect(() => {
     if (done) return;
-    // the set RE-ZEROES its gain when approached — the needle must never
-    // start the session parked on the answer (device QA, three rounds)
-    setGain(2 / 9);
+    // The needle is VIRTUAL: it always starts on the second mark, and only
+    // rocker CLICKS step it — the system volume is snapped back to centre
+    // after every press so the buttons always have room, and nothing about
+    // last night's volume can leak the answer or self-solve the gate
+    // (device QA, four rounds: baselines raced, absolutes betrayed).
     const stopGain = watchGain((v) => {
       const s = state.current;
-      // the FIRST report is where the knob already stood — a baseline, not
-      // a movement (device QA: a replay self-solved because the volume was
-      // still parked on the worn mark from last time)
-      if (!s.baselined) {
-        s.baselined = true;
-        s.level = v;
-        setLevel(v);
+      if (s.orig === null) {
+        s.orig = v; // remember the reader's real volume for afterwards
+        setGain(0.5);
         return;
       }
-      if (Math.abs(v - s.level) > 0.001) {
-        s.moved = true;
-        setMovedUi(true);
-      }
-      s.level = v;
-      setLevel(v);
+      if (Math.abs(v - 0.5) < 0.02) return; // our own re-centre echoing back
+      const dir = v > 0.5 ? 1 : -1;
+      s.level = Math.max(0, Math.min(1, s.level + dir * STEP));
+      s.moved = true;
+      setMovedUi(true);
+      setLevel(s.level);
+      setGain(0.5);
     });
     const tick = setInterval(() => {
       const s = state.current;
@@ -157,6 +163,8 @@ export function GainBlock({
     return () => {
       stopGain();
       clearInterval(tick);
+      const orig = state.current.orig;
+      if (orig !== null) setGain(orig); // give the reader their volume back
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
