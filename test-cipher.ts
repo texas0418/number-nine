@@ -75,6 +75,18 @@ ok('pre-epoch days still get a transmission',
   TRANSMISSIONS.includes(transmissionForDay('2026-07-25').plaintext));
 ok('transmissions are cipher-safe (A-Z, space, apostrophe only)',
   TRANSMISSIONS.every((t) => /^[A-Z' ]+$/.test(t)));
+ok('a full year of nights is authored', TRANSMISSIONS.length >= 365);
+ok('no transmission repeats a night',
+  new Set(TRANSMISSIONS).size === TRANSMISSIONS.length);
+// The cryptogram lays each word out as a row of cells and a word may not
+// wrap. DailySignalScreen's boxSizes only just fits a 12-letter word at the
+// largest Dynamic Type size, with nothing spare — 11 keeps the headroom.
+ok('no word is wider than the cell grid can hold',
+  TRANSMISSIONS.every((t) => t.split(' ').every((w) => w.length <= 11)));
+// Too short is an unsolvable cryptogram (nothing to get frequency purchase
+// on); too long overflows the card.
+ok('every line is a workable cryptogram length',
+  TRANSMISSIONS.every((t) => t.length >= 22 && t.length <= 46));
 
 // --- B4 daily crossover ---------------------------------------------------
 {
