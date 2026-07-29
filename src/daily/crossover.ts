@@ -5,77 +5,115 @@
 // the same line every player on earth is decoding this evening. We author
 // both sides (the transmissions in schedule.ts and the decoy pool here), so
 // the gate is always fair and always fresh.
+//
+// Re-deal design (device QA, two rounds): a wrong touch re-deals the card
+// ENTIRELY — a different true word from tonight's line, three fresh decoys,
+// every slot new. Nothing persists between deals, so diffing them teaches
+// nothing; recognizing a word you decoded tonight is the only way in. This
+// requires every transmission line to carry >=2 eligible words (tested) and
+// decoys to be length-matched to the answer (a lone short word among long
+// station-words would be a tell).
 
 import { hashSeed, mulberry32 } from './cipher';
 import { transmissionForDay } from './schedule';
 
-/** The word she says tonight: the LONGEST word of tonight's transmission
- *  (first on ties) — long words survive a half-solved cryptogram best, so a
- *  reader who abandoned the night's puzzle midway still has a fair shot. */
-export function tonightsWord(dayKey: string): string {
-  const words = transmissionForDay(dayKey).plaintext.split(/\s+/).filter(Boolean);
-  return words.reduce((best, w) => (w.length > best.length ? w : best), words[0]);
+/** Words of tonight's line a card may ask about: >=5 letters, first
+ *  occurrence order. schedule.ts must keep every line at >=2 of these. */
+export function eligibleWords(dayKey: string): string[] {
+  const words = transmissionForDay(dayKey)
+    .plaintext.toUpperCase()
+    .split(/\s+/)
+    .filter(Boolean);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const w of words) {
+    if (w.length >= 5 && !seen.has(w)) {
+      seen.add(w);
+      out.push(w);
+    }
+  }
+  return out;
 }
 
-// Words with the cadence of her lines — every one verifiably ABSENT from a
+/** Which of tonight's words this deal asks about — never the same word
+ *  twice running, so consecutive cards always differ. */
+export function answerForDeal(dayKey: string, deal: number): string {
+  const el = eligibleWords(dayKey);
+  let prev = -1;
+  let idx = 0;
+  for (let d = 0; d <= deal; d++) {
+    const rand = mulberry32(hashSeed(`number-nine:crossover-answer:${dayKey}:${d}`));
+    idx = Math.floor(rand() * el.length);
+    if (el.length > 1 && idx === prev) idx = (idx + 1) % el.length;
+    prev = idx;
+  }
+  return el[idx];
+}
+
+// Words with the cadence of her lines, spanning lengths 5..11 so any
+// answer finds length-matched company — every one verifiably ABSENT from a
 // given night before it is offered (filtered against tonight's plaintext).
 const DECOY_POOL = [
+  'BRASS',
+  'CHIME',
+  'FROST',
+  'LATCH',
+  'REEDS',
+  'VALVE',
   'AERIAL',
-  'BREATHING',
-  'CHURCHYARD',
+  'BELFRY',
+  'CHAPEL',
+  'EMBERS',
+  'STATIC',
+  'VESTRY',
+  'COMPASS',
+  'CRYSTAL',
+  'LANTERN',
+  'PARAFFIN',
   'DIALTONE',
   'EVENSONG',
-  'FREQUENCY',
-  'HALFLIGHT',
   'INTERVAL',
-  'KILOCYCLES',
   'LISTENER',
   'MIDNIGHT',
   'OVERCAST',
   'PROTOCOL',
   'RECEIVER',
+  'TELEGRAM',
+  'WIRELESS',
+  'BREATHING',
+  'FREQUENCY',
+  'HALFLIGHT',
   'SIGNALMAN',
   'STILLNESS',
-  'TELEGRAM',
+  'CHURCHYARD',
+  'KILOCYCLES',
+  'OSCILLATOR',
   'WAVELENGTH',
+  'TRANSMITTER',
 ] as const;
 
-/** The gate's candidate words for a night: tonight's word hidden among
- *  decoys, order deterministic from the day key (all players see the same
- *  card). `count` includes the answer. `deal` re-deals the card after a
- *  wrong touch — fresh decoys, same answer — so elimination teaches
- *  nothing; only having HEARD tonight's signal does (device QA: four fixed
- *  words fell to brute force in three touches). */
+/** The gate's candidate words for a night's `deal`: one word she truly said
+ *  tonight among length-matched decoys, order deterministic from the day
+ *  key (all players see the same cards). `count` includes the answer; a
+ *  wrong touch deals the next card, on which EVERYTHING differs. */
 export function nightWordChoices(
   dayKey: string,
   count = 4,
   deal = 0,
 ): { words: string[]; answerIndex: number } {
-  const answer = tonightsWord(dayKey);
+  const answer = answerForDeal(dayKey, deal);
   const line = transmissionForDay(dayKey).plaintext.toUpperCase();
-  const pool = DECOY_POOL.filter((w) => !line.includes(w));
-  // The SHADOW decoy: one decoy as permanent as the answer (day-seeded, not
-  // deal-seeded). Without it, the answer would be the only word to survive
-  // every re-deal, and diffing two deals would read it straight off
-  // (device QA: it did). With it, persistence narrows to two — a coin flip
-  // at best, behind the off-air waits.
-  const dayRand = mulberry32(hashSeed(`number-nine:crossover-shadow:${dayKey}`));
-  const shadow = pool[Math.floor(dayRand() * pool.length)];
   const rand = mulberry32(hashSeed(`number-nine:crossover:${dayKey}:${deal}`));
-  const decoys: string[] = [shadow];
-  const bag = pool.filter((w) => w !== shadow);
-  while (decoys.length < count - 1 && bag.length > 0) {
-    decoys.push(bag.splice(Math.floor(rand() * bag.length), 1)[0]);
+  const bag = DECOY_POOL.filter(
+    (w) => !line.includes(w) && Math.abs(w.length - answer.length) <= 2,
+  );
+  const decoys: string[] = [];
+  const pool = [...bag];
+  while (decoys.length < count - 1 && pool.length > 0) {
+    decoys.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
   }
   const words = [...decoys];
   const answerIndex = Math.floor(rand() * count);
   words.splice(answerIndex, 0, answer);
-  // one more shuffle so the shadow's slot is as restless as the rest
-  const final = words.slice(0, count);
-  const ai = final.indexOf(answer);
-  for (let i = final.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [final[i], final[j]] = [final[j], final[i]];
-  }
-  return { words: final, answerIndex: ai >= 0 ? final.indexOf(answer) : 0 };
+  return { words: words.slice(0, count), answerIndex };
 }
