@@ -1,7 +1,7 @@
 // src/screens/TitleScreen.tsx
 // The set, switched off. Everything in the game starts from this dark room.
 
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useStoryUnlocked } from '../proAccess';
 import { colors, fonts } from '../theme';
 
@@ -14,6 +14,7 @@ export default function TitleScreen({
   onStoryTwo,
   onStoryThree,
   onStoryFour,
+  onStoryFive,
   onDaily,
   onSettings,
 }: {
@@ -25,6 +26,7 @@ export default function TitleScreen({
   onStoryTwo: () => void;
   onStoryThree: () => void;
   onStoryFour: () => void;
+  onStoryFive: () => void;
   onDaily: () => void;
   onSettings: () => void;
 }) {
@@ -40,7 +42,11 @@ export default function TitleScreen({
       <Text style={styles.title} maxFontSizeMultiplier={1.15}>NUMBER{'\n'}NINE</Text>
       <Text style={styles.sub} maxFontSizeMultiplier={1.2}>a story received, not read</Text>
 
-      <View style={styles.menu}>
+      <ScrollView
+        style={styles.menuScroll}
+        contentContainerStyle={styles.menu}
+        showsVerticalScrollIndicator={false}
+      >
         <MenuRow label={storyLabel} hint="the story · chapter one is free" onPress={onStory} />
         <MenuRow
           label={unlocked ? 'broadcast two' : 'broadcasts two — six · locked'}
@@ -54,13 +60,16 @@ export default function TitleScreen({
         {unlocked && (
           <MenuRow label="broadcast four" hint="the examination" onPress={onStoryFour} />
         )}
+        {unlocked && (
+          <MenuRow label="broadcast five" hint="the other listeners" onPress={onStoryFive} />
+        )}
         <MenuRow
           label={todaySolved ? 'tonight’s signal · received' : 'tonight’s signal'}
           hint={streak > 0 ? `${streak} night${streak === 1 ? '' : 's'} listening` : 'a fresh cipher every night'}
           onPress={onDaily}
         />
         <MenuRow label="the set" hint="settings · about" onPress={onSettings} />
-      </View>
+      </ScrollView>
 
       <Text style={styles.footer} maxFontSizeMultiplier={1.3}>
         headphones recommended{'\n'}play in the dark
@@ -104,7 +113,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sub: { fontFamily: fonts.serif, fontSize: 15, color: colors.muted, marginBottom: 48 },
-  menu: { gap: 26 },
+  // The menu SCROLLS once the broadcasts outnumber the screen; the footer
+  // stays put below it (device QA: the list ran onto the footer).
+  menuScroll: { flexGrow: 0, maxHeight: '46%' },
+  menu: { gap: 26, paddingBottom: 8 },
   row: {},
   rowLabel: { fontFamily: fonts.mono, fontSize: 15, letterSpacing: 2, color: colors.lockGlow },
   rowHint: { fontFamily: fonts.mono, fontSize: 11, color: colors.faint, marginTop: 4 },

@@ -52,6 +52,12 @@ import { FlipBlock } from './FlipBlock';
 import { SealPlate } from './SealPlate';
 import { ChordBlock, MainsBlock, ShakeBlock, StillnessBlock } from './InstructionGates';
 import { ExposureBlock, HourBlock, WhisperBlock } from './ExaminationGates';
+import { GainBlock, SeverBlock } from './ListenerGates';
+import { MorseSend } from './MorseSend';
+import { MicStage } from './MicStage';
+import { Triangulate } from './Triangulate';
+import { Register } from './Register';
+import { slipIntoPocket } from '../device';
 import { InkAtHour } from './InkAtHour';
 import { BearingVoice } from './BearingVoice';
 import { TraceBlock } from './TraceBlock';
@@ -423,9 +429,20 @@ function renderBlock(
       return <PlateBlock image={block.image} caption={block.caption} />;
     case 'chapterEnd':
       return <ChapterEndBlock title={block.title} onDone={onComplete} />;
+    case 'slip':
+      return <SlipBlock text={block.text} />;
     default:
       return renderGate(block, index, gateSolved, solveGate, hintShown);
   }
+}
+
+/** The pocket slip: renders nothing; the station simply puts something in
+ *  the reader's clipboard the moment this block joins the page. */
+function SlipBlock({ text }: { text: string }) {
+  useEffect(() => {
+    slipIntoPocket(text);
+  }, [text]);
+  return null;
 }
 
 /** The interactive gates, split out to keep renderBlock under the complexity cap. */
@@ -563,6 +580,7 @@ function renderInstrumentGate(
           prompt={block.prompt}
           backPrompt={block.backPrompt}
           unlockedText={block.unlockedText}
+          mirroredBack={block.mirroredBack}
           solveCue={block.solveCue}
           {...common}
         />
@@ -778,6 +796,84 @@ function renderExaminationGate(
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           noticedText={block.noticedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    default:
+      return renderListenerGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** Broadcast Five's instruments — the network answers back. */
+function renderListenerGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'sever':
+      return (
+        <SeverBlock
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'gain':
+      return (
+        <GainBlock
+          mark={block.mark}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'triangulate':
+      return (
+        <Triangulate
+          bandLowKhz={block.bandLowKhz}
+          bandHighKhz={block.bandHighKhz}
+          stations={block.stations}
+          target={block.target}
+          mapImage={block.mapImage}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'morsesend':
+      return (
+        <MorseSend
+          word={block.word}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'micstage':
+      return (
+        <MicStage
+          tinesAnswer={block.tinesAnswer}
+          prompt={block.prompt}
+          lampOutText={block.lampOutText}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'register':
+      return (
+        <Register
+          trueWell={block.trueWell}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
           solveCue={block.solveCue}
           {...common}
         />

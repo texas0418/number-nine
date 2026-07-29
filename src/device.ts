@@ -372,3 +372,251 @@ export function watchShutter(cb: () => void): () => void {
     return () => {};
   }
 }
+
+let networkMod: any | null | undefined;
+function network(): any | null {
+  if (networkMod !== undefined) return networkMod;
+  if (!hasNative('ExpoNetwork')) return (networkMod = null);
+  try {
+    networkMod = require('expo-network');
+  } catch {
+    networkMod = null;
+  }
+  return networkMod;
+}
+
+/** Subscribe to SEVERANCE (B5): true while the phone has no network of any
+ *  kind — the reader has cut the outside world (airplane mode reads as
+ *  NONE; iOS never says "airplane" directly, and severed is severed).
+ *  No module → never fires; the widget's held-switch fallback carries it. */
+export function watchSeverance(cb: (severed: boolean) => void): () => void {
+  const n = network();
+  if (!n?.addNetworkStateListener) return () => {};
+  let live = true;
+  let sub: { remove?: () => void } | null = null;
+  try {
+    n.getNetworkStateAsync?.()
+      .then((s: { isConnected?: boolean }) => live && cb(!(s?.isConnected ?? true)))
+      .catch(() => {});
+    sub = n.addNetworkStateListener((s: { isConnected?: boolean }) => {
+      if (live) cb(!(s?.isConnected ?? true));
+    });
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    live = false;
+    try {
+      sub?.remove?.();
+    } catch {
+      /* fail open */
+    }
+  };
+}
+
+// react-native-volume-manager is a BARE RN module — it has no entry in the
+// expo native registry, so the guard is the NativeModules table (safe to
+// read always). Residual risk if a build ever ships without the pod is
+// caught on device QA; the gain gate fails open to a drag fallback anyway.
+let volumeMod: any | null | undefined;
+function volumeManager(): any | null {
+  if (volumeMod !== undefined) return volumeMod;
+  try {
+    const { NativeModules } = require('react-native');
+    if (!NativeModules?.VolumeManager) return (volumeMod = null);
+    volumeMod = require('react-native-volume-manager');
+  } catch {
+    volumeMod = null;
+  }
+  return volumeMod;
+}
+
+/** Set the system volume directly (B5: the gain gate RE-ZEROES the set on
+ *  approach so the needle never starts on the answer). Fail-open no-op. */
+export function setGain(volume: number): void {
+  const vm = volumeManager();
+  try {
+    vm?.setVolume?.(Math.max(0, Math.min(1, volume)), { showUI: false });
+  } catch {
+    /* fail open */
+  }
+}
+
+/** Subscribe to the RF GAIN (B5): the hardware volume rockers as the set's
+ *  gain knob. Calls back 0..1 on every press; `suppressUi` hides the system
+ *  volume overlay while the gate holds the stage. Returns a stop that
+ *  restores the overlay. */
+export function watchGain(
+  cb: (volume: number) => void,
+  suppressUi = true,
+): () => void {
+  const vm = volumeManager();
+  if (!vm?.addVolumeListener) return () => {};
+  let sub: { remove?: () => void } | null = null;
+  try {
+    if (suppressUi) vm.showNativeVolumeUI?.({ enabled: false });
+    vm.getVolume?.()
+      .then((v: number | { volume?: number }) =>
+        cb(typeof v === 'number' ? v : (v?.volume ?? 0)),
+      )
+      .catch(() => {});
+    sub = vm.addVolumeListener((r: { volume?: number }) => cb(r?.volume ?? 0));
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    try {
+      sub?.remove?.();
+      if (suppressUi) vm.showNativeVolumeUI?.({ enabled: true });
+    } catch {
+      /* fail open */
+    }
+  };
+}
+
+let clipboardMod: any | null | undefined;
+function clipboard(): any | null {
+  if (clipboardMod !== undefined) return clipboardMod;
+  if (!hasNative('ExpoClipboard')) return (clipboardMod = null);
+  try {
+    clipboardMod = require('expo-clipboard');
+  } catch {
+    clipboardMod = null;
+  }
+  return clipboardMod;
+}
+
+/** The POCKET SLIP (B5): the station leaves something in the reader's
+ *  clipboard — a redundant clue channel they discover later, mid-paste,
+ *  somewhere else entirely. Fail-open no-op. */
+export function slipIntoPocket(text: string): void {
+  const c = clipboard();
+  try {
+    c?.setStringAsync?.(text);
+  } catch {
+    /* fail open */
+  }
+}
+
+let audioMod: any | null | undefined;
+function audioModule(): any | null {
+  if (audioMod !== undefined) return audioMod;
+  if (!hasNative('AudioModule') && !hasNative('ExpoAudio')) return (audioMod = null);
+  try {
+    audioMod = require('expo-audio');
+  } catch {
+    audioMod = null;
+  }
+  return audioMod;
+}
+
+/** Whether the ear is ALREADY open (no prompt) — iOS asks once per
+ *  install and remembers; the gate can acknowledge a standing yes. */
+export async function hasMicPermission(): Promise<boolean> {
+  const a = audioModule();
+  if (!a?.getRecordingPermissionsAsync) return false;
+  try {
+    const res = await a.getRecordingPermissionsAsync();
+    return !!res?.granted;
+  } catch {
+    return false;
+  }
+}
+
+/** Ask to open the EAR (B5's mic gate). The iOS dialog is part of the
+ *  scene; a refusal is honored forever (the tines carry the gate). */
+export async function askMicPermission(): Promise<boolean> {
+  const a = audioModule();
+  if (!a?.requestRecordingPermissionsAsync) return false;
+  try {
+    const res = await a.requestRecordingPermissionsAsync();
+    return !!res?.granted;
+  } catch {
+    return false;
+  }
+}
+
+/** Subscribe to the reader's BREATH AND VOICE (B5): live mic PCM reduced to
+ *  { rms, hz } per buffer — rms 0..1 loudness, hz a coarse zero-crossing
+ *  pitch (null when unvoiced/quiet). Requires permission already granted.
+ *  Fail-open: no module, no permission, no stream → never fires. */
+export function watchBreath(
+  cb: (rms: number, hz: number | null, seconds: number) => void,
+): () => void {
+  const a = audioModule();
+  const Stream = a?.AudioModule?.AudioStream ?? a?.AudioStream;
+  if (!Stream) return () => {};
+  let stream: any | null = null;
+  let sub: { remove?: () => void } | null = null;
+  try {
+    stream = new Stream({ sampleRate: 16000, channels: 1, encoding: 'float32' });
+    sub = stream.addListener?.(
+      'audioStreamBuffer',
+      (buf: { data: ArrayBuffer; sampleRate: number }) => {
+        try {
+          const pcm = new Float32Array(buf.data);
+          if (pcm.length === 0) return;
+          let sum = 0;
+          let crossings = 0;
+          let prev = pcm[0];
+          for (let i = 0; i < pcm.length; i++) {
+            const v = pcm[i];
+            sum += v * v;
+            if ((v >= 0) !== (prev >= 0)) crossings++;
+            prev = v;
+          }
+          const rms = Math.sqrt(sum / pcm.length);
+          const seconds = pcm.length / (buf.sampleRate || 16000);
+          const hz = crossings / 2 / seconds;
+          // a hum is quiet-but-voiced; silence and hiss report no pitch.
+          // seconds rides along so callers accumulate REAL time (device QA:
+          // hardcoded 64ms steps made 2s of hum demand 6+ perfect seconds)
+          cb(rms, rms > 0.008 && hz >= 60 && hz <= 600 ? hz : null, seconds);
+        } catch {
+          /* fail open */
+        }
+      },
+    );
+    stream.start?.().catch?.(() => {});
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    try {
+      sub?.remove?.();
+      stream?.stop?.();
+      stream?.release?.();
+      // Drop the RECORD session (the orange mic light) AND wake the beds —
+      // recording paused every player and they never resume themselves
+      // (device QA: the music died at the first mic use and stayed dead).
+      require('./audio').resumeAfterRecording();
+    } catch {
+      /* fail open */
+    }
+  };
+}
+
+let deviceMod: any | null | undefined;
+function deviceInfo(): any | null {
+  if (deviceMod !== undefined) return deviceMod;
+  if (!hasNative('ExpoDevice')) return (deviceMod = null);
+  try {
+    deviceMod = require('expo-device');
+  } catch {
+    deviceMod = null;
+  }
+  return deviceMod;
+}
+
+/** What the reader's machine is CALLED (B5's register: her type already
+ *  dry with a name that is usually the reader's own). Fail-open to null —
+ *  the register then takes "THE KEEPER OF THE SET". */
+export function machineName(): string | null {
+  const d = deviceInfo();
+  try {
+    const name = d?.deviceName;
+    return typeof name === 'string' && name.trim().length > 0 ? name.trim() : null;
+  } catch {
+    return null;
+  }
+}

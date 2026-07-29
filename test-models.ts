@@ -12,6 +12,7 @@ import { BROADCAST_ONE } from './src/chapters/broadcast1';
 import { BROADCAST_TWO } from './src/chapters/broadcast2';
 import { BROADCAST_THREE } from './src/chapters/broadcast3';
 import { BROADCAST_FOUR } from './src/chapters/broadcast4';
+import { BROADCAST_FIVE } from './src/chapters/broadcast5';
 import type { ChapterBlock } from './src/models';
 
 let failures = 0;
@@ -73,6 +74,7 @@ ok('has a non-code ear puzzle', mechanics.has('melody'));
 // every answer-bearing gate kind so new mechanics stay honest.
 const answerKeyOf = (b: ChapterBlock): string | null => {
   if (b.kind === 'radio') return String(b.targetKhz);
+  if (b.kind === 'morsesend') return b.word;
   if (b.kind === 'clock')
     return `${String(b.answerHour).padStart(2, '0')}${String(b.answerMinute).padStart(2, '0')}`;
   if ('answer' in b && typeof (b as { answer?: unknown }).answer === 'string')
@@ -231,6 +233,75 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
   ok(
     'b4 hints all reference real gates',
     Object.keys(BROADCAST_FOUR.hints ?? {}).every((id) => gateIds.has(id)),
+  );
+}
+
+// --- Broadcast Five doctrine ----------------------------------------------
+{
+  const b5 = BROADCAST_FIVE.blocks;
+  const CODE_ENTRY = ['keypad', 'safe', 'cipher'];
+  const b5Gates = b5.filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind));
+  ok('b5 has seven puzzles plus the fork', b5Gates.length === 8);
+  ok(
+    'b5 has exactly one code-entry puzzle',
+    b5.filter((b) => CODE_ENTRY.includes(b.kind)).length === 1,
+  );
+  ok('b5 answers stay three blocks from their gates', !answersNearGates(b5));
+  ok('b5 ends with chapterEnd', b5[b5.length - 1].kind === 'chapterEnd');
+  // The finale's answer must NEVER appear in the book — the reader carries
+  // coordinates into the real world and brings the name back.
+  const where = b5.find((b) => b.kind === 'cipher');
+  ok(
+    'b5 finale answer appears nowhere in any chapter text',
+    where?.kind === 'cipher' &&
+      ![...b5, ...BROADCAST_FOUR.blocks, ...BROADCAST_THREE.blocks].some(
+        (b) =>
+          b !== where &&
+          JSON.stringify(b).toUpperCase().includes(where.answer.toUpperCase()),
+      ),
+  );
+  // Triangulation geometry: each locked bearing line must pass through the
+  // target rect's center within half the rect's size — three lines, one
+  // honest crossing.
+  const tri = b5.find((b) => b.kind === 'triangulate');
+  ok(
+    'b5 bearing lines cross inside the target',
+    tri?.kind === 'triangulate' &&
+      tri.stations.every((st) => {
+        const cx = tri.target.x + tri.target.w / 2;
+        const cy = tri.target.y + tri.target.h / 2;
+        const rad = ((st.bearingDeg - 180) * Math.PI) / 180;
+        // line from site along bearing: direction (sin B, -cos B) in map
+        // coords (y down); distance from center to the line
+        const dx = Math.sin((st.bearingDeg * Math.PI) / 180);
+        const dy = -Math.cos((st.bearingDeg * Math.PI) / 180);
+        const px = cx - st.siteX;
+        const py = cy - st.siteY;
+        const cross = Math.abs(px * dy - py * dx);
+        const along = px * dx + py * dy;
+        void rad;
+        return cross <= tri.target.w / 2 && along > 0;
+      }),
+  );
+  // The morse word must be sendable: every letter in the artifact alphabet.
+  const send = b5.find((b) => b.kind === 'morsesend');
+  ok(
+    'b5 morse word is A-Z only',
+    send?.kind === 'morsesend' && /^[A-Z]+$/.test(send.word),
+  );
+  // The slip must exist and carry coordinates (the pocket is a clue channel).
+  const slip = b5.find((b) => b.kind === 'slip');
+  ok(
+    'b5 pocket slip carries coordinates',
+    slip?.kind === 'slip' && /\d+ \d+ \d+ N/.test(slip.text),
+  );
+  // every pressure-valve hint points at a real gate id
+  const gateIds = new Set(
+    b5Gates.flatMap((b) => ('id' in b ? [(b as { id: string }).id] : [])),
+  );
+  ok(
+    'b5 hints all reference real gates',
+    Object.keys(BROADCAST_FIVE.hints ?? {}).every((id) => gateIds.has(id)),
   );
 }
 

@@ -19,6 +19,10 @@ export const SCENES: Record<SceneId, number> = {
   // B4 (placeholders; scripts/gen-b4-scenes.py)
   'obj-seance': require('../../assets/scenes/obj-seance.jpg'),
   'obj-seance-after': require('../../assets/scenes/obj-seance-after.jpg'),
+  // B5 (Simon's renders, 2026-07-29)
+  'map-marsh': require('../../assets/scenes/map-marsh.jpg'),
+  'obj-ness': require('../../assets/scenes/obj-ness.jpg'),
+  'obj-van': require('../../assets/scenes/obj-van.jpg'),
   'obj-valve': require('../../assets/scenes/obj-valve.jpg'),
   'obj-grave': require('../../assets/scenes/obj-grave.jpg'),
   'obj-receiver': require('../../assets/scenes/obj-receiver.jpg'),

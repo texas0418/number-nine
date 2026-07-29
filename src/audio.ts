@@ -65,6 +65,9 @@ const SFX_FILES: Record<string, number> = {
   whisper: require('../assets/audio/whisper.wav'),
   murmur: require('../assets/audio/murmur.wav'),
   spark: require('../assets/audio/spark.wav'),
+  parish: require('../assets/audio/parish.wav'),
+  'key-click': require('../assets/audio/key-click.wav'), // ONE click cut from morse-key (full take warped when stacked)
+  sidetone: require('../assets/audio/sidetone.wav'), // 620Hz keyed tone, seamless (B5 send key)
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -80,23 +83,41 @@ let whistlePlayer: any | null = null;
 let whistleOn = false;
 let appStateSub: { remove?: () => void } | null = null;
 
+function resumeBeds(): void {
+  try {
+    staticPlayer?.play(); // volume carries the level; play() is idempotent
+    if (musicOn) musicPlayer?.play();
+    if (whistleOn) whistlePlayer?.play();
+    for (const name of activeLoops) loopPlayers[name]?.play();
+  } catch {
+    /* fail open */
+  }
+}
+
 function watchAppState(): void {
   if (appStateSub) return;
   try {
     appStateSub = AppState.addEventListener('change', (state: string) => {
       if (state !== 'active') return;
-      try {
-        staticPlayer?.play(); // volume carries the level; play() is idempotent
-        if (musicOn) musicPlayer?.play();
-        if (whistleOn) whistlePlayer?.play();
-        for (const name of activeLoops) loopPlayers[name]?.play();
-      } catch {
-        /* fail open */
-      }
+      resumeBeds();
     });
   } catch {
     appStateSub = null;
   }
+}
+
+/** After the mic (B5): recording flips the iOS session and PAUSES every
+ *  player — and expo-audio players never resume themselves (device QA:
+ *  "no background music at all" from the first mic use onward). Restore
+ *  the playback session, then wake everything that should be sounding. */
+export function resumeAfterRecording(): void {
+  const a = audio();
+  try {
+    a?.setAudioModeAsync?.({ allowsRecording: false, playsInSilentMode: true });
+  } catch {
+    /* fail open */
+  }
+  setTimeout(resumeBeds, 350); // let the session settle before waking players
 }
 
 export function initAudio(): void {
@@ -217,6 +238,20 @@ export function stopOneShot(name: string): void {
     }
   }
   live.clear(); // their release timers still clean the players up
+}
+
+/** Pre-create a loop's player so its first start is INSTANT — expo-audio
+ *  spins a fresh player up in ~100-300ms, which ate the send key's short
+ *  dits entirely (device QA: "still no morse SFX"). */
+export function warmLoop(name: string): void {
+  const a = audio();
+  const mod = SFX_FILES[name];
+  if (!a || mod === undefined || loopPlayers[name]) return;
+  try {
+    loopPlayers[name] = a.createAudioPlayer(mod);
+  } catch {
+    /* fail open */
+  }
 }
 
 /** Start a looping effect (e.g. the hall telephone ringing on and on). */
@@ -501,6 +536,7 @@ export function cue(name: string): void {
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else if (name === 'rust-break') playSfx('rust-break', 0.5); // device QA: default drowned the room
+  else if (name === 'parish') startSfxLoop('parish', 0.22); // the hedge-voices, until she stands
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 

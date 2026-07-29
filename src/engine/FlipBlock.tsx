@@ -25,6 +25,7 @@ export function FlipBlock({
   backPrompt,
   unlockedText,
   solved,
+  mirroredBack = false,
   onSolved,
   solveCue = 'unlock',
 }: {
@@ -35,6 +36,9 @@ export function FlipBlock({
   backPrompt?: string;
   unlockedText: string;
   solved: boolean;
+  /** B5 composition: the verso is ALSO written mirror-wise — it must be
+   *  read turned around (against a mirror, or by a patient eye). */
+  mirroredBack?: boolean;
   onSolved: () => void;
   solveCue?: string;
 }) {
@@ -71,9 +75,16 @@ export function FlipBlock({
   };
 
   const lines = showingBack ? back : front;
+  const mirrored = showingBack && mirroredBack && !done;
   return (
     <View style={styles.wrap}>
-      <View style={[styles.page, showingBack && styles.pageBack]}>
+      <View
+        style={[
+          styles.page,
+          showingBack && styles.pageBack,
+          mirrored && { transform: [{ scaleX: -1 }] },
+        ]}
+      >
         {lines.map((line, i) => {
           if (!showingBack || !line.includes(targetWord))
             return (
