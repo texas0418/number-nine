@@ -12,7 +12,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { cue, playSfx, setStaticLevel } from '../audio';
 import { setScrollLock } from './scrollLock';
-import { colors, fonts } from '../theme';
+import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -107,6 +107,10 @@ export function TraceBlock({
     if (s.claimed.length === order.length) {
       s.done = true;
       setDone(true);
+      // release the page NOW — the done re-render must never leave the
+      // scroll frozen waiting for a release event that cannot arrive
+      // (device QA: solved the trace, page stuck, "nothing happens")
+      setScrollLock(false);
       cue(solveCue);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       onSolved();
@@ -143,7 +147,9 @@ export function TraceBlock({
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.panel} {...(done ? {} : pan.panHandlers)}>
+      {/* handlers stay attached when done (inert via the should-set guards)
+          so an in-flight gesture still gets its release */}
+      <View style={styles.panel} {...pan.panHandlers}>
         {nodes.map((label, i) => {
           const lit = done || claimed.includes(i);
           return (
@@ -157,7 +163,7 @@ export function TraceBlock({
               ]}
             >
               <Text
-                style={[styles.nodeLabel, lit && { color: colors.dial }]}
+                style={[styles.nodeLabel, lit && { color: colors.dial, ...amberGlow }]}
                 allowFontScaling={false}
               >
                 {label}
@@ -194,7 +200,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  nodeLit: { borderColor: colors.dialDim },
+  nodeLit: { borderColor: colors.dialDim, ...amberViewGlow },
   nodeLabel: {
     fontFamily: fonts.mono,
     fontSize: 11,

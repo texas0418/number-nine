@@ -16,7 +16,7 @@ import {
   startTunerScan,
   stopTunerScan,
 } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     color: colors.dial,
     textAlign: 'center',
     marginBottom: 12,
+    ...amberGlow,
   },
   dialTrack: {
     height: 56, // taller = far easier to grab on a phone
@@ -244,6 +245,7 @@ const styles = StyleSheet.create({
     height: '70%',
     borderRadius: 2,
     backgroundColor: colors.dial,
+    ...amberViewGlow,
   },
   meterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },
   meterLabel: { fontFamily: fonts.mono, fontSize: 11, color: colors.faint },

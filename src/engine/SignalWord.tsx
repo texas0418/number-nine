@@ -1,21 +1,20 @@
 // src/engine/SignalWord.tsx
-// THE DAILY CROSSOVER (B4): "what did she say tonight?" The answer is the
-// long word in tonight's ACTUAL Tonight's Signal line — the one every
-// player on earth is decoding this evening. Candidates and their order come
-// from the pure module (src/daily/crossover.ts), deterministic per night.
-// A wrong word sends the station OFF THE AIR — a swallowing hush that grows
-// with each miss — and when she returns, the card has been re-dealt: fresh
-// decoys, same answer, so elimination teaches nothing (device QA: four
-// fixed words fell to brute force). Knowing tonight's word stays instant.
-// Never an error message; the card quietly re-derives itself if midnight
-// passes mid-gate.
+// THE DAILY CROSSOVER (B4): "what did she say tonight?" The answer is a
+// word from tonight's ACTUAL Tonight's Signal line — the one every player
+// on earth is decoding this evening. Candidates come from the pure module
+// (src/daily/crossover.ts), deterministic per night and deal. A wrong word
+// is a beat of dead air, and the returning card is WHOLLY new — a different
+// true word from tonight's line among fresh length-matched decoys — so
+// neither elimination nor diffing teaches anything; only having read
+// tonight's line does (device QA, two rounds). Never an error message; the
+// card quietly re-derives itself if midnight passes mid-gate.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { nightWordChoices } from '../daily/crossover';
 import { dayKeyFromMs } from '../models';
 import { cue, setStaticLevel } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -24,9 +23,9 @@ try {
   Haptics = null;
 }
 
-// The hush after each wrong word: long enough to tax a guesser's patience,
-// growing fast enough that the fourth guess costs a pot of tea.
-const OFF_AIR_MS = [8000, 20000, 45000, 90000];
+// The hush after each wrong word — a beat of dead air, then the new card
+// (Simon: 2s; the fully re-dealt cards carry the defense now, not the wait).
+const OFF_AIR_MS = 2000;
 
 export function SignalWord({
   prompt,
@@ -68,12 +67,11 @@ export function SignalWord({
       Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
       setOffAir(true);
       setStaticLevel(0.16);
-      const wait = OFF_AIR_MS[Math.min(deal, OFF_AIR_MS.length - 1)];
       timer.current = setTimeout(() => {
         setDeal((d) => d + 1);
         setOffAir(false);
         setStaticLevel(0.05);
-      }, wait);
+      }, OFF_AIR_MS);
     }
   };
 
@@ -95,7 +93,7 @@ export function SignalWord({
               <Text
                 style={[
                   styles.wordText,
-                  done && i === card.answerIndex && { color: colors.dial },
+                  done && i === card.answerIndex && { color: colors.dial, ...amberGlow },
                 ]}
                 allowFontScaling={false}
               >

@@ -14,7 +14,7 @@ import { watchNearEar, watchShutter } from '../device';
 import { setKv } from '../db';
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -266,7 +266,7 @@ export function HourBlock({
       {!done && (
         <View style={styles.clockWell} {...clock.panHandlers}>
           <Text
-            style={[styles.clockText, clock.matches && { color: colors.dial }]}
+            style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
             allowFontScaling={false}
           >
             {clock.display}

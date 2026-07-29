@@ -15,7 +15,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { watchHeading } from '../device';
 import { cue, setLoopVolume, setStaticLevel, startSfxLoop, stopSfx } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -138,7 +138,7 @@ export function BearingVoice({
           style={[
             styles.needle,
             { opacity: 0.25 + closeness * 0.75 },
-            closeness > 0.92 && { backgroundColor: colors.dial },
+            closeness > 0.92 && { backgroundColor: colors.dial, ...amberViewGlow },
           ]}
           pointerEvents="none"
         />
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   rose: { position: 'absolute', width: SIZE, height: SIZE, alignItems: 'center' },
-  roseN: { marginTop: 14, fontFamily: fonts.mono, fontSize: 13, color: colors.dial },
+  roseN: { marginTop: 14, fontFamily: fonts.mono, fontSize: 13, color: colors.dial, ...amberGlow },
   caption: {
     fontFamily: fonts.mono,
     fontSize: 11,

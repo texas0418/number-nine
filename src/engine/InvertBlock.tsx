@@ -13,7 +13,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { watchInversion } from '../device';
 import { cue } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     color: colors.prose,
   },
   lineOther: { color: colors.proseFaded, fontStyle: 'italic' },
-  wordFound: { color: colors.dial, fontStyle: 'italic' },
+  wordFound: { color: colors.dial, fontStyle: 'italic', ...amberGlow },
   turnGlyph: {
     position: 'absolute',
     right: 0,

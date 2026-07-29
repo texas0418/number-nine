@@ -95,6 +95,9 @@ export function ChapterView({
   // A gate with a live drag (the trace) freezes the page under the hand.
   const [scrollLocked, setScrollLocked] = useState(false);
   useEffect(() => onScrollLock(setScrollLocked), []);
+
+  const scrollRef = useRef<any>(null);
+  const resumeTarget = useRef(initialBlockIndex > 0 ? frontier : null);
   useEffect(() => {
     if (!frontierIsGate) return;
     const b = blocks[frontier];
@@ -269,10 +272,39 @@ export function ChapterView({
     fireCues();
   };
 
+  // RESUME AT THE LOCKED DOOR: a reader who left mid-broadcast (B4's
+  // crossover sends them out to Tonight's Signal) must come back to the
+  // gate they left, not the chapter card (device QA: "reset to the
+  // beginning" — the gates were solved; the scroll was at the top). Waits
+  // for the frontier block to be measured, then jumps, unanimated. Sits
+  // BELOW every geom mutation site (purity rule: no mutations after an
+  // effect has read the value).
+  useEffect(() => {
+    const target = resumeTarget.current;
+    if (target === null || target <= 0) return;
+    const t = setInterval(() => {
+      const g = geom.current;
+      const top = g.tops.get(target);
+      if (top === undefined || g.viewH === 0) return;
+      clearInterval(t);
+      const y = Math.max(0, top - g.viewH * 0.45);
+      const sv = scrollRef.current?.getNode?.() ?? scrollRef.current;
+      sv?.scrollTo?.({ y, animated: false });
+      scrollY.setValue(y);
+    }, 120);
+    const stop = setTimeout(() => clearInterval(t), 4000);
+    return () => {
+      clearInterval(t);
+      clearTimeout(stop);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <View style={styles.root}>
       <SceneBackdrop sceneId={activeScene} />
       <Animated.ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={styles.content}
         onScroll={onScroll}

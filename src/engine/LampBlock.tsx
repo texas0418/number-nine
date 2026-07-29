@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { watchLamp } from '../device';
 import { cue } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontStyle: 'italic',
     color: colors.dial,
+    ...amberGlow,
   },
   wickRail: {
     alignSelf: 'flex-end',
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     height: 74,
   },
   wickFlame: { marginBottom: 2 },
-  wickGlyph: { fontSize: 18, color: colors.dial },
+  wickGlyph: { fontSize: 18, color: colors.dial, ...amberGlow },
   wickLabel: { fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1, color: colors.faint },
   caption: {
     fontFamily: fonts.mono,

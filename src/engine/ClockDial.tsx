@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { cue, playSfx } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
     height: SIZE * 0.38,
     borderRadius: 2,
     backgroundColor: colors.dial,
+    ...amberViewGlow,
     transformOrigin: 'bottom',
   },
   hubDot: {

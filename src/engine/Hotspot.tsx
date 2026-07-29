@@ -16,7 +16,7 @@ import {
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
 import { cue, playSfx } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.dial,
     borderRadius: 6,
+    ...amberViewGlow,
   },
   caption: {
     fontFamily: fonts.mono,

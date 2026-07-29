@@ -13,7 +13,7 @@ import { watchLamp } from '../device';
 import { cue } from '../audio';
 import { setKv } from '../db';
 import { CLOCK_LIE_KV, useWoundClock } from './ExaminationGates';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -162,7 +162,7 @@ export function InkAtHour({
           <View style={styles.instrumentRow}>
             <View style={styles.clockWell} {...clock.panHandlers}>
               <Text
-                style={[styles.clockText, clock.matches && { color: colors.dial }]}
+                style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
                 allowFontScaling={false}
               >
                 {clock.display}
@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontStyle: 'italic',
     color: colors.dial,
+    ...amberGlow,
   },
   instrumentRow: {
     flexDirection: 'row',

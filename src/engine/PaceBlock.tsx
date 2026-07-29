@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { watchHeading, watchStepBounce } from '../device';
 import { cue } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   rose: { position: 'absolute', width: SIZE, height: SIZE, alignItems: 'center' },
-  roseN: { marginTop: 14, fontFamily: fonts.mono, fontSize: 13, color: colors.dial },
+  roseN: { marginTop: 14, fontFamily: fonts.mono, fontSize: 13, color: colors.dial, ...amberGlow },
   ground: {
     width: 110,
     minHeight: SIZE,
