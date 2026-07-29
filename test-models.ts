@@ -408,6 +408,16 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
     'no gate kind can ask for the mic',
     !(ENGINE_GATE_KINDS as readonly string[]).includes('micstage'),
   );
+  // expo-audio defaults enableBackgroundPlayback to true, which writes
+  // UIBackgroundModes: audio. This app does the opposite on purpose — iOS
+  // pauses every player on background and audio.ts resumes them on
+  // foreground — and declaring a background mode you do not use is
+  // App Review guideline 2.5.4.
+  ok(
+    'the app claims no background audio it does not play',
+    audioPlugin?.[1]?.enableBackgroundPlayback === false,
+    String(audioPlugin?.[1]?.enableBackgroundPlayback),
+  );
 }
 
 if (failures) {
