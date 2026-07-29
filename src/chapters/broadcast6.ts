@@ -165,6 +165,7 @@ export const BROADCAST_SIX: Chapter = {
         { bearingDeg: 271, toleranceDeg: 12, paces: 1 },
       ],
       prompt: 'the legs in order · the rose knows when you may step',
+      solveCue: 'knock',
       unlockedText: 'twenty-five on the door’s heading · nine east · one west, toward her · and the ground under the last pace sounds HOLLOW',
     },
     {
@@ -221,7 +222,7 @@ export const BROADCAST_SIX: Chapter = {
     },
 
     // ===================== NIGHT THE THIRD ================================
-    { kind: 'room', text: 'The Marsh Door · Night the Third', scene: 'marsh' },
+    { kind: 'room', text: 'The Marsh Door · Night the Third', scene: 'marsh', cue: 'marsh-wind' },
     {
       kind: 'prose',
       text: 'On the last night no card came at all. The tin stood open and empty, retired. He carried the receiver up from the cellar and set it on the hall table, and opened the marsh door on the whole black plain of it — the creek, the reeds, the mast on the horizon carrying the one light that had burned in every photograph and every evening of his tenancy. Nothing asked him to do anything. That was the examination.',
