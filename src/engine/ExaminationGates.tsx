@@ -130,13 +130,20 @@ export function WhisperBlock({
  *  a lie. */
 export function useWoundClock(hour: number, minute: number, active: boolean) {
   const [shown, setShown] = useState({ h: 0, m: 0 });
+  const [held, setHeld] = useState(false);
   const offsetRef = useRef(0); // wound minutes
   const dragStart = useRef(0);
-  // A clock WOUND to her hour stops there (device QA: every stray touch
-  // knocked it off 23:14). Once locked it neither ticks nor drags.
+  // A clock WOUND to her hour stops there — but only after RESTING on it
+  // (device QA round 1: stray touches knocked it off; round 2: an instant
+  // snap-lock let a scrubbing thumb pass the gate without knowing why).
+  // Landing on the hour shows amber at once; DWELL_MS of stillness later,
+  // the hands stop for good. Honest real-time matches count as held from
+  // the first tick.
   const lockedRef = useRef(false);
+  const dwellStart = useRef<number | null>(null);
   const [wound, setWound] = useState(false);
 
+  const DWELL_MS = 2000;
   const target = hour * 60 + minute;
   const minuteDiff = (total: number) => {
     const d = Math.abs(total - target) % 1440;
@@ -156,9 +163,26 @@ export function useWoundClock(hour: number, minute: number, active: boolean) {
       const total =
         (now.getHours() * 60 + now.getMinutes() + offsetRef.current + 1440) % 1440;
       apply(total);
+      if (total !== target) {
+        dwellStart.current = null;
+        setHeld(false);
+        return;
+      }
+      // honestly at her hour: held immediately; wound there: held only
+      // after resting DWELL_MS — a passing scrub never settles
+      if (offsetRef.current === 0) {
+        setHeld(true);
+        return;
+      }
+      if (dwellStart.current === null) dwellStart.current = Date.now();
+      if (Date.now() - dwellStart.current >= DWELL_MS) {
+        lockedRef.current = true;
+        setHeld(true);
+        Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
+      }
     };
     tick();
-    const t = setInterval(tick, 1000);
+    const t = setInterval(tick, 250);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
@@ -176,19 +200,24 @@ export function useWoundClock(hour: number, minute: number, active: boolean) {
         },
         onPanResponderMove: (_e, g) => {
           if (lockedRef.current) return;
+          dwellStart.current = null; // a moving hand is not a resting hand
           offsetRef.current = dragStart.current + Math.round(g.dx / 12);
           const now = new Date();
-          const nowMin = now.getHours() * 60 + now.getMinutes();
-          let total = (nowMin + offsetRef.current + 1440) % 1440;
-          // wound within a minute of her hour: the hands take the last step
-          // themselves, and stop
-          if (offsetRef.current !== 0 && minuteDiff(total) <= 1) {
-            offsetRef.current = ((target - nowMin) % 1440 + 1440) % 1440;
-            total = target;
-            lockedRef.current = true;
-            Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
-          }
+          const total =
+            (now.getHours() * 60 + now.getMinutes() + offsetRef.current + 1440) % 1440;
           apply(total);
+        },
+        onPanResponderRelease: () => {
+          if (lockedRef.current || offsetRef.current === 0) return;
+          // released within a minute of her hour: the hands take the last
+          // step themselves — then must still REST there to stop
+          const now = new Date();
+          const nowMin = now.getHours() * 60 + now.getMinutes();
+          const total = (nowMin + offsetRef.current + 1440) % 1440;
+          if (minuteDiff(total) <= 1 && total !== target) {
+            offsetRef.current = (((target - nowMin) % 1440) + 1440) % 1440;
+            apply(target);
+          }
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -197,7 +226,15 @@ export function useWoundClock(hour: number, minute: number, active: boolean) {
 
   const matches = shown.h === hour && shown.m === minute;
   const display = `${String(shown.h).padStart(2, '0')}:${String(shown.m).padStart(2, '0')}`;
-  return { display, matches, lied: matches && wound, panHandlers: pan.panHandlers };
+  return {
+    display,
+    matches,
+    /** True once the clock has SETTLED at her hour (honest, or wound and
+     *  rested) — gates key off this, never off a passing touch. */
+    held,
+    lied: held && wound,
+    panHandlers: pan.panHandlers,
+  };
 }
 
 // -------------------------------------------------------------------- hour
@@ -230,7 +267,7 @@ export function HourBlock({
 
   useEffect(() => {
     if (done) return;
-    if (clock.matches && !dwell.current) {
+    if (clock.held && !dwell.current) {
       const lie = clock.lied;
       dwell.current = setTimeout(() => {
         if (doneRef.current) return;
@@ -243,13 +280,13 @@ export function HourBlock({
           }
         }
         solve();
-      }, 2000);
-    } else if (!clock.matches && dwell.current) {
+      }, 1200);
+    } else if (!clock.held && dwell.current) {
       clearTimeout(dwell.current);
       dwell.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clock.matches, clock.lied, done]);
+  }, [clock.held, clock.lied, done]);
 
   useEffect(
     () => () => {

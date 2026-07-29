@@ -74,7 +74,9 @@ export function InkAtHour({
   }, [done]);
 
   const dark = done || screenDark || wick > 0.6;
-  const liveReveal = dark && clock.matches;
+  // held, not matches: the ink answers a clock that has SETTLED at her
+  // hour, never one merely scrubbed past it
+  const liveReveal = dark && clock.held;
 
   // Mirror the live conditions into a ref; a slow watcher does the latching
   // (never a sync setState inside an effect body — cascading-render rule).
