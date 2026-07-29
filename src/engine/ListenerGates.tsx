@@ -119,6 +119,7 @@ export function GainBlock({
 }) {
   const { done, doneRef, solve } = useSolveOnce(solved, onSolved, solveCue);
   const [level, setLevel] = useState(0); // 0..1
+  const [movedUi, setMovedUi] = useState(false);
   const state = useRef({ level: 0, moved: false, baselined: false, dwell: 0, dragW: 0 });
   const target = mark / 9;
   const HALF_BAND = 0.055; // half a mark's width
@@ -136,7 +137,10 @@ export function GainBlock({
         setLevel(v);
         return;
       }
-      if (Math.abs(v - s.level) > 0.001) s.moved = true;
+      if (Math.abs(v - s.level) > 0.001) {
+        s.moved = true;
+        setMovedUi(true);
+      }
       s.level = v;
       setLevel(v);
     });
@@ -166,6 +170,7 @@ export function GainBlock({
           if (s.dragW <= 0) return;
           const v = Math.max(0, Math.min(1, e.nativeEvent.locationX / s.dragW));
           s.moved = true;
+          setMovedUi(true);
           s.level = v;
           setLevel(v);
         },
@@ -173,7 +178,10 @@ export function GainBlock({
     [],
   );
 
-  const onScale = level >= target - HALF_BAND && level <= target + HALF_BAND;
+  // the mark answers only a needle that has MOVED — a knob still parked
+  // where last night left it must not glow the answer (device QA)
+  const onScale =
+    movedUi && level >= target - HALF_BAND && level <= target + HALF_BAND;
   return (
     <View style={styles.body}>
       <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>

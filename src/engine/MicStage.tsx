@@ -47,6 +47,7 @@ export function MicStage({
   const [phase, setPhase] = useState<Phase>(solved ? 'done' : 'ask');
   const [tinesOffered, setTinesOffered] = useState(false);
   const [standingYes, setStandingYes] = useState(false);
+  const [heard, setHeard] = useState(0); // her ear, made visible (0..1)
   const breath = useRef({ loudMs: 0, hum: { hz: 0, sinceMs: 0 }, inHumMs: 0 });
   const phaseRef = useRef<Phase>(phase);
   phaseRef.current = phase;
@@ -76,21 +77,17 @@ export function MicStage({
         }
         return;
       }
-      // a hum: voiced, roughly steady (±25%), held 1.5s. Floors are LOW —
-      // a hum is far quieter than a blow (device QA: undetectable at 0.02).
+      // a hum: ANY sustained gentle sound. No pitch test — her standard
+      // is presence, not tune; Margaret hummed it flat too (device QA:
+      // real hums never survived the stability window).
       b.inHumMs += ms;
       if (b.inHumMs >= 45000) setTinesOffered(true); // no one stays stuck here
+      setHeard(Math.min(1, rms * 10));
       const h = b.hum;
-      if (hz !== null && rms > 0.008 && rms < 0.5) {
-        if (h.hz > 0 && Math.abs(hz - h.hz) / h.hz < 0.25) {
-          h.sinceMs += ms;
-          if (h.sinceMs >= 1500) solve();
-        } else {
-          h.hz = hz;
-          h.sinceMs = 0;
-        }
+      if (rms > 0.005 && rms < 0.3) {
+        h.sinceMs += ms;
+        if (h.sinceMs >= 1500) solve();
       } else {
-        h.hz = 0;
         h.sinceMs = 0;
       }
     });
@@ -157,6 +154,11 @@ export function MicStage({
         <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
           {phase === 'done' ? unlockedText : phase === 'hum' ? lampOutText : prompt}
         </Text>
+        {phase === 'hum' && (
+          <View style={styles.earTrack} pointerEvents="none">
+            <View style={[styles.earFill, { width: `${Math.round(heard * 100)}%` }]} />
+          </View>
+        )}
         {phase === 'hum' && tinesOffered && (
           <Pressable onPress={() => setPhase('tines')} hitSlop={8}>
             <Text style={styles.tinesOffer} allowFontScaling={false}>
@@ -208,6 +210,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 10,
   },
+  earTrack: {
+    alignSelf: 'stretch',
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: colors.bg,
+    overflow: 'hidden',
+  },
+  earFill: { height: 3, backgroundColor: colors.dialDim },
   tinesOffer: {
     fontFamily: fonts.mono,
     fontSize: 11,
