@@ -166,7 +166,7 @@ export const BROADCAST_SIX: Chapter = {
         { bearingDeg: 90, toleranceDeg: 12, paces: 9 },
         { bearingDeg: 271, toleranceDeg: 12, paces: 1 },
       ],
-      prompt: 'the legs in order · the rose knows when you may step',
+      prompt: 'the legs in order · sweep until the rose lights your heading · step while it holds',
       solveCue: 'knock',
       unlockedText: 'twenty-five on the door’s heading · nine east · one west, toward her · and the ground under the last pace sounds HOLLOW',
     },
