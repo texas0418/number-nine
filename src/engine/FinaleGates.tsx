@@ -9,6 +9,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue } from '../audio';
+import { setScrollLock } from './scrollLock';
 import { getKv, setKv } from '../db';
 import { dayKeyFromMs } from '../models';
 import { amberGlow, colors, fonts } from '../theme';
@@ -100,22 +101,30 @@ export function NightGate({
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: () => {
+          setScrollLock(true); // the page must not move under the winding hand
           state.current.dragStart = state.current.hours;
         },
         onPanResponderMove: (_e, g) => {
           const s = state.current;
           if (s.done) return;
-          const h = Math.max(0, Math.min(24, s.dragStart + Math.floor(g.dx / 14)));
+          const h = Math.max(0, Math.min(24, s.dragStart + Math.floor(g.dx / 10)));
           if (h !== s.hours) {
             s.hours = h;
             setWoundHours(h);
             Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Light);
-            if (h >= 24) solve(true);
+            if (h >= 24) {
+              setScrollLock(false);
+              solve(true);
+            }
           }
         },
+        onPanResponderRelease: () => setScrollLock(false),
+        onPanResponderTerminate: () => setScrollLock(false),
       }),
     [],
   );
+
+  useEffect(() => () => setScrollLock(false), []);
 
   return (
     <View style={styles.body}>
@@ -232,9 +241,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   clockWell: {
-    alignSelf: 'center',
-    paddingHorizontal: 22,
-    paddingVertical: 10,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingVertical: 14,
     borderRadius: 8,
     backgroundColor: colors.bg,
     borderWidth: StyleSheet.hairlineWidth,
