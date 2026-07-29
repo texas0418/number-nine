@@ -372,3 +372,117 @@ export function watchShutter(cb: () => void): () => void {
     return () => {};
   }
 }
+
+let networkMod: any | null | undefined;
+function network(): any | null {
+  if (networkMod !== undefined) return networkMod;
+  if (!hasNative('ExpoNetwork')) return (networkMod = null);
+  try {
+    networkMod = require('expo-network');
+  } catch {
+    networkMod = null;
+  }
+  return networkMod;
+}
+
+/** Subscribe to SEVERANCE (B5): true while the phone has no network of any
+ *  kind — the reader has cut the outside world (airplane mode reads as
+ *  NONE; iOS never says "airplane" directly, and severed is severed).
+ *  No module → never fires; the widget's held-switch fallback carries it. */
+export function watchSeverance(cb: (severed: boolean) => void): () => void {
+  const n = network();
+  if (!n?.addNetworkStateListener) return () => {};
+  let live = true;
+  let sub: { remove?: () => void } | null = null;
+  try {
+    n.getNetworkStateAsync?.()
+      .then((s: { isConnected?: boolean }) => live && cb(!(s?.isConnected ?? true)))
+      .catch(() => {});
+    sub = n.addNetworkStateListener((s: { isConnected?: boolean }) => {
+      if (live) cb(!(s?.isConnected ?? true));
+    });
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    live = false;
+    try {
+      sub?.remove?.();
+    } catch {
+      /* fail open */
+    }
+  };
+}
+
+// react-native-volume-manager is a BARE RN module — it has no entry in the
+// expo native registry, so the guard is the NativeModules table (safe to
+// read always). Residual risk if a build ever ships without the pod is
+// caught on device QA; the gain gate fails open to a drag fallback anyway.
+let volumeMod: any | null | undefined;
+function volumeManager(): any | null {
+  if (volumeMod !== undefined) return volumeMod;
+  try {
+    const { NativeModules } = require('react-native');
+    if (!NativeModules?.VolumeManager) return (volumeMod = null);
+    volumeMod = require('react-native-volume-manager');
+  } catch {
+    volumeMod = null;
+  }
+  return volumeMod;
+}
+
+/** Subscribe to the RF GAIN (B5): the hardware volume rockers as the set's
+ *  gain knob. Calls back 0..1 on every press; `suppressUi` hides the system
+ *  volume overlay while the gate holds the stage. Returns a stop that
+ *  restores the overlay. */
+export function watchGain(
+  cb: (volume: number) => void,
+  suppressUi = true,
+): () => void {
+  const vm = volumeManager();
+  if (!vm?.addVolumeListener) return () => {};
+  let sub: { remove?: () => void } | null = null;
+  try {
+    if (suppressUi) vm.showNativeVolumeUI?.({ enabled: false });
+    vm.getVolume?.()
+      .then((v: number | { volume?: number }) =>
+        cb(typeof v === 'number' ? v : (v?.volume ?? 0)),
+      )
+      .catch(() => {});
+    sub = vm.addVolumeListener((r: { volume?: number }) => cb(r?.volume ?? 0));
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    try {
+      sub?.remove?.();
+      if (suppressUi) vm.showNativeVolumeUI?.({ enabled: true });
+    } catch {
+      /* fail open */
+    }
+  };
+}
+
+let clipboardMod: any | null | undefined;
+function clipboard(): any | null {
+  if (clipboardMod !== undefined) return clipboardMod;
+  if (!hasNative('ExpoClipboard')) return (clipboardMod = null);
+  try {
+    clipboardMod = require('expo-clipboard');
+  } catch {
+    clipboardMod = null;
+  }
+  return clipboardMod;
+}
+
+/** The POCKET SLIP (B5): the station leaves something in the reader's
+ *  clipboard — a redundant clue channel they discover later, mid-paste,
+ *  somewhere else entirely. Fail-open no-op. */
+export function slipIntoPocket(text: string): void {
+  const c = clipboard();
+  try {
+    c?.setStringAsync?.(text);
+  } catch {
+    /* fail open */
+  }
+}
