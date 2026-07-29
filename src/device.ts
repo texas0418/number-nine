@@ -431,6 +431,17 @@ function volumeManager(): any | null {
   return volumeMod;
 }
 
+/** Set the system volume directly (B5: the gain gate RE-ZEROES the set on
+ *  approach so the needle never starts on the answer). Fail-open no-op. */
+export function setGain(volume: number): void {
+  const vm = volumeManager();
+  try {
+    vm?.setVolume?.(Math.max(0, Math.min(1, volume)), { showUI: false });
+  } catch {
+    /* fail open */
+  }
+}
+
 /** Subscribe to the RF GAIN (B5): the hardware volume rockers as the set's
  *  gain knob. Calls back 0..1 on every press; `suppressUi` hides the system
  *  volume overlay while the gate holds the stage. Returns a stop that

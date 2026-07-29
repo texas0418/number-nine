@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue as playCue } from '../audio';
-import { watchGain, watchSeverance } from '../device';
+import { setGain, watchGain, watchSeverance } from '../device';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -126,6 +126,9 @@ export function GainBlock({
 
   useEffect(() => {
     if (done) return;
+    // the set RE-ZEROES its gain when approached — the needle must never
+    // start the session parked on the answer (device QA, three rounds)
+    setGain(2 / 9);
     const stopGain = watchGain((v) => {
       const s = state.current;
       // the FIRST report is where the knob already stood — a baseline, not

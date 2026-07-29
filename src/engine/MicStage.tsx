@@ -25,6 +25,55 @@ try {
 
 type Phase = 'ask' | 'lamp' | 'hum' | 'tines' | 'done';
 
+type BreathState = { loudMs: number; hum: { hz: number; sinceMs: number }; inHumMs: number };
+type BreathActions = {
+  lampOut: () => void;
+  heard: (v: number) => void;
+  tines: () => void;
+  solve: () => void;
+};
+
+/** The two ears of the gate, outside the component for the complexity cap:
+ *  a BLOW is loud and kills the flame at 400ms; a HUM is ANY sustained
+ *  gentle sound for 1.5s — presence, not pitch (Margaret hummed it flat
+ *  too). Silence resets; 45s of trying offers the tines. */
+function captionFor(
+  phase: Phase,
+  prompt: string,
+  lampOutText: string,
+  unlockedText: string,
+): string {
+  if (phase === 'done') return unlockedText;
+  return phase === 'hum' ? lampOutText : prompt;
+}
+
+function feedBreath(
+  b: BreathState,
+  phase: Phase,
+  rms: number,
+  ms: number,
+  on: BreathActions,
+): void {
+  if (phase === 'lamp') {
+    b.loudMs = rms > 0.22 ? b.loudMs + ms : 0;
+    if (b.loudMs >= 400) {
+      b.loudMs = 0;
+      on.lampOut();
+    }
+    return;
+  }
+  if (phase !== 'hum') return;
+  b.inHumMs += ms;
+  if (b.inHumMs >= 45000) on.tines();
+  on.heard(Math.min(1, rms * 10));
+  if (rms > 0.005 && rms < 0.3) {
+    b.hum.sinceMs += ms;
+    if (b.hum.sinceMs >= 1500) on.solve();
+  } else {
+    b.hum.sinceMs = 0;
+  }
+}
+
 export function MicStage({
   tinesAnswer,
   prompt,
@@ -60,40 +109,27 @@ export function MicStage({
     onSolved();
   };
 
+  // ONE stream spans blow AND hum: tearing down between phases let the
+  // teardown's session-reset kill the second stream as it started (device
+  // QA: the blow always worked, the hum never heard a single buffer).
+  const listening = phase === 'lamp' || phase === 'hum';
   useEffect(() => {
-    if (phase !== 'lamp' && phase !== 'hum') return;
-    const stop = watchBreath((rms, hz, seconds) => {
-      const b = breath.current;
-      const ms = seconds * 1000; // REAL buffer time (device QA: hardcoded
-      // 64ms steps made 2s of hum demand 6+ perfect seconds)
-      if (phaseRef.current === 'lamp') {
-        // a blow: loud, breathy, unpitched — 400ms of it kills the flame
-        b.loudMs = rms > 0.22 ? b.loudMs + ms : 0;
-        if (b.loudMs >= 400) {
-          b.loudMs = 0;
+    if (!listening) return;
+    const stop = watchBreath((rms, _hz, seconds) =>
+      feedBreath(breath.current, phaseRef.current, rms, seconds * 1000, {
+        lampOut: () => {
           cue('lamp-off');
           Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
           setPhase('hum');
-        }
-        return;
-      }
-      // a hum: ANY sustained gentle sound. No pitch test — her standard
-      // is presence, not tune; Margaret hummed it flat too (device QA:
-      // real hums never survived the stability window).
-      b.inHumMs += ms;
-      if (b.inHumMs >= 45000) setTinesOffered(true); // no one stays stuck here
-      setHeard(Math.min(1, rms * 10));
-      const h = b.hum;
-      if (rms > 0.005 && rms < 0.3) {
-        h.sinceMs += ms;
-        if (h.sinceMs >= 1500) solve();
-      } else {
-        h.sinceMs = 0;
-      }
-    });
+        },
+        heard: setHeard,
+        tines: () => setTinesOffered(true),
+        solve,
+      }),
+    );
     return stop;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
+  }, [listening]);
 
   // Call and response: entering the hum, she hums it FIRST — and again
   // every ten seconds while she waits (device QA: the reader was expected
@@ -152,7 +188,7 @@ export function MicStage({
           </Pressable>
         )}
         <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
-          {phase === 'done' ? unlockedText : phase === 'hum' ? lampOutText : prompt}
+          {captionFor(phase, prompt, lampOutText, unlockedText)}
         </Text>
         {phase === 'hum' && (
           <View style={styles.earTrack} pointerEvents="none">

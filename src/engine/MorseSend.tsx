@@ -10,7 +10,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue, playSfx, setLoopVolume, setStaticLevel } from '../audio';
+import { cue, setLoopVolume, setStaticLevel, startSfxLoop, stopSfx } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -60,6 +60,7 @@ export function MorseSend({
   useEffect(
     () => () => {
       if (state.current.gapTimer) clearTimeout(state.current.gapTimer);
+      stopSfx('sidetone'); // never let a keyed tone outlive the widget
     },
     [],
   );
@@ -108,6 +109,10 @@ export function MorseSend({
     s.gapTimer = null;
     s.downAt = Date.now();
     setKeyDown(true);
+    // the SIDETONE: the operator hears his own keying for exactly as long
+    // as the key is down — dits are short beeps, dahs long ones (device QA:
+    // every cut of the clicks take read as pages turning)
+    startSfxLoop('sidetone', 0.35);
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Rigid);
   };
 
@@ -117,7 +122,7 @@ export function MorseSend({
     const held = Date.now() - s.downAt;
     s.downAt = 0;
     setKeyDown(false);
-    playSfx('key-click', 0.7);
+    stopSfx('sidetone');
     // a wildly long press is a rested finger, not a dah
     if (held > 1600) return;
     s.symbols += held <= DIT_MAX_MS ? '.' : '-';

@@ -67,6 +67,7 @@ const SFX_FILES: Record<string, number> = {
   spark: require('../assets/audio/spark.wav'),
   parish: require('../assets/audio/parish.wav'),
   'key-click': require('../assets/audio/key-click.wav'), // ONE click cut from morse-key (full take warped when stacked)
+  sidetone: require('../assets/audio/sidetone.wav'), // 620Hz keyed tone, seamless (B5 send key)
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
