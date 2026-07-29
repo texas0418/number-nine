@@ -1,4 +1,4 @@
-# Audio credits
+# Credits
 
 Simon sourced the recorded audio (2026-07-28, all stated royalty-free);
 everything else is synthesized by `scripts/gen-foley.py`,
@@ -33,10 +33,26 @@ everything else is synthesized by `scripts/gen-foley.py`,
   all edited by Simon from stated royalty-free sources (raw files kept in
   ~/Downloads/Sounds). Replaced the gen-foley.py synth versions of
   dial-return / clock-tick / pips.
+- **B3 set, cut from Simon's recordings (2026-07-28):**
+  rust-break.wav ("Metal Breaking SOUND EFFECT"),
+  plaster-fall.wav ("Cracking Wall,Ceiling, Building, Sound Effects Free
+  Download"), hasp-open.wav ("Old Padlock Sound Effect 704", open action cut
+  from 27.8–29.6s of the 35s take), hum-settle.wav ("Electricity Hum 1 —
+  Electricity Sound Effects Free Download"), sheet-rustle.wav ("A high
+  quality paper manual page rustle sound effect") — all stated royalty-free,
+  raw files in ~/Downloads.
 
-PRE-SHIP: confirm the exact source page + license for each of the four SFX
-above (they came from Simon's downloads folder; the filenames are the only
-provenance recorded). Replace any that cannot be verified.
+PRE-SHIP: confirm the exact source page + license for each of the
+downloads-folder SFX above (B1 singles, B2 set, B3 set — the filenames are
+the only provenance recorded). Replace any that cannot be verified.
+
+## Art
+
+Scene art is Gemini-generated from Simon's prompts (B1 set 2026-07-27; B2
+set and B3 set — churchyard, obj-valve, obj-grave, wall-crack, wall-burst —
+2026-07-28), processed per the ART.md pipeline. Placeholder-grade by policy:
+real 1963-style photography is a pre-ship task. The phosphor "9" icon/splash
+is synthesized by `scripts/gen-icon.py`.
 
 ## Synthesized (no license needed)
 

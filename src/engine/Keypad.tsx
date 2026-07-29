@@ -5,7 +5,7 @@
 // (DEVICE 6 rules, the knowledge IS the key). Solving gives the haptic thunk
 // and the ident.
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue, setStaticLevel } from '../audio';
 import { colors, fonts } from '../theme';
@@ -38,6 +38,7 @@ export function Keypad({
   solved,
   onSolved,
   letters = false,
+  feltGroups,
   solveCue = 'unlock',
 }: {
   answer: string;
@@ -46,11 +47,38 @@ export function Keypad({
   solved: boolean;
   onSolved: () => void;
   letters?: boolean;
+  /** Digits spoken ONLY through the hand: a palm control plays these as
+   *  haptic knock-groups (B3's code slot — the wall says the number). */
+  feltGroups?: number[];
   solveCue?: string;
 }) {
   const [entry, setEntry] = useState(solved ? answer : '');
   const [done, setDone] = useState(solved);
+  const [speaking, setSpeaking] = useState(false);
+  const feltTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const rows = letters ? LETTER_ROWS : DIGIT_ROWS;
+
+  useEffect(() => () => feltTimers.current.forEach(clearTimeout), []);
+
+  // The wall says the number — into the palm, never aloud, never on screen.
+  const feel = () => {
+    if (!feltGroups || speaking || done) return;
+    setSpeaking(true);
+    let at = 400;
+    feltGroups.forEach((n) => {
+      for (let k = 0; k < n; k++) {
+        feltTimers.current.push(
+          setTimeout(
+            () => Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy),
+            at,
+          ),
+        );
+        at += 470;
+      }
+      at += 1200;
+    });
+    feltTimers.current.push(setTimeout(() => setSpeaking(false), at - 1200 + 300));
+  };
 
   const press = (key: string) => {
     if (done || key === '') return;
@@ -91,6 +119,13 @@ export function Keypad({
       >
         {[...display].join(' ')}
       </Text>
+      {!done && feltGroups && (
+        <Pressable onPress={feel} style={styles.palm} disabled={speaking}>
+          <Text style={styles.palmText} allowFontScaling={false}>
+            {speaking ? 'the wall is counting' : '◉ palm to the wall'}
+          </Text>
+        </Pressable>
+      )}
       {!done && (
         <View>
           {rows.map((row, ri) => (
@@ -167,4 +202,14 @@ const styles = StyleSheet.create({
   },
   keyWide: { width: 84 },
   keyText: { fontFamily: fonts.mono, fontSize: 18, color: colors.prose },
+  palm: {
+    borderColor: colors.panelBorder,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginBottom: 12,
+    backgroundColor: colors.bg,
+  },
+  palmText: { fontFamily: fonts.mono, fontSize: 11, color: colors.lockGlow },
 });

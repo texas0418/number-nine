@@ -10,6 +10,7 @@ import {
 import { GATE_KINDS as ENGINE_GATE_KINDS, progressIndex, solvedGatesBefore, visibleCount } from './src/engine/reveal';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 import { BROADCAST_TWO } from './src/chapters/broadcast2';
+import { BROADCAST_THREE } from './src/chapters/broadcast3';
 import type { ChapterBlock } from './src/models';
 
 let failures = 0;
@@ -140,6 +141,34 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
       knock.groups.join('') === String(radio.targetKhz)
     );
   })());
+}
+
+// --- Broadcast Three doctrine ---------------------------------------------
+{
+  const b3 = BROADCAST_THREE.blocks;
+  const CODE_ENTRY = ['keypad', 'safe', 'cipher'];
+  const b3Gates = b3.filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind));
+  ok('b3 has eight puzzles plus the fork', b3Gates.length === 9);
+  ok(
+    'b3 has exactly one code-entry puzzle',
+    b3.filter((b) => CODE_ENTRY.includes(b.kind)).length === 1,
+  );
+  ok('b3 answers stay three blocks from their gates', !answersNearGates(b3));
+  ok('b3 ends with chapterEnd', b3[b3.length - 1].kind === 'chapterEnd');
+  // the felt digits must match the typed answer (the wall says the number)
+  const box = b3.find((b) => b.kind === 'keypad');
+  ok(
+    'b3 poor-box felt groups spell its answer',
+    box?.kind === 'keypad' && (box.feltGroups ?? []).join('') === box.answer,
+  );
+  // every pressure-valve hint points at a real gate id
+  const gateIds = new Set(
+    b3Gates.flatMap((b) => ('id' in b ? [(b as { id: string }).id] : [])),
+  );
+  ok(
+    'b3 hints all reference real gates',
+    Object.keys(BROADCAST_THREE.hints ?? {}).every((id) => gateIds.has(id)),
+  );
 }
 
 if (failures) {

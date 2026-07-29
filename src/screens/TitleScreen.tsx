@@ -12,6 +12,7 @@ export default function TitleScreen({
   todaySolved,
   onStory,
   onStoryTwo,
+  onStoryThree,
   onDaily,
   onSettings,
 }: {
@@ -21,6 +22,7 @@ export default function TitleScreen({
   todaySolved: boolean;
   onStory: () => void;
   onStoryTwo: () => void;
+  onStoryThree: () => void;
   onDaily: () => void;
   onSettings: () => void;
 }) {
@@ -44,6 +46,9 @@ export default function TitleScreen({
           onPress={unlocked ? onStoryTwo : onStory}
           dim={!unlocked}
         />
+        {unlocked && (
+          <MenuRow label="broadcast three" hint="the instructions" onPress={onStoryThree} />
+        )}
         <MenuRow
           label={todaySolved ? 'tonight’s signal · received' : 'tonight’s signal'}
           hint={streak > 0 ? `${streak} night${streak === 1 ? '' : 's'} listening` : 'a fresh cipher every night'}

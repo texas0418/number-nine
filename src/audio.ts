@@ -56,6 +56,11 @@ const SFX_FILES: Record<string, number> = {
   'letter-tear': require('../assets/audio/letter-tear.wav'),
   'page-flip': require('../assets/audio/page-flip.wav'),
   'pips-muffled': require('../assets/audio/pips-muffled.wav'),
+  'rust-break': require('../assets/audio/rust-break.wav'),
+  'plaster-fall': require('../assets/audio/plaster-fall.wav'),
+  'hasp-open': require('../assets/audio/hasp-open.wav'),
+  'hum-settle': require('../assets/audio/hum-settle.wav'),
+  'sheet-rustle': require('../assets/audio/sheet-rustle.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -442,6 +447,7 @@ export function cue(name: string): void {
   }
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
+  else if (name === 'rust-break') playSfx('rust-break', 0.5); // device QA: default drowned the room
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 

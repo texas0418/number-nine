@@ -24,7 +24,9 @@ export type ChapterBlock =
   | { kind: 'plate'; image: SceneId; caption?: string; cue?: AudioCue }
   | { kind: 'fork'; leftLabel: string; left: string; rightLabel: string; right: string; join: string; stopsCue?: AudioCue }
   | { kind: 'radio'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; lockedText: string; unlockedText: string; cue?: AudioCue; stopsCue?: AudioCue }
-  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // `feltGroups`: digits delivered ONLY as haptic knock-groups via the
+  // in-widget palm control (B3's code slot — the wall says the number).
+  | { kind: 'keypad'; id: string; answer: string; prompt: string; unlockedText: string; feltGroups?: number[]; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'safe'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // A word/decode lock: letter entry, not digits. The "cipher" of the fiction.
   | { kind: 'cipher'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
@@ -33,7 +35,7 @@ export type ChapterBlock =
   | { kind: 'melody'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // An OBSERVATION puzzle: touch the hidden detail in a photograph.
   // `target` is a normalized rect {x,y,w,h} within the image.
-  | { kind: 'hotspot'; id: string; image: SceneId; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  | { kind: 'hotspot'; id: string; image: SceneId; revealImage?: SceneId; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // A TOUCH-ECHO puzzle: the phone knocks in grouped counts (haptic-first);
   // the reader knocks the same groups back. `groups` = knocks per group.
   | { kind: 'knock'; id: string; groups: number[]; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
@@ -57,6 +59,20 @@ export type ChapterBlock =
   // Face the needle: hold the compass on `targetDeg` (0 = north) within
   // `toleranceDeg` for a beat. Magnetometer feeds it; the ring drags too.
   | { kind: 'compass'; id: string; targetDeg: number; toleranceDeg: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // BE STILL: rest the phone (or a motionless finger) for `holdMs`.
+  | { kind: 'stillness'; id: string; holdMs: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // SHAKE LOOSE: physically shake the phone (or hammer taps) until it gives.
+  | { kind: 'shake'; id: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // THE OTHER SIDE OF THE TABLE: lines that change when the phone is
+  // physically inverted; tap `targetWord` in the inverted reading.
+  | { kind: 'invert'; id: string; upright: string[]; inverted: string[]; targetWord: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // FEED THE SET: plug the phone in (or hold the plug glyph home).
+  | { kind: 'mains'; id: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // BOTH HANDS: two-or-more touches held on the panel together.
+  | { kind: 'chord'; id: string; holdMs: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // PACE IT OUT: face `bearingDeg` and take `paces` steps (bounce-detected
+  // while the bearing holds; a tap is also a pace).
+  | { kind: 'paces'; id: string; bearingDeg: number; toleranceDeg: number; paces: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */
@@ -65,6 +81,11 @@ export type SceneId =
   | 'study'
   | 'cellar'
   | 'marsh'
+  | 'churchyard'
+  | 'wall-crack'
+  | 'wall-burst'
+  | 'obj-valve'
+  | 'obj-grave'
   | 'obj-receiver'
   | 'obj-telephone'
   | 'obj-logbook'
@@ -96,6 +117,11 @@ export const AUDIO_CUES = [
   'knock-far',
   'letter-tear',
   'pips-muffled',
+  'rust-break',
+  'plaster-fall',
+  'hasp-open',
+  'hum-settle',
+  'sheet-rustle',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 
@@ -106,6 +132,11 @@ export interface Chapter {
   id: number; // 1..6
   title: string; // "Broadcast One"
   blocks: ChapterBlock[];
+  /** The PRESSURE VALVE (doctrine: nudges, never instructions): per-gate
+   *  margin notes in Halloran's second-log hand, keyed by gate id. The
+   *  engine surfaces one only after the reader has been stuck at that gate
+   *  for a long while — atmosphere removing a wall, never a walkthrough. */
+  hints?: Record<string, string>;
 }
 
 /** Radio gates count as solved when tuned within this many kHz of target. */
