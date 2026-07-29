@@ -198,6 +198,11 @@ export function Triangulate({
           />
         )}
       </View>
+      {/* the readout lives ABOVE the strip — a dialing thumb covered it
+          when it sat inside (device QA) */}
+      <Text style={styles.freq} allowFontScaling={false}>
+        {khz} kc/s
+      </Text>
       <View
         style={styles.strip}
         onLayout={(e) => {
@@ -205,9 +210,6 @@ export function Triangulate({
         }}
         {...(done ? {} : pan.panHandlers)}
       >
-        <Text style={styles.freq} allowFontScaling={false} pointerEvents="none">
-          {khz} kc/s
-        </Text>
         <View
           pointerEvents="none"
           style={[
@@ -274,8 +276,8 @@ const styles = StyleSheet.create({
   },
   strip: {
     width: MAP,
-    height: 56,
-    marginTop: 12,
+    height: 48,
+    marginTop: 6,
     borderRadius: 10,
     backgroundColor: colors.panel,
     borderColor: colors.panelBorder,
@@ -288,13 +290,14 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     color: colors.dial,
     textAlign: 'center',
+    marginTop: 12,
     ...amberGlow,
   },
   needle: {
     position: 'absolute',
     bottom: 6,
     width: 3,
-    height: 14,
+    height: 36,
     borderRadius: 2,
     backgroundColor: colors.dialDim,
   },
