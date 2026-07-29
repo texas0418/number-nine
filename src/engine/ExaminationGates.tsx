@@ -418,9 +418,9 @@ const styles = StyleSheet.create({
   },
   meterFill: { height: 4, backgroundColor: colors.dialDim },
   clockWell: {
-    alignSelf: 'center',
-    paddingHorizontal: 22,
-    paddingVertical: 10,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingVertical: 12,
     borderRadius: 8,
     backgroundColor: colors.bg,
     borderWidth: StyleSheet.hairlineWidth,
