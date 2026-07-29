@@ -107,20 +107,6 @@ function watchAppState(): void {
   }
 }
 
-/** After the mic (B5): recording flips the iOS session and PAUSES every
- *  player — and expo-audio players never resume themselves (device QA:
- *  "no background music at all" from the first mic use onward). Restore
- *  the playback session, then wake everything that should be sounding. */
-export function resumeAfterRecording(): void {
-  const a = audio();
-  try {
-    a?.setAudioModeAsync?.({ allowsRecording: false, playsInSilentMode: true });
-  } catch {
-    /* fail open */
-  }
-  setTimeout(resumeBeds, 350); // let the session settle before waking players
-}
-
 export function initAudio(): void {
   const a = audio();
   if (!a || staticPlayer) return;

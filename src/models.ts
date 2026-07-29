@@ -107,9 +107,6 @@ export type ChapterBlock =
   // Morse SENDING: the key under the reader's own finger; the word comes
   // from the clues, the alphabet from an artifact.
   | { kind: 'morsesend'; id: string; word: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
-  // The staged mic gate: blow out the lamp, then hum her ident back. The
-  // permission dialog is part of the scene; the tines carry a refusal.
-  | { kind: 'micstage'; id: string; tinesAnswer: string; prompt: string; lampOutText: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // The pocket slip (NOT a gate): the station leaves `text` in the reader's
   // clipboard as this block reveals. They find it later, mid-paste.
   | { kind: 'slip'; text: string }

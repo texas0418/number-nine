@@ -39,7 +39,8 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "The station would like to listen back — two moments in the story ask for your breath on the lamp and your hum of her tune. Everything is heard on this device only; nothing is recorded, stored, or sent."
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
       ]
     ]
