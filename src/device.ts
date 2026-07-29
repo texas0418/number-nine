@@ -486,3 +486,82 @@ export function slipIntoPocket(text: string): void {
     /* fail open */
   }
 }
+
+let audioMod: any | null | undefined;
+function audioModule(): any | null {
+  if (audioMod !== undefined) return audioMod;
+  if (!hasNative('AudioModule') && !hasNative('ExpoAudio')) return (audioMod = null);
+  try {
+    audioMod = require('expo-audio');
+  } catch {
+    audioMod = null;
+  }
+  return audioMod;
+}
+
+/** Ask to open the EAR (B5's mic gate). The iOS dialog is part of the
+ *  scene; a refusal is honored forever (the tines carry the gate). */
+export async function askMicPermission(): Promise<boolean> {
+  const a = audioModule();
+  if (!a?.requestRecordingPermissionsAsync) return false;
+  try {
+    const res = await a.requestRecordingPermissionsAsync();
+    return !!res?.granted;
+  } catch {
+    return false;
+  }
+}
+
+/** Subscribe to the reader's BREATH AND VOICE (B5): live mic PCM reduced to
+ *  { rms, hz } per buffer — rms 0..1 loudness, hz a coarse zero-crossing
+ *  pitch (null when unvoiced/quiet). Requires permission already granted.
+ *  Fail-open: no module, no permission, no stream → never fires. */
+export function watchBreath(
+  cb: (rms: number, hz: number | null) => void,
+): () => void {
+  const a = audioModule();
+  const Stream = a?.AudioModule?.AudioStream ?? a?.AudioStream;
+  if (!Stream) return () => {};
+  let stream: any | null = null;
+  let sub: { remove?: () => void } | null = null;
+  try {
+    stream = new Stream({ sampleRate: 16000, channels: 1, encoding: 'float32' });
+    sub = stream.addListener?.(
+      'audioStreamBuffer',
+      (buf: { data: ArrayBuffer; sampleRate: number }) => {
+        try {
+          const pcm = new Float32Array(buf.data);
+          if (pcm.length === 0) return;
+          let sum = 0;
+          let crossings = 0;
+          let prev = pcm[0];
+          for (let i = 0; i < pcm.length; i++) {
+            const v = pcm[i];
+            sum += v * v;
+            if ((v >= 0) !== (prev >= 0)) crossings++;
+            prev = v;
+          }
+          const rms = Math.sqrt(sum / pcm.length);
+          const seconds = pcm.length / (buf.sampleRate || 16000);
+          const hz = crossings / 2 / seconds;
+          // a hum is quiet-but-voiced; silence and hiss report no pitch
+          cb(rms, rms > 0.015 && hz >= 60 && hz <= 600 ? hz : null);
+        } catch {
+          /* fail open */
+        }
+      },
+    );
+    stream.start?.().catch?.(() => {});
+  } catch {
+    /* fail open */
+  }
+  return () => {
+    try {
+      sub?.remove?.();
+      stream?.stop?.();
+      stream?.release?.();
+    } catch {
+      /* fail open */
+    }
+  };
+}

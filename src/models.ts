@@ -46,7 +46,7 @@ export type ChapterBlock =
   // phone face-down (or dragging the dog-ear) turns the page; tap
   // `targetWord` on the verso to pass. `backPrompt` is the caption while
   // the verso is up (a nudge that the page wants touching).
-  | { kind: 'flip'; id: string; front: string[]; back: string[]; targetWord: string; prompt: string; backPrompt?: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  | { kind: 'flip'; id: string; front: string[]; back: string[]; targetWord: string; prompt: string; backPrompt?: string; unlockedText: string; mirroredBack?: boolean; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // SHY INK: `hiddenLine` resolves only when the lamp is turned down —
   // system brightness below threshold, or the in-page wick dragged low.
   // Tap `targetWord` in the revealed line to pass.
@@ -96,6 +96,23 @@ export type ChapterBlock =
   // Her hour proper: passable when the real clock stands at hour:minute —
   // or wound there (the lie again, and she likes it less each time).
   | { kind: 'hour'; id: string; hour: number; minute: number; prompt: string; unlockedText: string; noticedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // B5 — THE OTHER LISTENERS. Severance: cut the phone off from the world
+  // (the OS switch is the act; the gate witnesses the result).
+  | { kind: 'sever'; id: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // RF gain: the hardware volume rockers as the set's gain knob; `mark` is
+  // the wanted etch (1..9), named only by the clues.
+  | { kind: 'gain'; id: string; mark: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Triangulation: three weak carriers, three bearing lines, one crossing.
+  | { kind: 'triangulate'; id: string; bandLowKhz: number; bandHighKhz: number; stations: { khz: number; siteX: number; siteY: number; bearingDeg: number }[]; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Morse SENDING: the key under the reader's own finger; the word comes
+  // from the clues, the alphabet from an artifact.
+  | { kind: 'morsesend'; id: string; word: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The staged mic gate: blow out the lamp, then hum her ident back. The
+  // permission dialog is part of the scene; the tines carry a refusal.
+  | { kind: 'micstage'; id: string; tinesAnswer: string; prompt: string; lampOutText: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The pocket slip (NOT a gate): the station leaves `text` in the reader's
+  // clipboard as this block reveals. They find it later, mid-paste.
+  | { kind: 'slip'; text: string }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */
