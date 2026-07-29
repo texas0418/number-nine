@@ -3,7 +3,7 @@
 // puzzle: be still, shake it loose, feed the set, both hands on the cabinet.
 // Every sensor path has a touch path; everything fails open (device.ts).
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue as playCue, setStaticLevel } from '../audio';
 import { watchMains, watchShake, watchStillness } from '../device';
@@ -32,7 +32,12 @@ function useSolveOnce(solved: boolean, onSolved: () => void, solveCue: string) {
 
 // ---------------------------------------------------------------- stillness
 // BE STILL. The phone at rest (gyro) or a finger held without moving both
-// count — stillness is stillness, however the reader can give it.
+// count — stillness is stillness, however the reader can give it. She takes
+// a moment to begin measuring (ARM_MS); only then does the bar start to
+// fill, and any stir empties it — patience is the whole instruction.
+const STILL_ARM_MS = 1500;
+const STILL_QUANTUM_MS = 250;
+
 export function StillnessBlock({
   holdMs,
   prompt,
@@ -49,26 +54,42 @@ export function StillnessBlock({
   solveCue?: string;
 }) {
   const { done, doneRef, solve } = useSolveOnce(solved, onSolved, solveCue);
-  const [resting, setResting] = useState(false);
-  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [progress, setProgress] = useState(0);
+  const since = useRef<{ sensor: number | null; finger: number | null }>({
+    sensor: null,
+    finger: null,
+  });
 
   useEffect(() => {
     if (done) return;
-    const stop = watchStillness(holdMs, (still) => {
-      setResting(still);
-      if (still && !doneRef.current) solve();
+    const stop = watchStillness(STILL_QUANTUM_MS, (still) => {
+      since.current.sensor = still ? Date.now() - STILL_QUANTUM_MS : null;
     });
-    return stop;
+    const tick = setInterval(() => {
+      if (doneRef.current) return;
+      const s = since.current;
+      const held = [s.sensor, s.finger].filter((t): t is number => t !== null);
+      if (held.length === 0) {
+        setProgress(0);
+        return;
+      }
+      const elapsed = Date.now() - Math.min(...held);
+      const p = Math.max(0, Math.min(1, (elapsed - STILL_ARM_MS) / holdMs));
+      setProgress(p);
+      if (p >= 1) solve();
+    }, 100);
+    return () => {
+      stop();
+      clearInterval(tick);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done, holdMs]);
 
   const pressIn = () => {
-    setResting(true);
-    pressTimer.current = setTimeout(solve, holdMs);
+    since.current.finger = Date.now();
   };
   const pressOut = () => {
-    setResting(false);
-    if (pressTimer.current) clearTimeout(pressTimer.current);
+    since.current.finger = null;
   };
 
   return (
@@ -80,7 +101,11 @@ export function StillnessBlock({
       <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
         {done ? unlockedText : prompt}
       </Text>
-      {!done && <View style={[styles.breath, resting && styles.breathHeld]} />}
+      {!done && (
+        <View style={styles.meterTrack}>
+          <View style={[styles.meterFill, { width: `${Math.round(progress * 100)}%` }]} />
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -281,16 +306,6 @@ const styles = StyleSheet.create({
     color: colors.muted,
     textAlign: 'center',
   },
-  breath: {
-    alignSelf: 'center',
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.bg,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.panelBorder,
-  },
-  breathHeld: { backgroundColor: colors.dialDim },
   meterTrack: {
     height: 4,
     backgroundColor: colors.bg,

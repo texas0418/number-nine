@@ -292,7 +292,7 @@ export function ChapterView({
               exempt={isGate(block) || block.kind === 'chapterEnd'}
               onMeasure={recordTop(i)}
             >
-              {renderBlock(block, i, solved.has(i), solveGate, onComplete)}
+              {renderBlock(block, i, solved.has(i), solveGate, onComplete, hintAt === i)}
             </BlockReveal>
           ),
         )}
@@ -357,6 +357,7 @@ function renderBlock(
   gateSolved: boolean,
   solveGate: (i: number) => void,
   onComplete: () => void,
+  hintShown: boolean,
 ) {
   switch (block.kind) {
     case 'chapterCard':
@@ -380,7 +381,7 @@ function renderBlock(
     case 'chapterEnd':
       return <ChapterEndBlock title={block.title} onDone={onComplete} />;
     default:
-      return renderGate(block, index, gateSolved, solveGate);
+      return renderGate(block, index, gateSolved, solveGate, hintShown);
   }
 }
 
@@ -390,6 +391,7 @@ function renderGate(
   index: number,
   gateSolved: boolean,
   solveGate: (i: number) => void,
+  hintShown: boolean,
 ) {
   switch (block.kind) {
     case 'fork':
@@ -475,7 +477,7 @@ function renderGate(
         />
       );
     default:
-      return renderInstrumentGate(block, index, gateSolved, solveGate);
+      return renderInstrumentGate(block, index, gateSolved, solveGate, hintShown);
   }
 }
 
@@ -485,6 +487,7 @@ function renderInstrumentGate(
   index: number,
   gateSolved: boolean,
   solveGate: (i: number) => void,
+  hintShown: boolean,
 ) {
   const common = { solved: gateSolved, onSolved: () => solveGate(index) };
   switch (block.kind) {
@@ -566,7 +569,7 @@ function renderInstrumentGate(
         />
       );
     default:
-      return renderInstructionGate(block, index, gateSolved, solveGate);
+      return renderInstructionGate(block, index, gateSolved, solveGate, hintShown);
   }
 }
 
@@ -576,6 +579,7 @@ function renderInstructionGate(
   index: number,
   gateSolved: boolean,
   solveGate: (i: number) => void,
+  hintShown: boolean,
 ) {
   const common = { solved: gateSolved, onSolved: () => solveGate(index) };
   switch (block.kind) {
@@ -607,6 +611,7 @@ function renderInstructionGate(
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}
+          hintShown={hintShown}
           {...common}
         />
       );

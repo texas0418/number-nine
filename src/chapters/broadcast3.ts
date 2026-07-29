@@ -66,7 +66,7 @@ export const BROADCAST_THREE: Chapter = {
     {
       kind: 'stillness',
       id: 'b3-still',
-      holdMs: 4000,
+      holdMs: 8000,
       prompt: 'be still · she is listening to your hands',
       unlockedText: 'the stillness is accepted · a listener’s hands after all',
     },

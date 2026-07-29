@@ -447,6 +447,7 @@ export function cue(name: string): void {
   }
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
+  else if (name === 'rust-break') playSfx('rust-break', 0.5); // device QA: default drowned the room
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 

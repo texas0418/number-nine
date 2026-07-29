@@ -1,11 +1,16 @@
 // src/engine/InvertBlock.tsx
+/* eslint-disable react-hooks/refs -- doneRef/turnedThisGesture feed the
+   once-created PanResponder's handlers only; render reads useState values. */
 // THE OTHER SIDE OF THE TABLE: a page whose words change when the phone is
 // PHYSICALLY upside down. The inverted lines render rotated 180° so they
 // read correctly only in the inverted grip; tap the target word there to
-// pass. Fallback: a small turn glyph rotates the page in place instead.
+// pass. Fallback: a small turn glyph rotates the page in place — but it
+// only materializes alongside the 150s margin note (device QA: visible from
+// the start, it leaked the trick), and it answers to a SWIPE across it (the
+// sheet is turned, not pressed), so a stray thumb cannot trip it.
 
-import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { watchInversion } from '../device';
 import { cue } from '../audio';
 import { colors, fonts } from '../theme';
@@ -24,6 +29,7 @@ export function InvertBlock({
   prompt,
   unlockedText,
   solved,
+  hintShown = false,
   onSolved,
   solveCue = 'unlock',
 }: {
@@ -33,10 +39,13 @@ export function InvertBlock({
   prompt: string;
   unlockedText: string;
   solved: boolean;
+  /** True once the margin note has surfaced — the turn glyph rides with it. */
+  hintShown?: boolean;
   onSolved: () => void;
   solveCue?: string;
 }) {
   const [done, setDone] = useState(solved);
+  const doneRef = useRef(solved);
   // 'up' | 'sensor' (phone truly inverted) | 'glyph' (fallback turn-in-place)
   const [mode, setMode] = useState<'up' | 'sensor' | 'glyph'>('up');
 
@@ -50,11 +59,39 @@ export function InvertBlock({
 
   const touchWord = () => {
     if (done || mode === 'up') return;
+    doneRef.current = true;
     setDone(true);
     cue(solveCue);
     Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
     onSolved();
   };
+
+  // The turn gesture: a deliberate drag across the glyph turns the sheet in
+  // place (and back). Created once — recreating a PanResponder mid-gesture
+  // kills the drag (engine lesson, B2).
+  const turnedThisGesture = useRef(false);
+  const turnPan = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => !doneRef.current,
+        onMoveShouldSetPanResponder: (_e, g) =>
+          !doneRef.current && Math.hypot(g.dx, g.dy) > 8,
+        onPanResponderTerminationRequest: () => false,
+        onShouldBlockNativeResponder: () => true,
+        onPanResponderGrant: () => {
+          turnedThisGesture.current = false;
+        },
+        onPanResponderMove: (_e, g) => {
+          if (turnedThisGesture.current || doneRef.current) return;
+          if (Math.hypot(g.dx, g.dy) > 40) {
+            turnedThisGesture.current = true;
+            Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Light);
+            setMode((m) => (m === 'glyph' ? 'up' : 'glyph'));
+          }
+        },
+      }),
+    [],
+  );
 
   const showingOther = mode !== 'up';
   const lines = showingOther ? inverted : upright;
@@ -87,16 +124,12 @@ export function InvertBlock({
             </Text>
           );
         })}
-        {!done && (
-          <Pressable
-            onPress={() => setMode((m) => (m === 'glyph' ? 'up' : 'glyph'))}
-            style={styles.turnGlyph}
-            hitSlop={10}
-          >
-            <Text style={styles.turnText} allowFontScaling={false}>
+        {!done && hintShown && (
+          <View style={styles.turnGlyph} {...turnPan.panHandlers}>
+            <Text style={styles.turnText} allowFontScaling={false} pointerEvents="none">
               ⟲
             </Text>
-          </Pressable>
+          </View>
         )}
       </View>
       <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
@@ -126,7 +159,15 @@ const styles = StyleSheet.create({
   },
   lineOther: { color: colors.proseFaded, fontStyle: 'italic' },
   wordFound: { color: colors.dial, fontStyle: 'italic' },
-  turnGlyph: { position: 'absolute', right: 8, bottom: 6 },
+  turnGlyph: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   turnText: { fontSize: 18, color: colors.faint },
   caption: {
     fontFamily: fonts.mono,
