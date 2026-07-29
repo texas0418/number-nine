@@ -67,6 +67,7 @@ const SFX_FILES: Record<string, number> = {
   spark: require('../assets/audio/spark.wav'),
   parish: require('../assets/audio/parish.wav'),
   'key-click': require('../assets/audio/key-click.wav'), // ONE click cut from morse-key (full take warped when stacked)
+  'break-set': require('../assets/audio/break-set.wav'), // the strike + the dying sigh (B6, one ending only)
   sidetone: require('../assets/audio/sidetone.wav'), // 620Hz keyed tone, seamless (B5 send key)
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
@@ -517,15 +518,23 @@ export function playIdent(): void {
   }
 }
 
+// Loop-backed cues and their levels: the ring until answered, the wind
+// until a road is chosen, the hum until the carrier locks, the parish
+// until she stands.
+const LOOP_CUES: Record<string, number> = {
+  'phone-ring': 0.5,
+  'marsh-wind': 0.3,
+  'wire-hum': 0.22,
+  parish: 0.22,
+};
+
 export function cue(name: string): void {
   // The static bed is ATMOSPHERE — it must never drown the diegetic one-shots
   // (device feedback: "all I hear is static"). Levels kept low.
   if (name === 'static-swell') setStaticLevel(0.18); // was 0.28 — device QA: too loud
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
-  else if (name === 'phone-ring') startSfxLoop('phone-ring', 0.5); // rings until answered
-  else if (name === 'marsh-wind') startSfxLoop('marsh-wind', 0.3); // until a road is chosen
-  else if (name === 'wire-hum') startSfxLoop('wire-hum', 0.22); // until the carrier locks
+  else if (name in LOOP_CUES) startSfxLoop(name, LOOP_CUES[name]);
   else if (name === 'morse-key') playSfx('morse-key', 0.45); // he answers, under the prose
   else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
   else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
@@ -536,7 +545,7 @@ export function cue(name: string): void {
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else if (name === 'rust-break') playSfx('rust-break', 0.5); // device QA: default drowned the room
-  else if (name === 'parish') startSfxLoop('parish', 0.22); // the hedge-voices, until she stands
+  else if (name === 'break-set') playSfx('break-set', 0.8); // once, ever, on one ending
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 

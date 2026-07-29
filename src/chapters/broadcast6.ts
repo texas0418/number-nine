@@ -129,6 +129,7 @@ export const BROADCAST_SIX: Chapter = {
         '  AND KEEP YOUR HANDS OFF ME.',
       ],
     },
+    { kind: 'plate', image: 'obj-setdown', caption: 'laid to the wood · a card that has finished being played' },
     {
       kind: 'seance',
       id: 'b6-seance',
@@ -280,6 +281,7 @@ export const BROADCAST_SIX: Chapter = {
       text: 'And the cellar door stood open at the top of its stairs, and the lamplight coming up from below was the amber of every dial he had ever leaned toward in the dark, and the house — patient, replete, nineteen years and ninety-one broadcasts old in its work — left him alone in the hall with the choice it had been building him toward since the first evening the telephone rang. He could go down and take the ninth seat at her table. Or he could break the set, and the circle, and whatever else broke with them.',
       faded: true,
     },
+    { kind: 'plate', image: 'obj-stairs', caption: 'the seat · drawn out · the light generous, almost hospitable' },
     {
       kind: 'endingfork',
       id: 'b6-choice',

@@ -48,6 +48,10 @@ everything else is synthesized by `scripts/gen-foley.py`,
   (YouTube xeDsWdc1vgg, audio only via yt-dlp), band-limited 350–2900 Hz to
   shortwave voice, our own static-loop bed mixed under at 10%, liveliest
   10s crossfaded into a seamless loop.
+- **B6 (2026-07-29):** break-set.wav — the BREAK THE SET ending's one
+  sound — built from "Glass Breaking Sound Effect HD" by Car Features
+  (YouTube TcnufvBffcY, audio via yt-dlp; first impact, 1.1s) with a
+  synthesized dying electrical sigh (130→35 Hz, 2.6s) laid under the tail.
 - **B3 set, cut from Simon's recordings (2026-07-28):**
   rust-break.wav ("Metal Breaking SOUND EFFECT"),
   plaster-fall.wav ("Cracking Wall,Ceiling, Building, Sound Effects Free

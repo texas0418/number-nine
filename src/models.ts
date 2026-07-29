@@ -149,6 +149,8 @@ export type SceneId =
   | 'map-marsh'
   | 'obj-ness'
   | 'obj-van'
+  | 'obj-setdown'
+  | 'obj-stairs'
   | 'obj-valve'
   | 'obj-grave'
   | 'obj-receiver'
@@ -191,6 +193,7 @@ export const AUDIO_CUES = [
   'spark',
   'parish',
   'knock',
+  'break-set',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

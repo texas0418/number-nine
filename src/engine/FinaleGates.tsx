@@ -166,7 +166,7 @@ export function EndingFork({
       /* fail open */
     }
     Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
-    cue(side === 'seat' ? 'silence' : 'static-swell');
+    cue(side === 'seat' ? 'silence' : 'break-set');
     onSolved();
   };
 
