@@ -190,6 +190,7 @@ export const AUDIO_CUES = [
   'whisper',
   'spark',
   'parish',
+  'knock',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 
