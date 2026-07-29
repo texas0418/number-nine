@@ -27,6 +27,7 @@ try {
 
 export function Hotspot({
   image,
+  revealImage,
   target,
   prompt,
   unlockedText,
@@ -35,6 +36,8 @@ export function Hotspot({
   solveCue = 'unlock',
 }: {
   image: SceneId;
+  /** Optional solved-state plate: the image itself changes (the wall opens). */
+  revealImage?: SceneId;
   target: { x: number; y: number; w: number; h: number };
   prompt: string;
   unlockedText: string;
@@ -73,8 +76,12 @@ export function Hotspot({
           setSize({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })
         }
       >
-        <Image source={SCENES[image]} resizeMode="cover" style={styles.img} />
-        {done && (
+        <Image
+          source={SCENES[done && revealImage ? revealImage : image]}
+          resizeMode="cover"
+          style={styles.img}
+        />
+        {done && !revealImage && (
           <View
             pointerEvents="none"
             style={[

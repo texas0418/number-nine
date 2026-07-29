@@ -35,7 +35,7 @@ export type ChapterBlock =
   | { kind: 'melody'; id: string; answer: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // An OBSERVATION puzzle: touch the hidden detail in a photograph.
   // `target` is a normalized rect {x,y,w,h} within the image.
-  | { kind: 'hotspot'; id: string; image: SceneId; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  | { kind: 'hotspot'; id: string; image: SceneId; revealImage?: SceneId; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // A TOUCH-ECHO puzzle: the phone knocks in grouped counts (haptic-first);
   // the reader knocks the same groups back. `groups` = knocks per group.
   | { kind: 'knock'; id: string; groups: number[]; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
@@ -82,6 +82,8 @@ export type SceneId =
   | 'cellar'
   | 'marsh'
   | 'churchyard'
+  | 'wall-crack'
+  | 'wall-burst'
   | 'obj-valve'
   | 'obj-grave'
   | 'obj-receiver'

@@ -111,11 +111,12 @@ export const BROADCAST_THREE: Chapter = {
     {
       kind: 'hotspot',
       id: 'b3-crack',
-      image: 'hall',
-      target: { x: 0.06, y: 0.72, w: 0.22, h: 0.16 },
+      image: 'wall-crack',
+      revealImage: 'wall-burst',
+      target: { x: 0.45, y: 0.77, w: 0.22, h: 0.18 },
       prompt: 'the hall wall · the knocking has left its mark somewhere',
       solveCue: 'plaster-fall',
-      unlockedText: 'the plaster gives · behind it, folded paper · a great deal of folded paper',
+      unlockedText: 'the plaster gives all at once · straw packing, a light that has no business · and folded paper',
     },
     {
       kind: 'prose',

@@ -465,6 +465,7 @@ function renderGate(
       return (
         <Hotspot
           image={block.image}
+          revealImage={block.revealImage}
           target={block.target}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
