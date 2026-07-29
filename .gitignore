@@ -12,3 +12,4 @@ web-build/
 ios/
 android/
 .DS_Store
+site/*.zip
