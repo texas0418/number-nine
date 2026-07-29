@@ -839,6 +839,7 @@ function renderListenerGate(
           bandHighKhz={block.bandHighKhz}
           stations={block.stations}
           target={block.target}
+          mapImage={block.mapImage}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}

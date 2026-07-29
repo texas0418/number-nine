@@ -47,6 +47,7 @@ export const BROADCAST_FIVE: Chapter = {
       text: 'REMAIN, she had said, and he had remained: three days now, keeping her hours, feeding her set, sleeping in the chair because the bedrooms had begun to feel like rooms in someone else’s account of his life. Prentice’s van still stood in the lane with its loop aerial aimed west, gathering dew. Nobody came for it. On the fourth morning the tin produced card one hundred, and the round number felt like a door being closed somewhere behind him.',
       cue: 'silence',
     },
+    { kind: 'plate', image: 'obj-van', caption: 'the van in the lane · nobody came for it' },
     {
       kind: 'logbook',
       cue: 'page-turn',
@@ -69,6 +70,7 @@ export const BROADCAST_FIVE: Chapter = {
     },
     {
       kind: 'prose',
+      cue: 'parish',
       text: 'He had expected the silence to feel like loss. It felt like a window opened. With the world gone the set stood taller in the room, and under its hum — where there had only ever been her — there were voices now, faint as pencil, dozens of them, threading in and out of the static like neighbours talking over a hedge in the dark.',
     },
 
@@ -117,6 +119,7 @@ export const BROADCAST_FIVE: Chapter = {
       id: 'b5-triangulate',
       bandLowKhz: 3100,
       bandHighKhz: 3450,
+      mapImage: 'map-marsh',
       stations: [
         { khz: 3155, siteX: 0.18, siteY: 0.22, bearingDeg: 141 },
         { khz: 3240, siteX: 0.85, siteY: 0.55, bearingDeg: 259 },
@@ -203,6 +206,7 @@ export const BROADCAST_FIVE: Chapter = {
     {
       kind: 'micstage',
       id: 'b5-ear',
+      stopsCue: 'parish',
       tinesAnswer: '123134',
       prompt: 'she wants to hear you · the lamp first · she does her listening in the dark',
       lampOutText: 'the lamp is out · now the tune · hers · you have heard it every night of this book',
@@ -240,6 +244,8 @@ export const BROADCAST_FIVE: Chapter = {
       prompt: 'the place the numbers keep · its name, not its numbers',
       unlockedText: 'he writes the name in the second log and the ink dries ordinary · the most frightening thing paper had done all week',
     },
+
+    { kind: 'plate', image: 'obj-ness', caption: 'the place the numbers keep · aerials and silence' },
 
     // --- The count wants nine ----------------------------------------------
     {

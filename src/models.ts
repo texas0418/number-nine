@@ -103,7 +103,7 @@ export type ChapterBlock =
   // the wanted etch (1..9), named only by the clues.
   | { kind: 'gain'; id: string; mark: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // Triangulation: three weak carriers, three bearing lines, one crossing.
-  | { kind: 'triangulate'; id: string; bandLowKhz: number; bandHighKhz: number; stations: { khz: number; siteX: number; siteY: number; bearingDeg: number }[]; target: { x: number; y: number; w: number; h: number }; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  | { kind: 'triangulate'; id: string; bandLowKhz: number; bandHighKhz: number; stations: { khz: number; siteX: number; siteY: number; bearingDeg: number }[]; target: { x: number; y: number; w: number; h: number }; mapImage?: SceneId; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   // Morse SENDING: the key under the reader's own finger; the word comes
   // from the clues, the alphabet from an artifact.
   | { kind: 'morsesend'; id: string; word: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
@@ -126,6 +126,9 @@ export type SceneId =
   | 'wall-burst'
   | 'obj-seance'
   | 'obj-seance-after'
+  | 'map-marsh'
+  | 'obj-ness'
+  | 'obj-van'
   | 'obj-valve'
   | 'obj-grave'
   | 'obj-receiver'
@@ -166,6 +169,7 @@ export const AUDIO_CUES = [
   'sheet-rustle',
   'whisper',
   'spark',
+  'parish',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

@@ -9,8 +9,10 @@
 // Wrong map touches get the dull knock; the room absorbs it.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { GestureResponderEvent, PanResponder, StyleSheet, Text, View } from 'react-native';
+import { GestureResponderEvent, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { cue, playSfx, setStaticLevel } from '../audio';
+import type { SceneId } from '../models';
+import { SCENES } from './scenes';
 import { setScrollLock } from './scrollLock';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
@@ -39,6 +41,7 @@ export function Triangulate({
   bandHighKhz,
   stations,
   target,
+  mapImage,
   prompt,
   unlockedText,
   solved,
@@ -49,6 +52,8 @@ export function Triangulate({
   bandHighKhz: number;
   stations: TriStation[];
   target: { x: number; y: number; w: number; h: number };
+  /** The ordnance sheet under the work (pre-darkened for the lamp-lit UI). */
+  mapImage?: SceneId;
   prompt: string;
   unlockedText: string;
   solved: boolean;
@@ -151,6 +156,9 @@ export function Triangulate({
   return (
     <View style={styles.wrap}>
       <View style={styles.map} onStartShouldSetResponder={() => true} onResponderRelease={mapTap}>
+        {mapImage && (
+          <Image source={SCENES[mapImage]} resizeMode="cover" style={styles.mapSheet} />
+        )}
         {stations.map((st, i) => {
           const lit = locked.includes(i);
           return (
@@ -229,6 +237,13 @@ const styles = StyleSheet.create({
     borderColor: colors.panelBorder,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
+  },
+  mapSheet: {
+    position: 'absolute',
+    width: MAP,
+    height: MAP,
+    opacity: 0.9,
+    pointerEvents: 'none',
   },
   site: {
     position: 'absolute',

@@ -43,6 +43,11 @@ everything else is synthesized by `scripts/gen-foley.py`,
   crackle), "Female Shivering…" (superseded), "Ghostly Whispers…" /
   "Horror … Voices (Whispers)" (multi-voice, wrong register for her),
   "Girl Begging Screaming…" (parked — possible B5/B6 material).
+- **B5 (2026-07-29):** parish.wav — the hedge-voices bed — cut from
+  "Group of People Talking | HQ Sound Effect" by Everyday Cinematic Sounds
+  (YouTube xeDsWdc1vgg, audio only via yt-dlp), band-limited 350–2900 Hz to
+  shortwave voice, our own static-loop bed mixed under at 10%, liveliest
+  10s crossfaded into a seamless loop.
 - **B3 set, cut from Simon's recordings (2026-07-28):**
   rust-break.wav ("Metal Breaking SOUND EFFECT"),
   plaster-fall.wav ("Cracking Wall,Ceiling, Building, Sound Effects Free

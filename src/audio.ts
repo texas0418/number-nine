@@ -65,6 +65,7 @@ const SFX_FILES: Record<string, number> = {
   whisper: require('../assets/audio/whisper.wav'),
   murmur: require('../assets/audio/murmur.wav'),
   spark: require('../assets/audio/spark.wav'),
+  parish: require('../assets/audio/parish.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -501,6 +502,7 @@ export function cue(name: string): void {
   else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
   else if (name === 'page-turn') playSfx('page-turn', 0.5);
   else if (name === 'rust-break') playSfx('rust-break', 0.5); // device QA: default drowned the room
+  else if (name === 'parish') startSfxLoop('parish', 0.22); // the hedge-voices, until she stands
   else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
 }
 
