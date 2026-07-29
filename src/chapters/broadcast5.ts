@@ -18,7 +18,10 @@
 //   3. triangulate — three weak listeners; three lines; one house. This one.
 //   4. flip+mirror — her sheet's verso, written for the wall's side
 //   5. morsesend   — the network asks WHO KEEPS THE HOUSE; he sends MARSH
-//   6. micstage    — blow out the lamp; hum her tune back (mic, staged)
+//   6. stillness   — PUT ME WHERE I CAN HEAR THE REST OF YOU: the
+//                    receiver flat to the chest, six still seconds (the mic
+//                    gate was cut after device QA — three rounds of hum
+//                    detection losses; the heartbeat ask lands harder anyway)
 //   7. fork        — the slip in the pocket: look now, or carry it
 //   8. cipher      — 52 05 42 N · 01 33 31 E -> the reader looks it up
 //                    in the real world -> ORFORD (never printed here)
@@ -34,7 +37,7 @@ export const BROADCAST_FIVE: Chapter = {
     'b5-triangulate': 'find each of them on the band — the log kept their numbers. locked aerials draw their own lines. stand where the lines agree.',
     'b5-verso': 'she writes for the wall’s side of the paper. turn the page with the phone face-down — and read it the way a mirror would.',
     'b5-send': 'the card in the toolbox knows the alphabet. the question is WHO KEEPS THE HOUSE, and the house has had one name for two hundred years.',
-    'b5-ear': 'she asks before she listens — the machine will ask too, in its own cold words. the lamp goes out to a breath. the tune wants a hum, not a song — and if she cannot hear you, wait: the tines will offer themselves.',
+    'b5-ear': 'not your voice. the other drum. lay the receiver flat against your chest and be still — or press a patient finger and be still that way.',
     'b5-where': 'the numbers in your pocket are a place on the earth. any chart that takes latitude will take you there. bring back its name, not its numbers.',
   },
   blocks: [
@@ -203,20 +206,19 @@ export const BROADCAST_FIVE: Chapter = {
     // --- She asks for him --------------------------------------------------
     {
       kind: 'prose',
-      text: 'Then the parish faded — stood aside, rather, the way a congregation parts — and she came up the middle of the band alone. Not counting. Asking. The set’s lamp burned; the room held its breath; and Edwin understood, the way one understands rain, that she had heard Portman and the widow and the boy and every listener in the marsh a thousand nights each. She had never once heard HIM.',
+      text: 'Then the parish faded — stood aside, rather, the way a congregation parts — and she came up the middle of the band alone. Not counting. Asking. She had heard Portman and the widow and the boy a thousand nights each, and Edwin waited for her to ask for his voice, and she did not. Voices, said the card in the tin, are what liars keep. The set turned its own lamp down as he read, gently, like a nurse. PUT ME WHERE I CAN HEAR THE REST OF YOU.',
     },
     {
-      kind: 'micstage',
+      kind: 'stillness',
       id: 'b5-ear',
       stopsCue: 'parish',
-      tinesAnswer: '123134',
-      prompt: 'she wants to hear you · the lamp first · she does her listening in the dark',
-      lampOutText: 'the lamp is out · now the tune · hers · you have heard it every night of this book',
-      unlockedText: 'the hum goes out of you and into the dark · a long quiet · then, not counting: MARGARET HUMMED IT FLAT TOO',
+      holdMs: 6000,
+      prompt: 'the receiver flat against your chest · be still · she is listening under the words',
+      unlockedText: 'six seconds of the drum · a long quiet · then, not counting: MARGARET’S WAS LOUDER. AT THE END.',
     },
     {
       kind: 'thought',
-      text: 'Margaret hummed it flat too. Six words, and nineteen years of his brother’s marriage stood up in the dark of the cellar and looked at him.',
+      text: 'Margaret’s was louder. At the end. Six words, and nineteen years of his brother’s marriage stood up in the dark of the cellar and looked at him.',
     },
 
     // --- The slip -----------------------------------------------------------
