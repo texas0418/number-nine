@@ -109,7 +109,7 @@ export function MorseSend({
     const held = Date.now() - s.downAt;
     s.downAt = 0;
     setKeyDown(false);
-    playSfx('morse-key', 0.4);
+    playSfx('key-click', 0.35);
     // a wildly long press is a rested finger, not a dah
     if (held > 1600) return;
     s.symbols += held <= DIT_MAX_MS ? '.' : '-';

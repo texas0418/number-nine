@@ -11,7 +11,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue } from '../audio';
+import { cue, playIdent } from '../audio';
 import { askMicPermission, watchBreath } from '../device';
 import { MelodyBox } from './MelodyBox';
 import { amberGlow, colors, fonts } from '../theme';
@@ -45,7 +45,8 @@ export function MicStage({
   solveCue?: string;
 }) {
   const [phase, setPhase] = useState<Phase>(solved ? 'done' : 'ask');
-  const breath = useRef({ loudMs: 0, hum: { hz: 0, sinceMs: 0 } });
+  const [tinesOffered, setTinesOffered] = useState(false);
+  const breath = useRef({ loudMs: 0, hum: { hz: 0, sinceMs: 0 }, inHumMs: 0 });
   const phaseRef = useRef<Phase>(phase);
   phaseRef.current = phase;
 
@@ -59,11 +60,13 @@ export function MicStage({
 
   useEffect(() => {
     if (phase !== 'lamp' && phase !== 'hum') return;
-    const stop = watchBreath((rms, hz) => {
+    const stop = watchBreath((rms, hz, seconds) => {
       const b = breath.current;
+      const ms = seconds * 1000; // REAL buffer time (device QA: hardcoded
+      // 64ms steps made 2s of hum demand 6+ perfect seconds)
       if (phaseRef.current === 'lamp') {
         // a blow: loud, breathy, unpitched — 400ms of it kills the flame
-        b.loudMs = rms > 0.22 ? b.loudMs + 64 : 0;
+        b.loudMs = rms > 0.22 ? b.loudMs + ms : 0;
         if (b.loudMs >= 400) {
           b.loudMs = 0;
           cue('lamp-off');
@@ -72,12 +75,15 @@ export function MicStage({
         }
         return;
       }
-      // a hum: voiced, steady-ish (±18%), held two seconds
+      // a hum: voiced, roughly steady (±25%), held 1.5s. Floors are LOW —
+      // a hum is far quieter than a blow (device QA: undetectable at 0.02).
+      b.inHumMs += ms;
+      if (b.inHumMs >= 45000) setTinesOffered(true); // no one stays stuck here
       const h = b.hum;
-      if (hz !== null && rms > 0.02 && rms < 0.4) {
-        if (h.hz > 0 && Math.abs(hz - h.hz) / h.hz < 0.18) {
-          h.sinceMs += 64;
-          if (h.sinceMs >= 2000) solve();
+      if (hz !== null && rms > 0.008 && rms < 0.5) {
+        if (h.hz > 0 && Math.abs(hz - h.hz) / h.hz < 0.25) {
+          h.sinceMs += ms;
+          if (h.sinceMs >= 1500) solve();
         } else {
           h.hz = hz;
           h.sinceMs = 0;
@@ -89,6 +95,16 @@ export function MicStage({
     });
     return stop;
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
+  // Call and response: entering the hum, she hums it FIRST — and again
+  // every ten seconds while she waits (device QA: the reader was expected
+  // to remember the ident cold).
+  useEffect(() => {
+    if (phase !== 'hum') return;
+    playIdent();
+    const t = setInterval(playIdent, 10000);
+    return () => clearInterval(t);
   }, [phase]);
 
   const askHer = async () => {
@@ -133,6 +149,13 @@ export function MicStage({
         <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
           {phase === 'done' ? unlockedText : phase === 'hum' ? lampOutText : prompt}
         </Text>
+        {phase === 'hum' && tinesOffered && (
+          <Pressable onPress={() => setPhase('tines')} hitSlop={8}>
+            <Text style={styles.tinesOffer} allowFontScaling={false}>
+              the tines remember her tune
+            </Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -176,5 +199,13 @@ const styles = StyleSheet.create({
     color: colors.muted,
     textAlign: 'center',
     paddingHorizontal: 10,
+  },
+  tinesOffer: {
+    fontFamily: fonts.mono,
+    fontSize: 11,
+    letterSpacing: 1,
+    color: colors.faint,
+    fontStyle: 'italic',
+    textDecorationLine: 'underline',
   },
 });

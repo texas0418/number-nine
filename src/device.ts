@@ -517,7 +517,7 @@ export async function askMicPermission(): Promise<boolean> {
  *  pitch (null when unvoiced/quiet). Requires permission already granted.
  *  Fail-open: no module, no permission, no stream → never fires. */
 export function watchBreath(
-  cb: (rms: number, hz: number | null) => void,
+  cb: (rms: number, hz: number | null, seconds: number) => void,
 ): () => void {
   const a = audioModule();
   const Stream = a?.AudioModule?.AudioStream ?? a?.AudioStream;
@@ -544,8 +544,10 @@ export function watchBreath(
           const rms = Math.sqrt(sum / pcm.length);
           const seconds = pcm.length / (buf.sampleRate || 16000);
           const hz = crossings / 2 / seconds;
-          // a hum is quiet-but-voiced; silence and hiss report no pitch
-          cb(rms, rms > 0.015 && hz >= 60 && hz <= 600 ? hz : null);
+          // a hum is quiet-but-voiced; silence and hiss report no pitch.
+          // seconds rides along so callers accumulate REAL time (device QA:
+          // hardcoded 64ms steps made 2s of hum demand 6+ perfect seconds)
+          cb(rms, rms > 0.008 && hz >= 60 && hz <= 600 ? hz : null, seconds);
         } catch {
           /* fail open */
         }

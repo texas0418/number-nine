@@ -97,7 +97,7 @@ export function Triangulate({
         s.dwellOn = -1;
         s.dwellMs = 0;
         setLocked(s.locked);
-        playSfx('morse-key', 0.3);
+        playSfx('key-click', 0.35);
         Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       }
     }, 150);

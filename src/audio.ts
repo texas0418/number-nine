@@ -66,6 +66,7 @@ const SFX_FILES: Record<string, number> = {
   murmur: require('../assets/audio/murmur.wav'),
   spark: require('../assets/audio/spark.wav'),
   parish: require('../assets/audio/parish.wav'),
+  'key-click': require('../assets/audio/key-click.wav'), // ONE click cut from morse-key (full take warped when stacked)
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they

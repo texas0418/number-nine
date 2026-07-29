@@ -29,12 +29,12 @@ export const BROADCAST_FIVE: Chapter = {
   id: 5,
   title: 'BROADCAST FIVE',
   hints: {
-    'b5-sever': 'unreachable is a switch your machine already owns. the aeroplane knows it. flick the world away yourself.',
+    'b5-sever': 'unreachable means NO wire to the world — put out the wireless and the telephone yourself, in the machine’s own settings. the aeroplane switch sometimes leaves the wireless burning.',
     'b5-gain': 'the knob is on the side of your machine, where a thumb lives. his brother wore the seventh mark bright.',
     'b5-triangulate': 'find each of them on the band — the log kept their numbers. locked aerials draw their own lines. stand where the lines agree.',
     'b5-verso': 'she writes for the wall’s side of the paper. turn the page with the phone face-down — and read it the way a mirror would.',
     'b5-send': 'the card in the toolbox knows the alphabet. the question is WHO KEEPS THE HOUSE, and the house has had one name for two hundred years.',
-    'b5-ear': 'she asks before she listens — the machine will ask too, in its own cold words. the lamp goes out to a breath. the tune wants a hum, not a song.',
+    'b5-ear': 'she asks before she listens — the machine will ask too, in its own cold words. the lamp goes out to a breath. the tune wants a hum, not a song — and if she cannot hear you, wait: the tines will offer themselves.',
     'b5-where': 'the numbers in your pocket are a place on the earth. any chart that takes latitude will take you there. bring back its name, not its numbers.',
   },
   blocks: [
@@ -191,7 +191,8 @@ export const BROADCAST_FIVE: Chapter = {
       id: 'b5-send',
       word: 'MARSH',
       prompt: 'the key · short is a dit, long is a dah · a pause ends the letter',
-      unlockedText: 'the name goes out steady · and the whole parish, softly, sends back the same two letters · R R R · received, received, received',
+      solveCue: 'ident',
+      unlockedText: 'the name goes out steady · the parish sends back R R R · received · and then, over all of them, she hums her six notes once — the way you repeat a name you mean to remember',
     },
     {
       kind: 'prose',

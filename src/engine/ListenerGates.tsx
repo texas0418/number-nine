@@ -88,7 +88,7 @@ export function SeverBlock({
         >
           <View style={[styles.worldLamp, worldLit && styles.worldOn]} />
           <Text style={styles.worldLabel} allowFontScaling={false}>
-            the world
+            {worldLit ? 'the world · still lit' : 'the world · going…'}
           </Text>
         </Pressable>
       )}
