@@ -1,6 +1,5 @@
 // test-db.ts — runs the real schema/SQL from dbCore.ts against node:sqlite.
 // Requires Node 22+ (node:sqlite). Run with: npx tsx test-db.ts
-// @ts-expect-error node:sqlite has no types under Expo's tsconfig; tsx runs it fine
 import { DatabaseSync } from 'node:sqlite';
 import {
   ALL_PROGRESS_SQL,

@@ -41,7 +41,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "test": "npx tsx test-models.ts && npx tsx test-cipher.ts && npx tsx test-db.ts",
+    "test": "npx tsx test-models.ts && npx tsx test-cipher.ts && npx tsx test-db.ts && npx tsx test-site.ts",
+    "site": "npx tsx site/build.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

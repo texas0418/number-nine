@@ -21,6 +21,8 @@ jobs:
         run: npx eslint .
       - name: Pure-module tests
         run: npm test
+      - name: Build the clue site
+        run: npm run site
       - name: LLM slop check
         run: bash scripts/ci/slop-check.sh
 
