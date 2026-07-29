@@ -54,7 +54,6 @@ import { ChordBlock, MainsBlock, ShakeBlock, StillnessBlock } from './Instructio
 import { ExposureBlock, HourBlock, WhisperBlock } from './ExaminationGates';
 import { GainBlock, SeverBlock } from './ListenerGates';
 import { MorseSend } from './MorseSend';
-import { MicStage } from './MicStage';
 import { Triangulate } from './Triangulate';
 import { Register } from './Register';
 import { EndingFork, NightGate } from './FinaleGates';
@@ -859,17 +858,6 @@ function renderListenerGate(
         <MorseSend
           word={block.word}
           prompt={block.prompt}
-          unlockedText={block.unlockedText}
-          solveCue={block.solveCue}
-          {...common}
-        />
-      );
-    case 'micstage':
-      return (
-        <MicStage
-          tinesAnswer={block.tinesAnswer}
-          prompt={block.prompt}
-          lampOutText={block.lampOutText}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}
           {...common}

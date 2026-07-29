@@ -37,7 +37,6 @@ export const GATE_KINDS = [
   'gain',
   'triangulate',
   'morsesend',
-  'micstage',
   'register',
   'nightgate',
   'ritual',

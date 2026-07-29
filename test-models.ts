@@ -384,6 +384,42 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
   );
 }
 
+// --- permissions the app must not ask for --------------------------------
+// The B5 mic gate was cut after playtesting, but its permission string sat in
+// app.json for another two broadcasts. A declared permission the app never
+// exercises is a routine App Review rejection, and expo-audio's plugin only
+// DROPS the key when the value is exactly `false` — omitting it falls back to
+// Apple's generic default string. So assert the value, not its absence.
+{
+  const appJson = require('./app.json') as {
+    expo: { plugins: (string | [string, Record<string, unknown>])[] };
+  };
+  const audioPlugin = appJson.expo.plugins.find(
+    (p): p is [string, Record<string, unknown>] =>
+      Array.isArray(p) && p[0] === 'expo-audio',
+  );
+  ok('expo-audio is configured', !!audioPlugin);
+  ok(
+    'the app declares no microphone permission',
+    audioPlugin?.[1]?.microphonePermission === false,
+    String(audioPlugin?.[1]?.microphonePermission),
+  );
+  ok(
+    'no gate kind can ask for the mic',
+    !(ENGINE_GATE_KINDS as readonly string[]).includes('micstage'),
+  );
+  // expo-audio defaults enableBackgroundPlayback to true, which writes
+  // UIBackgroundModes: audio. This app does the opposite on purpose — iOS
+  // pauses every player on background and audio.ts resumes them on
+  // foreground — and declaring a background mode you do not use is
+  // App Review guideline 2.5.4.
+  ok(
+    'the app claims no background audio it does not play',
+    audioPlugin?.[1]?.enableBackgroundPlayback === false,
+    String(audioPlugin?.[1]?.enableBackgroundPlayback),
+  );
+}
+
 if (failures) {
   console.log(`\n${failures} failure(s)`);
   process.exit(1);
