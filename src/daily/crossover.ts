@@ -53,15 +53,29 @@ export function nightWordChoices(
 ): { words: string[]; answerIndex: number } {
   const answer = tonightsWord(dayKey);
   const line = transmissionForDay(dayKey).plaintext.toUpperCase();
-  const rand = mulberry32(hashSeed(`number-nine:crossover:${dayKey}:${deal}`));
   const pool = DECOY_POOL.filter((w) => !line.includes(w));
-  const decoys: string[] = [];
-  const bag = [...pool];
+  // The SHADOW decoy: one decoy as permanent as the answer (day-seeded, not
+  // deal-seeded). Without it, the answer would be the only word to survive
+  // every re-deal, and diffing two deals would read it straight off
+  // (device QA: it did). With it, persistence narrows to two — a coin flip
+  // at best, behind the off-air waits.
+  const dayRand = mulberry32(hashSeed(`number-nine:crossover-shadow:${dayKey}`));
+  const shadow = pool[Math.floor(dayRand() * pool.length)];
+  const rand = mulberry32(hashSeed(`number-nine:crossover:${dayKey}:${deal}`));
+  const decoys: string[] = [shadow];
+  const bag = pool.filter((w) => w !== shadow);
   while (decoys.length < count - 1 && bag.length > 0) {
     decoys.push(bag.splice(Math.floor(rand() * bag.length), 1)[0]);
   }
   const words = [...decoys];
   const answerIndex = Math.floor(rand() * count);
   words.splice(answerIndex, 0, answer);
-  return { words: words.slice(0, count), answerIndex };
+  // one more shuffle so the shadow's slot is as restless as the rest
+  const final = words.slice(0, count);
+  const ai = final.indexOf(answer);
+  for (let i = final.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [final[i], final[j]] = [final[j], final[i]];
+  }
+  return { words: final, answerIndex: ai >= 0 ? final.indexOf(answer) : 0 };
 }

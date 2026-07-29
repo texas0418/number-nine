@@ -107,6 +107,20 @@ ok('transmissions are cipher-safe (A-Z, space, apostrophe only)',
     JSON.stringify(nightWordChoices('2026-08-01', 4, 1).words) !==
       JSON.stringify(nightWordChoices('2026-08-01', 4, 0).words),
   );
+  // Anti-diffing guard, a year out: the words that survive EVERY deal must
+  // number at least two (answer + shadow decoy) — persistence alone must
+  // never single the answer out.
+  let diffableNights = 0;
+  for (let d = 0; d < 365; d++) {
+    const day = new Date(Date.UTC(2026, 7, 1 + d)).toISOString().slice(0, 10);
+    let persistent = new Set(nightWordChoices(day, 4, 0).words);
+    for (let deal = 1; deal < 6; deal++) {
+      const w = new Set(nightWordChoices(day, 4, deal).words);
+      persistent = new Set([...persistent].filter((x) => w.has(x)));
+    }
+    if (persistent.size < 2) diffableNights++;
+  }
+  ok('no night is solvable by diffing re-deals', diffableNights === 0);
 }
 
 // Solvability guard: every night of the next year must build a puzzle whose
