@@ -10,7 +10,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue, playSfx, setStaticLevel } from '../audio';
+import { cue, playSfx, setLoopVolume, setStaticLevel } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -64,6 +64,14 @@ export function MorseSend({
     [],
   );
 
+  // the parish stands back while the reader's own fist is on the key
+  // (device QA: the clicks drowned under the crowd)
+  useEffect(() => {
+    if (done) return;
+    setLoopVolume('parish', 0.07);
+    return () => setLoopVolume('parish', 0.22);
+  }, [done]);
+
   const targetLetter = () => word[state.current.sent]?.toUpperCase() ?? '';
 
   const letterEnds = () => {
@@ -109,7 +117,7 @@ export function MorseSend({
     const held = Date.now() - s.downAt;
     s.downAt = 0;
     setKeyDown(false);
-    playSfx('key-click', 0.35);
+    playSfx('key-click', 0.7);
     // a wildly long press is a rested finger, not a dah
     if (held > 1600) return;
     s.symbols += held <= DIT_MAX_MS ? '.' : '-';

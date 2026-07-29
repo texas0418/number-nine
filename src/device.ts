@@ -499,6 +499,19 @@ function audioModule(): any | null {
   return audioMod;
 }
 
+/** Whether the ear is ALREADY open (no prompt) — iOS asks once per
+ *  install and remembers; the gate can acknowledge a standing yes. */
+export async function hasMicPermission(): Promise<boolean> {
+  const a = audioModule();
+  if (!a?.getRecordingPermissionsAsync) return false;
+  try {
+    const res = await a.getRecordingPermissionsAsync();
+    return !!res?.granted;
+  } catch {
+    return false;
+  }
+}
+
 /** Ask to open the EAR (B5's mic gate). The iOS dialog is part of the
  *  scene; a refusal is honored forever (the tines carry the gate). */
 export async function askMicPermission(): Promise<boolean> {

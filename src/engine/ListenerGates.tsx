@@ -119,7 +119,7 @@ export function GainBlock({
 }) {
   const { done, doneRef, solve } = useSolveOnce(solved, onSolved, solveCue);
   const [level, setLevel] = useState(0); // 0..1
-  const state = useRef({ level: 0, moved: false, dwell: 0, dragW: 0 });
+  const state = useRef({ level: 0, moved: false, baselined: false, dwell: 0, dragW: 0 });
   const target = mark / 9;
   const HALF_BAND = 0.055; // half a mark's width
 
@@ -127,6 +127,15 @@ export function GainBlock({
     if (done) return;
     const stopGain = watchGain((v) => {
       const s = state.current;
+      // the FIRST report is where the knob already stood — a baseline, not
+      // a movement (device QA: a replay self-solved because the volume was
+      // still parked on the worn mark from last time)
+      if (!s.baselined) {
+        s.baselined = true;
+        s.level = v;
+        setLevel(v);
+        return;
+      }
       if (Math.abs(v - s.level) > 0.001) s.moved = true;
       s.level = v;
       setLevel(v);

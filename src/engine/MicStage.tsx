@@ -12,7 +12,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue, playIdent } from '../audio';
-import { askMicPermission, watchBreath } from '../device';
+import { askMicPermission, hasMicPermission, watchBreath } from '../device';
 import { MelodyBox } from './MelodyBox';
 import { amberGlow, colors, fonts } from '../theme';
 
@@ -46,6 +46,7 @@ export function MicStage({
 }) {
   const [phase, setPhase] = useState<Phase>(solved ? 'done' : 'ask');
   const [tinesOffered, setTinesOffered] = useState(false);
+  const [standingYes, setStandingYes] = useState(false);
   const breath = useRef({ loudMs: 0, hum: { hz: 0, sinceMs: 0 }, inHumMs: 0 });
   const phaseRef = useRef<Phase>(phase);
   phaseRef.current = phase;
@@ -107,6 +108,13 @@ export function MicStage({
     return () => clearInterval(t);
   }, [phase]);
 
+  // iOS asks once per install and remembers the answer — the button should
+  // not promise a dialog that will never come (device QA).
+  useEffect(() => {
+    if (phase !== 'ask') return;
+    hasMicPermission().then(setStandingYes);
+  }, [phase]);
+
   const askHer = async () => {
     const granted = await askMicPermission();
     setPhase(granted ? 'lamp' : 'tines');
@@ -142,7 +150,7 @@ export function MicStage({
         {phase === 'ask' && (
           <Pressable style={styles.askWell} onPress={askHer}>
             <Text style={styles.askText} allowFontScaling={false}>
-              let her listen
+              {standingYes ? 'let her listen · she remembers your yes' : 'let her listen'}
             </Text>
           </Pressable>
         )}
