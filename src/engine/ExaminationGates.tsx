@@ -133,6 +133,11 @@ export function useWoundClock(hour: number, minute: number, active: boolean) {
   const [held, setHeld] = useState(false);
   const offsetRef = useRef(0); // wound minutes
   const dragStart = useRef(0);
+  // The pan is created ONCE; `active` must be read through a ref or the
+  // handler keeps the mount-time value forever (device QA, B6: the ritual's
+  // clock mounts dormant and could never be dragged).
+  const activeRef = useRef(active);
+  activeRef.current = active;
   // A clock WOUND to her hour stops there — but only after RESTING on it
   // (device QA round 1: stray touches knocked it off; round 2: an instant
   // snap-lock let a scrubbing thumb pass the gate without knowing why).
@@ -190,9 +195,9 @@ export function useWoundClock(hour: number, minute: number, active: boolean) {
   const pan = useMemo(
     () =>
       PanResponder.create({
-        onStartShouldSetPanResponder: () => active && !lockedRef.current,
+        onStartShouldSetPanResponder: () => activeRef.current && !lockedRef.current,
         onMoveShouldSetPanResponder: (_e, g) =>
-          active && !lockedRef.current && Math.abs(g.dx) > 6,
+          activeRef.current && !lockedRef.current && Math.abs(g.dx) > 6,
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: () => {
