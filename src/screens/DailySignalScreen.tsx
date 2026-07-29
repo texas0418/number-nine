@@ -39,7 +39,7 @@ import {
   setKv,
 } from '../db';
 import { playIdent, setStaticLevel } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -290,7 +290,7 @@ function Cell({
       style={[
         styles.cell,
         { width: sizes.cellW, height: sizes.cellH },
-        selected && { borderColor: colors.dial },
+        selected && { borderColor: colors.dial, ...amberViewGlow },
         revealed && { borderColor: colors.panelBorder, backgroundColor: colors.bg },
       ]}
     >
@@ -306,7 +306,7 @@ function Cell({
         {spin ?? guess ?? ' '}
       </Text>
       <Text
-        style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial }]}
+        style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial, ...amberGlow }]}
         allowFontScaling={false}
       >
         {num}
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     rowGap: 10,
   },
   word: { flexDirection: 'row', marginRight: 14, gap: 3 },
-  literal: { fontFamily: fonts.mono, fontSize: 16, color: colors.dial, alignSelf: 'center' },
+  literal: { fontFamily: fonts.mono, fontSize: 16, color: colors.dial, alignSelf: 'center', ...amberGlow },
   cell: {
     borderWidth: 1,
     borderColor: colors.hairline,

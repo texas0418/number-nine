@@ -29,6 +29,7 @@ import type { Chapter, ChapterBlock, SceneId } from '../models';
 import { cue, setStaticLevel, stopOneShot, stopSfx } from '../audio';
 import { colors, fonts } from '../theme';
 import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
+import { onScrollLock } from './scrollLock';
 import {
   ChapterCardBlock,
   ChapterEndBlock,
@@ -50,6 +51,11 @@ import { KnockBlock } from './KnockBlock';
 import { FlipBlock } from './FlipBlock';
 import { SealPlate } from './SealPlate';
 import { ChordBlock, MainsBlock, ShakeBlock, StillnessBlock } from './InstructionGates';
+import { ExposureBlock, HourBlock, WhisperBlock } from './ExaminationGates';
+import { InkAtHour } from './InkAtHour';
+import { BearingVoice } from './BearingVoice';
+import { TraceBlock } from './TraceBlock';
+import { SignalWord } from './SignalWord';
 import { InvertBlock } from './InvertBlock';
 import { PaceBlock } from './PaceBlock';
 import { LampBlock } from './LampBlock';
@@ -85,6 +91,13 @@ export function ChapterView({
   // (no reset needed: the render checks hintAt === frontier, so a stale
   // value from a previous gate is simply ignored)
   const [hintAt, setHintAt] = useState<number | null>(null);
+
+  // A gate with a live drag (the trace) freezes the page under the hand.
+  const [scrollLocked, setScrollLocked] = useState(false);
+  useEffect(() => onScrollLock(setScrollLocked), []);
+
+  const scrollRef = useRef<any>(null);
+  const resumeTarget = useRef(initialBlockIndex > 0 ? frontier : null);
   useEffect(() => {
     if (!frontierIsGate) return;
     const b = blocks[frontier];
@@ -259,10 +272,39 @@ export function ChapterView({
     fireCues();
   };
 
+  // RESUME AT THE LOCKED DOOR: a reader who left mid-broadcast (B4's
+  // crossover sends them out to Tonight's Signal) must come back to the
+  // gate they left, not the chapter card (device QA: "reset to the
+  // beginning" — the gates were solved; the scroll was at the top). Waits
+  // for the frontier block to be measured, then jumps, unanimated. Sits
+  // BELOW every geom mutation site (purity rule: no mutations after an
+  // effect has read the value).
+  useEffect(() => {
+    const target = resumeTarget.current;
+    if (target === null || target <= 0) return;
+    const t = setInterval(() => {
+      const g = geom.current;
+      const top = g.tops.get(target);
+      if (top === undefined || g.viewH === 0) return;
+      clearInterval(t);
+      const y = Math.max(0, top - g.viewH * 0.45);
+      const sv = scrollRef.current?.getNode?.() ?? scrollRef.current;
+      sv?.scrollTo?.({ y, animated: false });
+      scrollY.setValue(y);
+    }, 120);
+    const stop = setTimeout(() => clearInterval(t), 4000);
+    return () => {
+      clearInterval(t);
+      clearTimeout(stop);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <View style={styles.root}>
       <SceneBackdrop sceneId={activeScene} />
       <Animated.ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={styles.content}
         onScroll={onScroll}
@@ -271,6 +313,7 @@ export function ChapterView({
           setViewH(e.nativeEvent.layout.height);
         }}
         scrollEventThrottle={16}
+        scrollEnabled={!scrollLocked}
       >
         {blocks.slice(0, count).map((block, i) =>
           // Narration reveals line by line (its own scroll-driven opacity per
@@ -642,6 +685,99 @@ function renderInstructionGate(
           paces={block.paces}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    default:
+      return renderExaminationGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** Broadcast Four's examinations — she stops instructing and starts testing. */
+function renderExaminationGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'whisper':
+      return (
+        <WhisperBlock
+          durationMs={block.durationMs}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'ink':
+      return (
+        <InkAtHour
+          aboveText={block.aboveText}
+          hiddenLine={block.hiddenLine}
+          targetWord={block.targetWord}
+          hour={block.hour}
+          minute={block.minute}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          noticedText={block.noticedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'signalword':
+      return (
+        <SignalWord
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'bearing':
+      return (
+        <BearingVoice
+          bearingDeg={block.bearingDeg}
+          toleranceDeg={block.toleranceDeg}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'exposure':
+      return (
+        <ExposureBlock
+          image={block.image}
+          revealImage={block.revealImage}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'trace':
+      return (
+        <TraceBlock
+          nodes={block.nodes}
+          order={block.order}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'hour':
+      return (
+        <HourBlock
+          hour={block.hour}
+          minute={block.minute}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          noticedText={block.noticedText}
           solveCue={block.solveCue}
           {...common}
         />

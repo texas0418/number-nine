@@ -33,6 +33,16 @@ everything else is synthesized by `scripts/gen-foley.py`,
   all edited by Simon from stated royalty-free sources (raw files kept in
   ~/Downloads/Sounds). Replaced the gen-foley.py synth versions of
   dial-return / clock-tick / pips.
+- **B4 set (2026-07-29):** spark.wav cut from "Electric spark- Sound
+  effect(HD)" (the isolated snap at 0.32s). whisper.wav from "woman
+  whispering ASMR voice sound effect" — REVERSED (no intelligible words may
+  survive; audio is never load-bearing), banded 350–5500 Hz, strongest 10s.
+  murmur.wav from "Muffled voices 10 hours…" by Carol L (YouTube
+  0tKOP-FjTgk; 60s audio-only slice at 10:00 via yt-dlp), lowpassed 650 Hz,
+  5s seamless crossfaded loop. Unused: "Electric Wire Spark…" (weak
+  crackle), "Female Shivering…" (superseded), "Ghostly Whispers…" /
+  "Horror … Voices (Whispers)" (multi-voice, wrong register for her),
+  "Girl Begging Screaming…" (parked — possible B5/B6 material).
 - **B3 set, cut from Simon's recordings (2026-07-28):**
   rust-break.wav ("Metal Breaking SOUND EFFECT"),
   plaster-fall.wav ("Cracking Wall,Ceiling, Building, Sound Effects Free
@@ -50,9 +60,11 @@ the only provenance recorded). Replace any that cannot be verified.
 
 Scene art is Gemini-generated from Simon's prompts (B1 set 2026-07-27; B2
 set and B3 set — churchyard, obj-valve, obj-grave, wall-crack, wall-burst —
-2026-07-28), processed per the ART.md pipeline. Placeholder-grade by policy:
-real 1963-style photography is a pre-ship task. The phosphor "9" icon/splash
-is synthesized by `scripts/gen-icon.py`.
+2026-07-28), processed per the ART.md pipeline. The B4 séance pair and the
+B4 foley (whisper/murmur/spark) are script-synthesized placeholders
+(`scripts/gen-b4-scenes.py`, `scripts/gen-b4-foley.py`). Placeholder-grade
+by policy: real 1963-style photography is a pre-ship task. The phosphor "9"
+icon/splash is synthesized by `scripts/gen-icon.py`.
 
 ## Synthesized (no license needed)
 

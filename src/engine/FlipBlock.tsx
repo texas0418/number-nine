@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { watchFacing } from '../device';
 import { cue, playSfx } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     color: colors.proseFaded,
     fontStyle: 'italic',
   },
-  wordFound: { color: colors.dial, fontStyle: 'italic' },
+  wordFound: { color: colors.dial, fontStyle: 'italic', ...amberGlow },
   dogEar: { position: 'absolute', right: 0, bottom: 0 },
   dogEarFold: {
     width: 0,

@@ -76,6 +76,55 @@ ok('pre-epoch days still get a transmission',
 ok('transmissions are cipher-safe (A-Z, space, apostrophe only)',
   TRANSMISSIONS.every((t) => /^[A-Z' ]+$/.test(t)));
 
+// --- B4 daily crossover ---------------------------------------------------
+{
+  const { eligibleWords, answerForDeal, nightWordChoices } =
+    require('./src/daily/crossover') as typeof import('./src/daily/crossover');
+  // Authoring constraint: every line must offer >=2 askable words, or the
+  // re-deal design collapses back to a fixed answer.
+  ok(
+    'every transmission line carries two or more eligible words',
+    TRANSMISSIONS.every(
+      (_, i) =>
+        eligibleWords(
+          new Date(Date.UTC(2026, 7, 1 + i)).toISOString().slice(0, 10),
+        ).length >= 2,
+    ),
+  );
+  const card = nightWordChoices('2026-08-01');
+  ok('crossover card holds four words', card.words.length === 4);
+  ok(
+    'the answer sits where the index says and she truly said it',
+    card.words[card.answerIndex] === answerForDeal('2026-08-01', 0) &&
+      transmissionForDay('2026-08-01').plaintext.includes(card.words[card.answerIndex]),
+  );
+  ok(
+    'crossover card is deterministic per night and deal',
+    JSON.stringify(nightWordChoices('2026-08-01')) === JSON.stringify(card),
+  );
+  // The whole-card guarantee, a year out and six deals deep: four words,
+  // exactly ONE from tonight's line, decoys length-matched to the answer
+  // (no stylistic tell), and consecutive deals never ask the same word —
+  // every card is entirely fresh, so diffing deals teaches nothing.
+  let crossoverFails = 0;
+  for (let d = 0; d < 365; d++) {
+    const day = new Date(Date.UTC(2026, 7, 1 + d)).toISOString().slice(0, 10);
+    const line = transmissionForDay(day).plaintext.toUpperCase();
+    for (let deal = 0; deal < 6; deal++) {
+      const c = nightWordChoices(day, 4, deal);
+      const ansLen = c.words[c.answerIndex].length;
+      const bad =
+        c.words.length !== 4 ||
+        c.words.filter((w) => line.includes(w)).length !== 1 ||
+        !line.includes(c.words[c.answerIndex]) ||
+        c.words.some((w) => Math.abs(w.length - ansLen) > 2) ||
+        (deal > 0 && answerForDeal(day, deal) === answerForDeal(day, deal - 1));
+      if (bad) crossoverFails++;
+    }
+  }
+  ok('365 nights x 6 deals: fresh, fair, tell-free cards', crossoverFails === 0);
+}
+
 // Solvability guard: every night of the next year must build a puzzle whose
 // solved transcript round-trips to its plaintext.
 let roundTripFails = 0;

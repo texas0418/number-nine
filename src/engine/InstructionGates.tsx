@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue as playCue, setStaticLevel } from '../audio';
 import { watchMains, watchShake, watchStillness } from '../device';
-import { colors, fonts } from '../theme';
+import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -212,7 +212,7 @@ export function MainsBlock({
       </Text>
       {!done && (
         <Pressable onPressIn={pressIn} onPressOut={pressOut} style={styles.plugWell}>
-          <Text style={[styles.plugGlyph, holding && { color: colors.dial }]} allowFontScaling={false}>
+          <Text style={[styles.plugGlyph, holding && { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
             ⎓
           </Text>
         </Pressable>
@@ -334,5 +334,5 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.panelBorder,
   },
-  handOn: { backgroundColor: colors.dial },
+  handOn: { backgroundColor: colors.dial, ...amberViewGlow },
 });

@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue, setStaticLevel } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -208,6 +208,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.panelBorder,
   },
-  groupDone: { backgroundColor: colors.dial },
-  groupLive: { borderColor: colors.dial },
+  groupDone: { backgroundColor: colors.dial, ...amberViewGlow },
+  groupLive: { borderColor: colors.dial, ...amberViewGlow },
 });

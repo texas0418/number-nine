@@ -15,7 +15,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { cue, playSfx, setStaticLevel } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.panelBorder,
   },
-  dialedLit: { backgroundColor: colors.dial },
+  dialedLit: { backgroundColor: colors.dial, ...amberViewGlow },
   caption: {
     fontFamily: fonts.mono,
     fontSize: 11,

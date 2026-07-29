@@ -16,6 +16,9 @@ export const SCENES: Record<SceneId, number> = {
   churchyard: require('../../assets/scenes/churchyard.jpg'),
   'wall-crack': require('../../assets/scenes/wall-crack.jpg'),
   'wall-burst': require('../../assets/scenes/wall-burst.jpg'),
+  // B4 (placeholders; scripts/gen-b4-scenes.py)
+  'obj-seance': require('../../assets/scenes/obj-seance.jpg'),
+  'obj-seance-after': require('../../assets/scenes/obj-seance-after.jpg'),
   'obj-valve': require('../../assets/scenes/obj-valve.jpg'),
   'obj-grave': require('../../assets/scenes/obj-grave.jpg'),
   'obj-receiver': require('../../assets/scenes/obj-receiver.jpg'),

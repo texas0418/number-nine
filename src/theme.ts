@@ -26,6 +26,22 @@ export const colors = {
   lockGlow: '#c2d4c8', // signal-lock accent
 } as const;
 
+// The amber GLOWS (Simon, 2026-07-29): phosphor should bloom a little.
+// Spread on any dial-amber TEXT; viewGlow on lit dots/needles/fills (iOS
+// shadow — the only platform we ship). Kept subtle: bloom, not neon.
+export const amberGlow = {
+  textShadowColor: 'rgba(230, 199, 116, 0.55)',
+  textShadowOffset: { width: 0, height: 0 },
+  textShadowRadius: 8,
+} as const;
+
+export const amberViewGlow = {
+  shadowColor: colors.dial,
+  shadowOpacity: 0.7,
+  shadowRadius: 6,
+  shadowOffset: { width: 0, height: 0 },
+} as const;
+
 export const fonts = {
   /** Story prose — a book, not an app. */
   serif: Platform.select({ ios: 'Georgia', default: 'serif' })!,
@@ -36,5 +52,5 @@ export const fonts = {
 export const type = {
   prose: { fontFamily: fonts.serif, fontSize: 19, lineHeight: 34, color: colors.prose },
   chrome: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted, letterSpacing: 1 },
-  cipher: { fontFamily: fonts.mono, fontSize: 18, color: colors.dial, letterSpacing: 2 },
+  cipher: { fontFamily: fonts.mono, fontSize: 18, color: colors.dial, letterSpacing: 2, ...amberGlow },
 } as const;

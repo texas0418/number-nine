@@ -8,7 +8,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue, setStaticLevel } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     color: colors.dial,
     textAlign: 'center',
     marginBottom: 14,
+    ...amberGlow,
   },
   displayLetters: { fontSize: 20, letterSpacing: 2 },
   row: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 8 },

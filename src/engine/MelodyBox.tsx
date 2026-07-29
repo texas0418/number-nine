@@ -6,7 +6,7 @@
 import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { cue, playIdent, playSfx, setStaticLevel } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.panelBorder,
   },
-  dotLit: { backgroundColor: colors.dial },
+  dotLit: { backgroundColor: colors.dial, ...amberViewGlow },
   horn: {
     alignSelf: 'center',
     borderColor: colors.panelBorder,

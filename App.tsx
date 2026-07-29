@@ -86,6 +86,11 @@ function Root() {
         setChapterId(3);
         setScreen('story');
       }}
+      onStoryFour={() => {
+        setStaticLevel(0);
+        setChapterId(4);
+        setScreen('story');
+      }}
       onDaily={() => setScreen('daily')}
       onSettings={() => setScreen('settings')}
     />

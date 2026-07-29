@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { watchHeading } from '../device';
 import { cue } from '../audio';
-import { colors, fonts } from '../theme';
+import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
 try {
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.muted,
   },
-  pointN: { color: colors.dial },
+  pointN: { color: colors.dial, ...amberGlow },
   needleN: {
     position: 'absolute',
     left: SIZE / 2 - 1.5,
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     height: SIZE * 0.3,
     borderRadius: 2,
     backgroundColor: colors.dial,
+    ...amberViewGlow,
     transformOrigin: 'bottom',
   },
   needleS: {

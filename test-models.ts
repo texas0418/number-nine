@@ -11,6 +11,7 @@ import { GATE_KINDS as ENGINE_GATE_KINDS, progressIndex, solvedGatesBefore, visi
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 import { BROADCAST_TWO } from './src/chapters/broadcast2';
 import { BROADCAST_THREE } from './src/chapters/broadcast3';
+import { BROADCAST_FOUR } from './src/chapters/broadcast4';
 import type { ChapterBlock } from './src/models';
 
 let failures = 0;
@@ -168,6 +169,68 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
   ok(
     'b3 hints all reference real gates',
     Object.keys(BROADCAST_THREE.hints ?? {}).every((id) => gateIds.has(id)),
+  );
+}
+
+// --- Broadcast Four doctrine ----------------------------------------------
+{
+  const b4 = BROADCAST_FOUR.blocks;
+  const CODE_ENTRY = ['keypad', 'safe', 'cipher'];
+  const b4Gates = b4.filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind));
+  ok('b4 has eight puzzles plus the fork', b4Gates.length === 9);
+  ok(
+    'b4 has exactly one code-entry puzzle',
+    b4.filter((b) => CODE_ENTRY.includes(b.kind)).length === 1,
+  );
+  ok('b4 answers stay three blocks from their gates', !answersNearGates(b4));
+  ok('b4 ends with chapterEnd', b4[b4.length - 1].kind === 'chapterEnd');
+  // Ramp doctrine: B4's finale composes FOUR rules. The logbook's sent marks
+  // must decode to the typed answer under: groups reversed (B3's sheets),
+  // minus the borrowed nine (B2's climb), alphabet from the far end (B1's
+  // tin). If the numbers and the answer ever drift apart, this fails.
+  const verdict = b4.find((b) => b.kind === 'cipher');
+  const marksLine = b4
+    .flatMap((b) => (b.kind === 'logbook' ? b.lines : []))
+    .find((l) => /\d+\s*·\s*\d+/.test(l));
+  const sent = (marksLine ?? '').match(/\d+/g)?.map(Number) ?? [];
+  const decoded = [...sent]
+    .reverse()
+    .map((n) => n - 9)
+    .map((n) => String.fromCharCode(64 + (27 - n)))
+    .join('');
+  ok(
+    'b4 verdict marks decode to the typed answer (4 rules)',
+    verdict?.kind === 'cipher' && sent.length === 6 && decoded === verdict.answer,
+  );
+  // the trace's order must be a valid index path into its nodes, skipping E
+  const trace = b4.find((b) => b.kind === 'trace');
+  ok(
+    'b4 trace order indexes real terminals and shuns the earth',
+    trace?.kind === 'trace' &&
+      trace.order.every((i) => i >= 0 && i < trace.nodes.length) &&
+      !trace.order.includes(trace.nodes.indexOf('E')),
+  );
+  // her hour and her wave are ONE fact: the ink keeps 23:14 and the result
+  // tunes at 2314 kHz (Simon, round 3: the hour gate repeated the ink's
+  // solution; the frequency leap replaced it)
+  const ink = b4.find((b) => b.kind === 'ink');
+  const radio = b4.find((b) => b.kind === 'radio');
+  ok(
+    'b4 result frequency encodes the ink gate\'s hour',
+    ink?.kind === 'ink' &&
+      radio?.kind === 'radio' &&
+      ink.hour === 23 && ink.minute === 14 &&
+      radio.targetKhz === ink.hour * 100 + ink.minute,
+  );
+  ok('b4 keeps no hour gate (the clock lie lives in the ink alone)',
+    !b4.some((b) => b.kind === 'hour'));
+  // every pressure-valve hint points at a real gate id
+  const gateIds = new Set(
+    b4Gates.flatMap((b) => ('id' in b ? [(b as { id: string }).id] : [])),
+  );
+  ok(
+    'b4 hints all reference real gates',
+    Object.keys(BROADCAST_FOUR.hints ?? {}).every((id) => gateIds.has(id)),
   );
 }
 

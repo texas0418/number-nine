@@ -312,3 +312,63 @@ export function watchLamp(cb: (level: number) => void): () => void {
     clearInterval(timer);
   };
 }
+
+/** Subscribe to the EAR (B4's whisper): UIDevice proximity via the local
+ *  Proximity module (modules/proximity). While subscribed, iOS proximity
+ *  monitoring is live — the screen going dark against the ear is diegetic.
+ *  No module (Android, Expo Go, stripped build) → never fires; the widget's
+ *  press-and-hold-to-listen fallback carries the gate. */
+export function watchNearEar(cb: (near: boolean) => void): () => void {
+  const mod = (
+    globalThis as unknown as {
+      expo?: { modules?: Record<string, any> };
+    }
+  ).expo?.modules?.Proximity;
+  if (!mod?.addListener) return () => {};
+  try {
+    const sub = mod.addListener('onNear', (e: { near?: boolean }) => {
+      cb(!!e?.near);
+    });
+    return () => {
+      try {
+        sub.remove();
+      } catch {
+        /* fail open */
+      }
+    };
+  } catch {
+    return () => {};
+  }
+}
+
+let screenCapMod: any | null | undefined;
+function screenCapture(): any | null {
+  if (screenCapMod !== undefined) return screenCapMod;
+  if (!hasNative('ExpoScreenCapture')) return (screenCapMod = null);
+  try {
+    screenCapMod = require('expo-screen-capture');
+  } catch {
+    screenCapMod = null;
+  }
+  return screenCapMod;
+}
+
+/** Subscribe to the SHUTTER (B4's séance plate): fires once per screenshot
+ *  the reader takes. No module → never fires; the widget's long-press
+ *  "expose the plate" fallback carries the gate. */
+export function watchShutter(cb: () => void): () => void {
+  const sc = screenCapture();
+  if (!sc?.addScreenshotListener) return () => {};
+  try {
+    const sub = sc.addScreenshotListener(() => cb());
+    return () => {
+      try {
+        sub?.remove?.();
+      } catch {
+        /* fail open */
+      }
+    };
+  } catch {
+    return () => {};
+  }
+}

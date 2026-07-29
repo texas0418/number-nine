@@ -1,16 +1,18 @@
-// src/engine/LampBlock.tsx
-/* eslint-disable react-hooks/refs -- wickStart is read only inside gesture
-   handlers, never during render. */
-// SHY INK: a line that resolves only when the lamp is turned down. Two ways
-// to lower the lamp: the reader's own SCREEN BRIGHTNESS dropping below the
-// threshold (expo-brightness, read-only, fail-open), or dragging the little
-// wick glyph down, which dims the page itself. Both paths always work; the
-// sensor is atmosphere, the wick is the guarantee.
+// src/engine/InkAtHour.tsx
+/* eslint-disable react-hooks/refs -- wickStart/sawBright feed gesture and
+   sensor callbacks only; render reads mirrored useState values. */
+// COMBO INK (B4): a line that resolves only with the lamp turned down AND
+// the receiver's clock standing at her hour — the first two-condition ink
+// in the book. The dark comes as in LampBlock (screen brightness earned
+// dark, or the wick dragged low). The hour comes honestly (wait for it) or
+// by WINDING the little clock — the lie; she notices, and it is remembered.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { watchLamp } from '../device';
 import { cue } from '../audio';
+import { setKv } from '../db';
+import { CLOCK_LIE_KV, useWoundClock } from './ExaminationGates';
 import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -23,12 +25,15 @@ try {
 const DARK_ENOUGH = 0.35;
 const WICK_TRAVEL = 90;
 
-export function LampBlock({
+export function InkAtHour({
   aboveText,
   hiddenLine,
   targetWord,
+  hour,
+  minute,
   prompt,
   unlockedText,
+  noticedText,
   solved,
   onSolved,
   solveCue = 'unlock',
@@ -36,21 +41,28 @@ export function LampBlock({
   aboveText: string[];
   hiddenLine: string;
   targetWord: string;
+  hour: number;
+  minute: number;
   prompt: string;
   unlockedText: string;
+  noticedText: string;
   solved: boolean;
   onSolved: () => void;
   solveCue?: string;
 }) {
   const [done, setDone] = useState(solved);
+  const [wasLie, setWasLie] = useState(false);
   const [screenDark, setScreenDark] = useState(false);
-  const [wick, setWick] = useState(0); // 0 bright .. 1 turned right down
+  const [wick, setWick] = useState(0);
   const wickStart = useRef(0);
   const dimAnim = useRef(new Animated.Value(0)).current;
-  // The dark must be EARNED: a screen still dim from a previous read (or a
-  // reader who always plays dim) must not pre-solve the page — the lamp has
-  // to be seen lit once before turning it down means anything (QA).
   const sawBright = useRef(false);
+  const clock = useWoundClock(hour, minute, !done);
+  // Ink, once risen, does not sink back (device QA: the reader dimmed the
+  // screen, the line appeared, and raising the lamp to READ it hid it
+  // again). The reveal latches; the lie is judged at the moment it rose.
+  const [latched, setLatched] = useState(solved);
+  const [lieAtReveal, setLieAtReveal] = useState(false);
 
   useEffect(() => {
     if (done) return;
@@ -62,22 +74,44 @@ export function LampBlock({
   }, [done]);
 
   const dark = done || screenDark || wick > 0.6;
+  // held, not matches: the ink answers a clock that has SETTLED at her
+  // hour, never one merely scrubbed past it
+  const liveReveal = dark && clock.held;
+
+  // Mirror the live conditions into a ref; a slow watcher does the latching
+  // (never a sync setState inside an effect body — cascading-render rule).
+  const latchWatch = useRef({ live: false, lied: false, latched: solved, done: solved });
+  latchWatch.current.live = liveReveal;
+  latchWatch.current.lied = clock.lied;
+  latchWatch.current.done = done;
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      const s = latchWatch.current;
+      if (!s.done && s.live && !s.latched) {
+        s.latched = true;
+        setLatched(true);
+        setLieAtReveal(s.lied);
+      }
+    }, 250);
+    return () => clearInterval(t);
+  }, []);
+
+  const revealed = done || latched || liveReveal;
 
   useEffect(() => {
     Animated.timing(dimAnim, {
-      toValue: dark ? 1 : 0,
+      toValue: revealed ? 1 : 0,
       duration: 700,
       useNativeDriver: true,
     }).start();
-  }, [dark, dimAnim]);
+  }, [revealed, dimAnim]);
 
   const pan = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
-        // hold the gesture against ScrollView theft (see RotaryDial) — the
-        // wick drag is vertical, the easiest of all to steal
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: () => {
@@ -93,7 +127,15 @@ export function LampBlock({
   );
 
   const touchWord = () => {
-    if (done || !dark) return;
+    if (done || !revealed) return;
+    if (lieAtReveal || clock.lied) {
+      setWasLie(true);
+      try {
+        setKv(CLOCK_LIE_KV, '1');
+      } catch {
+        /* fail open */
+      }
+    }
     setDone(true);
     cue(solveCue);
     Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
@@ -119,23 +161,33 @@ export function LampBlock({
           </Text>
         </Animated.View>
         {!done && (
-          <View style={styles.wickRail} {...pan.panHandlers}>
-            <View
-              pointerEvents="none"
-              style={[styles.wickFlame, { transform: [{ translateY: wick * WICK_TRAVEL * 0.5 }] }]}
-            >
-              <Text style={styles.wickGlyph} allowFontScaling={false}>
-                {dark ? '·' : '❋'}
+          <View style={styles.instrumentRow}>
+            <View style={styles.clockWell} {...clock.panHandlers}>
+              <Text
+                style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
+                allowFontScaling={false}
+              >
+                {clock.display}
               </Text>
             </View>
-            <Text style={styles.wickLabel} allowFontScaling={false} pointerEvents="none">
-              the lamp
-            </Text>
+            <View style={styles.wickRail} {...pan.panHandlers}>
+              <View
+                pointerEvents="none"
+                style={{ transform: [{ translateY: wick * WICK_TRAVEL * 0.5 }] }}
+              >
+                <Text style={styles.wickGlyph} allowFontScaling={false}>
+                  {dark ? '·' : '❋'}
+                </Text>
+              </View>
+              <Text style={styles.wickLabel} allowFontScaling={false}>
+                the lamp
+              </Text>
+            </View>
           </View>
         )}
       </View>
       <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
-        {done ? unlockedText : prompt}
+        {done ? (wasLie ? noticedText : unlockedText) : prompt}
       </Text>
     </View>
   );
@@ -174,16 +226,35 @@ const styles = StyleSheet.create({
     color: colors.dial,
     ...amberGlow,
   },
-  wickRail: {
-    alignSelf: 'flex-end',
-    alignItems: 'center',
+  instrumentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
     marginTop: 16,
-    paddingHorizontal: 10,
-    height: 74,
   },
-  wickFlame: { marginBottom: 2 },
-  wickGlyph: { fontSize: 18, color: colors.dial, ...amberGlow },
-  wickLabel: { fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1, color: colors.faint },
+  clockWell: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 8,
+    backgroundColor: colors.bg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.panelBorder,
+  },
+  clockText: {
+    fontFamily: fonts.mono,
+    fontSize: 18,
+    letterSpacing: 2,
+    color: colors.muted,
+  },
+  wickRail: { alignItems: 'center', paddingLeft: 18 },
+  wickGlyph: { fontSize: 16, color: colors.dialDim },
+  wickLabel: {
+    fontFamily: fonts.mono,
+    fontSize: 9,
+    letterSpacing: 1,
+    color: colors.faint,
+    marginTop: 4,
+  },
   caption: {
     fontFamily: fonts.mono,
     fontSize: 11,
