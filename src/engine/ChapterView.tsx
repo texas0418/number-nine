@@ -57,6 +57,11 @@ import { MorseSend } from './MorseSend';
 import { MicStage } from './MicStage';
 import { Triangulate } from './Triangulate';
 import { Register } from './Register';
+import { EndingFork, NightGate } from './FinaleGates';
+import { Ritual } from './Ritual';
+import { Seance } from './Seance';
+import { MultiPace } from './MultiPace';
+import { TripleSheet } from './TripleSheet';
 import { slipIntoPocket } from '../device';
 import { InkAtHour } from './InkAtHour';
 import { BearingVoice } from './BearingVoice';
@@ -708,7 +713,7 @@ function renderInstructionGate(
         />
       );
     default:
-      return renderExaminationGate(block, index, gateSolved, solveGate);
+      return renderExaminationGate(block, index, gateSolved, solveGate, hintShown);
   }
 }
 
@@ -718,6 +723,7 @@ function renderExaminationGate(
   index: number,
   gateSolved: boolean,
   solveGate: (i: number) => void,
+  hintShown: boolean,
 ) {
   const common = { solved: gateSolved, onSolved: () => solveGate(index) };
   switch (block.kind) {
@@ -801,7 +807,7 @@ function renderExaminationGate(
         />
       );
     default:
-      return renderListenerGate(block, index, gateSolved, solveGate);
+      return renderListenerGate(block, index, gateSolved, solveGate, hintShown);
   }
 }
 
@@ -811,6 +817,7 @@ function renderListenerGate(
   index: number,
   gateSolved: boolean,
   solveGate: (i: number) => void,
+  hintShown: boolean,
 ) {
   const common = { solved: gateSolved, onSolved: () => solveGate(index) };
   switch (block.kind) {
@@ -875,6 +882,96 @@ function renderListenerGate(
           prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    default:
+      return renderFinaleGate(block, index, gateSolved, solveGate, hintShown);
+  }
+}
+
+/** Broadcast Six — the count completes. */
+function renderFinaleGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+  hintShown: boolean,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'nightgate':
+      return (
+        <NightGate
+          night={block.night}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          noticedText={block.noticedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'ritual':
+      return (
+        <Ritual
+          bandLowKhz={block.bandLowKhz}
+          bandHighKhz={block.bandHighKhz}
+          targetKhz={block.targetKhz}
+          gainMark={block.gainMark}
+          hour={block.hour}
+          minute={block.minute}
+          stillMs={block.stillMs}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'seance':
+      return (
+        <Seance
+          groups={block.groups}
+          prompt={block.prompt}
+          messageText={block.messageText}
+          echoPrompt={block.echoPrompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'multipace':
+      return (
+        <MultiPace
+          legs={block.legs}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'triplesheet':
+      return (
+        <TripleSheet
+          blankLines={block.blankLines}
+          heldLines={block.heldLines}
+          verso={block.verso}
+          targetWord={block.targetWord}
+          prompt={block.prompt}
+          heardPrompt={block.heardPrompt}
+          invertedPrompt={block.invertedPrompt}
+          unlockedText={block.unlockedText}
+          hintShown={hintShown}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'endingfork':
+      return (
+        <EndingFork
+          leftLabel={block.leftLabel}
+          left={block.left}
+          rightLabel={block.rightLabel}
+          right={block.right}
+          coda={block.coda}
           {...common}
         />
       );

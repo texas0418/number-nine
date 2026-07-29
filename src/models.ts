@@ -118,6 +118,21 @@ export type ChapterBlock =
   // thumb held there like a seal signs it, and the entry dries in her type
   // as the machine's own name (`{NAME}` in unlockedText).
   | { kind: 'register'; id: string; trueWell: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // B6 — NINETY-ONE. The station keeps REAL nights: the gate opens on a
+  // later calendar day, or the clock is wound through twenty-four hours
+  // and she counts the hurry.
+  | { kind: 'nightgate'; id: string; night: number; prompt: string; unlockedText: string; noticedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The Opening Ritual: four bare instruments, zero captions, learned order.
+  | { kind: 'ritual'; id: string; bandLowKhz: number; bandHighKhz: number; targetKhz: number; gainMark: number; hour: number; minute: number; stillMs: number; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The full séance: dark + severed + face down; the longest haptic message
+  // arrives through the wood; the reader knocks it back.
+  | { kind: 'seance'; id: string; groups: number[]; prompt: string; messageText: string; echoPrompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The long walk: bearing/count legs in order.
+  | { kind: 'multipace'; id: string; legs: { bearingDeg: number; toleranceDeg: number; paces: number }[]; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The triple composition: ear-held reveal, physical inversion, mirror.
+  | { kind: 'triplesheet'; id: string; blankLines: string[]; heldLines: string[]; verso: string[]; targetWord: string; prompt: string; heardPrompt: string; invertedPrompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // THE CHOICE: two endings that do not join; remembered in kv.
+  | { kind: 'endingfork'; id: string; leftLabel: string; left: string[]; rightLabel: string; right: string[]; coda: string; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */
