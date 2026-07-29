@@ -23,6 +23,9 @@ export const SCENES: Record<SceneId, number> = {
   'map-marsh': require('../../assets/scenes/map-marsh.jpg'),
   'obj-ness': require('../../assets/scenes/obj-ness.jpg'),
   'obj-van': require('../../assets/scenes/obj-van.jpg'),
+  // B6 (Simon's renders, 2026-07-29)
+  'obj-setdown': require('../../assets/scenes/obj-setdown.jpg'),
+  'obj-stairs': require('../../assets/scenes/obj-stairs.jpg'),
   'obj-valve': require('../../assets/scenes/obj-valve.jpg'),
   'obj-grave': require('../../assets/scenes/obj-grave.jpg'),
   'obj-receiver': require('../../assets/scenes/obj-receiver.jpg'),

@@ -96,9 +96,11 @@ export function Hotspot({
           />
         )}
       </Pressable>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
-        {done ? unlockedText : prompt}
-      </Text>
+      {(done ? unlockedText : prompt) !== '' && (
+        <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+          {done ? unlockedText : prompt}
+        </Text>
+      )}
     </View>
   );
 }

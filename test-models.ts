@@ -13,6 +13,7 @@ import { BROADCAST_TWO } from './src/chapters/broadcast2';
 import { BROADCAST_THREE } from './src/chapters/broadcast3';
 import { BROADCAST_FOUR } from './src/chapters/broadcast4';
 import { BROADCAST_FIVE } from './src/chapters/broadcast5';
+import { BROADCAST_SIX } from './src/chapters/broadcast6';
 import type { ChapterBlock } from './src/models';
 
 let failures = 0;
@@ -302,6 +303,84 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
   ok(
     'b5 hints all reference real gates',
     Object.keys(BROADCAST_FIVE.hints ?? {}).every((id) => gateIds.has(id)),
+  );
+}
+
+// --- Broadcast Six doctrine -----------------------------------------------
+{
+  const b6 = BROADCAST_SIX.blocks;
+  const CODE_ENTRY = ['keypad', 'safe', 'cipher'];
+  const b6Gates = b6.filter((b) => (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind));
+  ok('b6 has ten gates (the choice included)', b6Gates.length === 10);
+  ok(
+    'b6 has exactly one code-entry puzzle',
+    b6.filter((b) => CODE_ENTRY.includes(b.kind)).length === 1,
+  );
+  ok('b6 answers stay three blocks from their gates', !answersNearGates(b6));
+  ok('b6 ends with chapterEnd', b6[b6.length - 1].kind === 'chapterEnd');
+  ok(
+    'b6 keeps two real nights',
+    b6.filter((b) => b.kind === 'nightgate').length === 2,
+  );
+  // The five-rule verdict: the logbook's twelve figures must decode to the
+  // typed answer — strike the wall's figures (the book's own numbers),
+  // reverse, minus her minute (14), minus her nine, far-end alphabet.
+  const name = b6.find((b) => b.kind === 'cipher');
+  const figuresBlock = b6
+    .flatMap((b) => (b.kind === 'logbook' ? [b.lines.join(' ')] : []))
+    .find((l) => l.includes('twelve figures'));
+  const figures = (figuresBlock ?? '').match(/\d+/g)?.map(Number).filter((n) => n > 12) ?? [];
+  const WALL = [91, 46, 25, 90];
+  const struck = figures.filter((_, i) => i % 3 !== 2);
+  const wallFigures = figures.filter((_, i) => i % 3 === 2);
+  const decoded = [...struck]
+    .reverse()
+    .map((n) => n - 9 - 14)
+    .map((n) => String.fromCharCode(64 + (27 - n)))
+    .join('');
+  ok(
+    'b6 verdict figures decode to the typed name (5 rules)',
+    name?.kind === 'cipher' &&
+      figures.length === 12 &&
+      decoded === name.answer &&
+      wallFigures.every((n) => WALL.includes(n)),
+  );
+  // The night-one fragment must be the first six figures verbatim.
+  const frag1 = b6
+    .flatMap((b) => (b.kind === 'logbook' ? [b.lines.join(' ')] : []))
+    .find((l) => l.includes('NIGHT THE FIRST'));
+  ok(
+    'b6 night-one fragment matches the final transmission',
+    (frag1 ?? '').match(/\d+/g)?.filter((s) => Number(s) > 12).slice(0, 6).join(',') ===
+      figures.slice(0, 6).join(','),
+  );
+  // The ritual keeps the learned settings: her wave, the worn mark, her hour.
+  const rit = b6.find((b) => b.kind === 'ritual');
+  ok(
+    'b6 ritual keeps the learned settings',
+    rit?.kind === 'ritual' &&
+      rit.targetKhz === 2314 && rit.gainMark === 7 &&
+      rit.hour === 23 && rit.minute === 14,
+  );
+  // The séance knocks the cellar door's number.
+  const seance = b6.find((b) => b.kind === 'seance');
+  ok(
+    'b6 seance knocks four six two five',
+    seance?.kind === 'seance' && seance.groups.join('') === '4625',
+  );
+  // Two endings, both present, plus the shared coda.
+  const choice = b6.find((b) => b.kind === 'endingfork');
+  ok(
+    'b6 offers two endings and a coda',
+    choice?.kind === 'endingfork' &&
+      choice.left.length > 0 && choice.right.length > 0 && choice.coda.length > 0,
+  );
+  const gateIds = new Set(
+    b6Gates.flatMap((b) => ('id' in b ? [(b as { id: string }).id] : [])),
+  );
+  ok(
+    'b6 hints all reference real gates',
+    Object.keys(BROADCAST_SIX.hints ?? {}).every((id) => gateIds.has(id)),
   );
 }
 

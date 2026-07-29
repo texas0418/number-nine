@@ -11,6 +11,7 @@ import { BROADCAST_TWO } from '../chapters/broadcast2';
 import { BROADCAST_THREE } from '../chapters/broadcast3';
 import { BROADCAST_FOUR } from '../chapters/broadcast4';
 import { BROADCAST_FIVE } from '../chapters/broadcast5';
+import { BROADCAST_SIX } from '../chapters/broadcast6';
 import { getProgress, saveProgress } from '../db';
 import { setStaticLevel, stopAllLoops } from '../audio';
 import { colors, fonts } from '../theme';
@@ -21,6 +22,7 @@ const CHAPTERS: Record<number, Chapter> = {
   [BROADCAST_THREE.id]: BROADCAST_THREE,
   [BROADCAST_FOUR.id]: BROADCAST_FOUR,
   [BROADCAST_FIVE.id]: BROADCAST_FIVE,
+  [BROADCAST_SIX.id]: BROADCAST_SIX,
 };
 
 export default function StoryScreen({
