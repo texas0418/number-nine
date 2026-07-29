@@ -233,14 +233,28 @@ function RitualClock({
       onDone();
     }
   }, [armed, clock.held, onDone]);
-  return (
-    <View style={[styles.instrument, !armed && styles.dimmed]}>
-      <Pressable onPress={armed ? undefined : refuse} disabled={armed}>
-        <View style={styles.clockWell} {...(armed ? clock.panHandlers : {})}>
+  // the WHOLE panel winds (device QA: dragging only worked started on the
+  // digits, and the finger hid them); the readout stays centred and clear
+  if (armed) {
+    return (
+      <View style={styles.instrument}>
+        <View style={styles.clockDragSurface} {...clock.panHandlers}>
           <Text
-            style={[styles.clockText, armed && clock.matches && { color: colors.dial, ...amberGlow }]}
+            style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
             allowFontScaling={false}
+            pointerEvents="none"
           >
+            {clock.display}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+  return (
+    <View style={[styles.instrument, styles.dimmed]}>
+      <Pressable onPress={refuse}>
+        <View style={styles.clockWell}>
+          <Text style={styles.clockText} allowFontScaling={false}>
             {clock.display}
           </Text>
         </View>
@@ -437,6 +451,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 20,
     paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: colors.bg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.panelBorder,
+  },
+  clockDragSurface: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingVertical: 12,
     borderRadius: 8,
     backgroundColor: colors.bg,
     borderWidth: StyleSheet.hairlineWidth,
