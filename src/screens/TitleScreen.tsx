@@ -14,6 +14,7 @@ export default function TitleScreen({
   onStoryTwo,
   onStoryThree,
   onStoryFour,
+  onStoryFive,
   onDaily,
   onSettings,
 }: {
@@ -25,6 +26,7 @@ export default function TitleScreen({
   onStoryTwo: () => void;
   onStoryThree: () => void;
   onStoryFour: () => void;
+  onStoryFive: () => void;
   onDaily: () => void;
   onSettings: () => void;
 }) {
@@ -53,6 +55,9 @@ export default function TitleScreen({
         )}
         {unlocked && (
           <MenuRow label="broadcast four" hint="the examination" onPress={onStoryFour} />
+        )}
+        {unlocked && (
+          <MenuRow label="broadcast five" hint="the other listeners" onPress={onStoryFive} />
         )}
         <MenuRow
           label={todaySolved ? 'tonight’s signal · received' : 'tonight’s signal'}
