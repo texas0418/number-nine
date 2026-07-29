@@ -141,9 +141,12 @@ export function MultiPace({
       <View style={styles.row}>
         <View style={styles.card} {...(done ? {} : pan.panHandlers)}>
           <View
-            style={[styles.lubber, aligned && { backgroundColor: colors.lockGlow }]}
+            style={[styles.lubber, aligned && styles.lubberLit]}
             pointerEvents="none"
           />
+          <Text style={[styles.degrees, aligned && styles.degreesLit]} allowFontScaling={false} pointerEvents="none">
+            {`${Math.round(heading)}°`}
+          </Text>
           <View
             style={[styles.rose, { transform: [{ rotate: `${-heading}deg` }] }]}
             pointerEvents="none"
@@ -202,13 +205,25 @@ const styles = StyleSheet.create({
   lubber: {
     position: 'absolute',
     top: 3,
-    left: SIZE / 2 - 1.5,
-    width: 3,
-    height: 12,
+    left: SIZE / 2 - 2.5,
+    width: 5,
+    height: 16,
     borderRadius: 2,
     backgroundColor: colors.dialDim,
     zIndex: 2,
   },
+  lubberLit: { backgroundColor: colors.dial, ...amberViewGlow },
+  degrees: {
+    position: 'absolute',
+    bottom: 16,
+    alignSelf: 'center',
+    fontFamily: fonts.mono,
+    fontSize: 15,
+    letterSpacing: 1,
+    color: colors.muted,
+    zIndex: 2,
+  },
+  degreesLit: { color: colors.dial, ...amberGlow },
   rose: { position: 'absolute', width: SIZE, height: SIZE, alignItems: 'center' },
   roseN: { marginTop: 14, fontFamily: fonts.mono, fontSize: 13, color: colors.dial, ...amberGlow },
   ground: {
