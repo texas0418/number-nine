@@ -33,7 +33,7 @@ export const BROADCAST_SIX: Chapter = {
   hints: {
     'b6-ritual': 'no card will come. the first log kept the same four columns every night for nineteen years: tune, gain, clock, still. the set only wakes to the order it was always woken in.',
     'b6-night2': 'the station keeps real nights. come back tomorrow — or take the dark clock in your fingers and drag it through all twenty-four, and be known for it.',
-    'b6-seance': 'three things at once: the lamp below a whisper, the world put out, the glass against the wood. then do nothing. the table has been waiting nineteen years to say this.',
+    'b6-seance': 'three things at once: the lamp below a whisper, the world put out, the glass against the wood. then do nothing — count what comes through the table, as many tellings as you need. when you have it, take the set up again and answer.',
     'b6-walk': 'the legs are numbers you already keep: the cellar door, then nine at the grave’s east, then a single pace toward her quarter of the sky.',
     'b6-sheet': 'it says nothing to the room. hold it to your ear as you held the receiver. what rises will stay. then turn it — and remember the wall writes mirror-wise.',
     'b6-night3': 'one more real night. or the clock, dragged through a day, and she counts the hurry.',
@@ -127,6 +127,7 @@ export const BROADCAST_SIX: Chapter = {
         '  LAMP DOWN. WORLD OUT.',
         '  THEN LAY ME TO THE WOOD,',
         '  AND KEEP YOUR HANDS OFF ME.',
+        '  TAKE ME UP WHEN I AM DONE.',
       ],
     },
     { kind: 'plate', image: 'obj-setdown', caption: 'laid to the wood · a card that has finished being played' },
