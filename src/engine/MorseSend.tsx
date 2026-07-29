@@ -66,13 +66,20 @@ export function MorseSend({
   );
 
   // the parish stands back while the reader's own fist is on the key
-  // (device QA: the clicks drowned under the crowd) — and the sidetone's
-  // player warms up NOW, so the first dit is not eaten by player spin-up
+  // (device QA: the clicks drowned under the crowd). The sidetone runs
+  // CONTINUOUSLY at volume zero and the key only opens and closes its
+  // volume — start/stop per press raced seek/play/pause and ate dits
+  // (device QA: "only playing sometimes"). Real keying circuits work the
+  // same way: carrier always up, keyed.
   useEffect(() => {
     if (done) return;
     warmLoop('sidetone');
+    startSfxLoop('sidetone', 0);
     setLoopVolume('parish', 0.07);
-    return () => setLoopVolume('parish', 0.22);
+    return () => {
+      stopSfx('sidetone');
+      setLoopVolume('parish', 0.22);
+    };
   }, [done]);
 
   const targetLetter = () => word[state.current.sent]?.toUpperCase() ?? '';
@@ -112,9 +119,8 @@ export function MorseSend({
     s.downAt = Date.now();
     setKeyDown(true);
     // the SIDETONE: the operator hears his own keying for exactly as long
-    // as the key is down — dits are short beeps, dahs long ones (device QA:
-    // every cut of the clicks take read as pages turning)
-    startSfxLoop('sidetone', 0.5);
+    // as the key is down — dits are short beeps, dahs long ones
+    setLoopVolume('sidetone', 0.5);
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Rigid);
   };
 
@@ -124,7 +130,7 @@ export function MorseSend({
     const held = Date.now() - s.downAt;
     s.downAt = 0;
     setKeyDown(false);
-    stopSfx('sidetone');
+    setLoopVolume('sidetone', 0);
     // a wildly long press is a rested finger, not a dah
     if (held > 1600) return;
     s.symbols += held <= DIT_MAX_MS ? '.' : '-';
