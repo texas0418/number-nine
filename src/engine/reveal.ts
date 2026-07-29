@@ -26,6 +26,13 @@ export const GATE_KINDS = [
   'mains',
   'chord',
   'paces',
+  'whisper',
+  'ink',
+  'signalword',
+  'bearing',
+  'exposure',
+  'trace',
+  'hour',
 ] as const;
 
 export const isGate = (b: ChapterBlock): boolean =>

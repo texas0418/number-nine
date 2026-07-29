@@ -76,6 +76,31 @@ ok('pre-epoch days still get a transmission',
 ok('transmissions are cipher-safe (A-Z, space, apostrophe only)',
   TRANSMISSIONS.every((t) => /^[A-Z' ]+$/.test(t)));
 
+// --- B4 daily crossover ---------------------------------------------------
+{
+  const { tonightsWord, nightWordChoices } = require('./src/daily/crossover') as
+    typeof import('./src/daily/crossover');
+  ok('tonight\'s word is the longest word of the line',
+    tonightsWord('2026-08-01') === 'STATION');
+  const card = nightWordChoices('2026-08-01');
+  ok('crossover card holds four words', card.words.length === 4);
+  ok('the answer sits where the index says',
+    card.words[card.answerIndex] === tonightsWord('2026-08-01'));
+  ok('crossover card is deterministic per night',
+    JSON.stringify(nightWordChoices('2026-08-01')) === JSON.stringify(card));
+  // Fairness guard, a year out: exactly one candidate must appear in the
+  // night's line — decoys verifiably absent, every single night.
+  let crossoverFails = 0;
+  for (let d = 0; d < 365; d++) {
+    const day = new Date(Date.UTC(2026, 7, 1 + d)).toISOString().slice(0, 10);
+    const line = transmissionForDay(day).plaintext.toUpperCase();
+    const c = nightWordChoices(day);
+    const present = c.words.filter((w) => line.includes(w)).length;
+    if (present !== 1 || c.words[c.answerIndex] !== tonightsWord(day)) crossoverFails++;
+  }
+  ok('365 crossover cards stay fair', crossoverFails === 0);
+}
+
 // Solvability guard: every night of the next year must build a puzzle whose
 // solved transcript round-trips to its plaintext.
 let roundTripFails = 0;

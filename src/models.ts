@@ -73,6 +73,29 @@ export type ChapterBlock =
   // PACE IT OUT: face `bearingDeg` and take `paces` steps (bounce-detected
   // while the bearing holds; a tap is also a pace).
   | { kind: 'paces'; id: string; bearingDeg: number; toleranceDeg: number; paces: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // B4 — THE EXAMINATION. Her whisper: audio (never load-bearing) plays only
+  // against the ear (proximity); the listening ACT — durationMs of nearness,
+  // or the held fallback — is the gate.
+  | { kind: 'whisper'; id: string; durationMs: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Combo ink: the hidden line resolves only DARK (lamp down) *and* at her
+  // hour — the real clock, or the receiver's clock wound to it (the lie;
+  // she notices: noticedText replaces unlockedText and the kv flag sticks).
+  | { kind: 'ink'; id: string; aboveText: string[]; hiddenLine: string; targetWord: string; hour: number; minute: number; prompt: string; unlockedText: string; noticedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Daily crossover: which word did she say TONIGHT? Candidates come from
+  // src/daily/crossover.ts (tonight's actual transmission + decoys).
+  | { kind: 'signalword'; id: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Stereo bearing: swing the aerial (compass heading, drag fallback) until
+  // her voice centres; dwell on the bearing to pass.
+  | { kind: 'bearing'; id: string; bearingDeg: number; toleranceDeg: number; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // The séance plate: EXPOSE it (take a screenshot — watchShutter), or hold
+  // it to the lamp (long-press). The plate differs after.
+  | { kind: 'exposure'; id: string; image: SceneId; revealImage: SceneId; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Circuit trace: drag one unbroken path through the terminals in the
+  // order the clues dictate; a wrong terminal sparks and the path dies.
+  | { kind: 'trace'; id: string; nodes: string[]; order: number[]; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
+  // Her hour proper: passable when the real clock stands at hour:minute —
+  // or wound there (the lie again, and she likes it less each time).
+  | { kind: 'hour'; id: string; hour: number; minute: number; prompt: string; unlockedText: string; noticedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */
@@ -122,6 +145,8 @@ export const AUDIO_CUES = [
   'hasp-open',
   'hum-settle',
   'sheet-rustle',
+  'whisper',
+  'spark',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 

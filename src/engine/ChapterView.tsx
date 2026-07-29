@@ -50,6 +50,11 @@ import { KnockBlock } from './KnockBlock';
 import { FlipBlock } from './FlipBlock';
 import { SealPlate } from './SealPlate';
 import { ChordBlock, MainsBlock, ShakeBlock, StillnessBlock } from './InstructionGates';
+import { ExposureBlock, HourBlock, WhisperBlock } from './ExaminationGates';
+import { InkAtHour } from './InkAtHour';
+import { BearingVoice } from './BearingVoice';
+import { TraceBlock } from './TraceBlock';
+import { SignalWord } from './SignalWord';
 import { InvertBlock } from './InvertBlock';
 import { PaceBlock } from './PaceBlock';
 import { LampBlock } from './LampBlock';
@@ -642,6 +647,99 @@ function renderInstructionGate(
           paces={block.paces}
           prompt={block.prompt}
           unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    default:
+      return renderExaminationGate(block, index, gateSolved, solveGate);
+  }
+}
+
+/** Broadcast Four's examinations — she stops instructing and starts testing. */
+function renderExaminationGate(
+  block: ChapterBlock,
+  index: number,
+  gateSolved: boolean,
+  solveGate: (i: number) => void,
+) {
+  const common = { solved: gateSolved, onSolved: () => solveGate(index) };
+  switch (block.kind) {
+    case 'whisper':
+      return (
+        <WhisperBlock
+          durationMs={block.durationMs}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'ink':
+      return (
+        <InkAtHour
+          aboveText={block.aboveText}
+          hiddenLine={block.hiddenLine}
+          targetWord={block.targetWord}
+          hour={block.hour}
+          minute={block.minute}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          noticedText={block.noticedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'signalword':
+      return (
+        <SignalWord
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'bearing':
+      return (
+        <BearingVoice
+          bearingDeg={block.bearingDeg}
+          toleranceDeg={block.toleranceDeg}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'exposure':
+      return (
+        <ExposureBlock
+          image={block.image}
+          revealImage={block.revealImage}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'trace':
+      return (
+        <TraceBlock
+          nodes={block.nodes}
+          order={block.order}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'hour':
+      return (
+        <HourBlock
+          hour={block.hour}
+          minute={block.minute}
+          prompt={block.prompt}
+          unlockedText={block.unlockedText}
+          noticedText={block.noticedText}
           solveCue={block.solveCue}
           {...common}
         />

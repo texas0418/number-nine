@@ -61,6 +61,10 @@ const SFX_FILES: Record<string, number> = {
   'hasp-open': require('../assets/audio/hasp-open.wav'),
   'hum-settle': require('../assets/audio/hum-settle.wav'),
   'sheet-rustle': require('../assets/audio/sheet-rustle.wav'),
+  // B4 placeholders (scripts/gen-b4-foley.py) until the real set lands
+  whisper: require('../assets/audio/whisper.wav'),
+  murmur: require('../assets/audio/murmur.wav'),
+  spark: require('../assets/audio/spark.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they
@@ -230,6 +234,55 @@ export function startSfxLoop(name: string, volume = 0.5): void {
     activeLoops.add(name);
   } catch {
     /* fail open */
+  }
+}
+
+/** Live volume handle on a running loop (B4's bearing voice: her murmur
+ *  sharpens as the aerial swings onto her). No-op when the loop isn't up. */
+export function setLoopVolume(name: string, volume: number): void {
+  const p = loopPlayers[name];
+  if (!p) return;
+  try {
+    p.volume = Math.max(0, Math.min(1, volume));
+  } catch {
+    /* fail open */
+  }
+}
+
+/** A HELD one-shot (B4's whisper: it only speaks against the ear). Returns
+ *  pause/resume + stop handles; everything fails open to no-ops so the
+ *  gate's timing works with sound gone entirely. */
+export function holdSfx(
+  name: string,
+  volume = 0.8,
+): { setPlaying: (on: boolean) => void; stop: () => void } {
+  const a = audio();
+  const mod = SFX_FILES[name];
+  if (!a || mod === undefined) return { setPlaying: () => {}, stop: () => {} };
+  try {
+    const p = a.createAudioPlayer(mod);
+    p.volume = volume;
+    return {
+      setPlaying: (on: boolean) => {
+        try {
+          if (on) p.play();
+          else p.pause();
+        } catch {
+          /* fail open */
+        }
+      },
+      stop: () => {
+        try {
+          p.pause();
+          p.remove?.();
+          p.release?.();
+        } catch {
+          /* fail open */
+        }
+      },
+    };
+  } catch {
+    return { setPlaying: () => {}, stop: () => {} };
   }
 }
 
