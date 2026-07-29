@@ -46,10 +46,13 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
 
 ### Build — content
 
-- [ ] **Write Broadcasts Two–Six.** Broadcast One is drafted to real length
-      (~20-25 min, four ramped gates); it still wants a polish pass, and Two–Six
-      are unwritten. This is the top of the funnel — the free chapter must convert.
-- [ ] **Author 365+ transmissions** for the nightly serial (30 placeholders now)
+- [x] **Write Broadcasts Two–Six.** All six broadcasts are written, playtested
+      on device and merged. Broadcast One remains the top of the funnel and can
+      still take a polish pass.
+- [x] **Author 365+ transmissions** for the nightly serial — 365 authored, a
+      full year of Halloran's log ending where Broadcast One begins. Constraints
+      (charset, two eligible words, word width, cryptogram length) are enforced
+      in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
 - [ ] Cipher variant nights (header-key days, Morse days, transposition days)
 - [ ] Real audio: voice reading digits, degraded ident variants per chapter, Morse night, haptic knock passages
 
