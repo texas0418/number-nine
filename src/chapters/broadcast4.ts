@@ -17,7 +17,8 @@
 //   5. exposure   — the séance plate: the shutter develops it
 //   6. trace      — she cuts the set; remake the path (Halloran's rhyme)
 //   7. fork       — the knock at the door
-//   8. hour       — the result arrives at 23:14, hers, not yours
+//   8. radio      — the result found at 2314 kHz: her hour was always a
+//                   PLACE ON THE BAND too (Prentice names it unknowing)
 //   9. cipher     — the verdict: 22 27 35 23 31 18 -> REMAIN
 //
 // Verdict math (kept here for future sessions; never printed in-app):
@@ -37,7 +38,7 @@ export const BROADCAST_FOUR: Chapter = {
     'b4-aim': 'margaret lies east of the lych-gate. whatever speaks keeps the opposite quarter of the sky.',
     'b4-plate': 'the shutter is not on the camera. your machine catches pictures of its own face — both buttons, the way you keep anything.',
     'b4-fault': 'halloran’s rhyme knows the road: air to coil, coil to grid, grid to anode, anode to the telephones. the earth wants none of her.',
-    'b4-station': 'the result comes at her hour, not yours. wait for it honestly — or wind, and be known for it.',
+    'b4-station': 'the van kept finding her and could never file her. her hour was never only an hour — the band keeps a two-three-one-four as well.',
     'b4-verdict': 'read her marks as her sheets are read. give back the nine she lends. then count from the far end, as the tin taught.',
   },
   blocks: [
@@ -219,22 +220,22 @@ export const BROADCAST_FOUR: Chapter = {
       left: 'He stood in the hall and let the knock come a second time, and a third, telling himself a man who waits is a man deciding — knowing, all the while, that the door had already decided. On the fourth knock the latch turned itself, gently, the way a thing is done when it has been done for you as a kindness.',
       rightLabel: 'OPEN THE DOOR',
       right: 'He opened the door on the second knock, because his brother had refused this one instruction for nineteen years and Edwin had watched what nineteen years of refusing had bought. The inspector’s smile was the smile of a man sure of his paperwork. Edwin stepped aside and the house took the rest of the introductions.',
-      join: 'Mr. Prentice, of the detection branch, wiped his shoes twice, remarked that the marsh light did strange things to a signal, and asked — pleasantly, the way they are trained to — why a dead man’s licence was still drawing current. The set upstairs chose that moment to come back on.',
+      join: 'Mr. Prentice, of the detection branch, wiped his shoes twice, remarked that the marsh light did strange things to a signal, and asked — pleasantly, the way they are trained to — why a dead man’s licence was still drawing current. He mentioned also, in the tone of a professional grievance, the carrier his van kept finding parked at two-three-one-four kilocycles — no allocation in any table he owned, and gone, always, by the time he stopped to log it. The set upstairs chose that moment to come back on.',
     },
 
-    // --- The result, at her hour -------------------------------------------
+    // --- The result, on her wave -------------------------------------------
     {
       kind: 'prose',
-      text: 'What followed filled the evening and emptied it. Prentice with his meters up and down the stairs, finding nothing, finding it again the moment he packed the meter away; Prentice on the cellar steps going quiet mid-sentence; Prentice in the chair by the bench — the chair — with his hat on his knees, no longer asking about the licence. The examination had two candidates now. At some point Edwin looked at the receiver’s little clock and understood that nothing further would happen until it said what it was waiting to say.',
+      text: 'What followed filled the evening and emptied it. Prentice with his meters up and down the stairs, finding nothing, finding it again the moment he packed the meter away; Prentice on the cellar steps going quiet mid-sentence; Prentice in the chair by the bench — the chair — with his hat on his knees, no longer asking about the licence. The examination had two candidates now, and at some point Edwin understood that the marks would not simply arrive. They would have to be FOUND. The dial sat dark at the low end of the band, and the little clock ticked at his elbow like an invigilator, keeping her hour the way it always had — and something about the way Prentice had said his numbers, two-three-one-four, kept circling Edwin’s tired head looking for a place to land.',
     },
     {
-      kind: 'hour',
+      kind: 'radio',
       id: 'b4-station',
-      hour: 23,
-      minute: 14,
-      prompt: 'the result comes at her hour · the clock knows which',
-      unlockedText: 'the clock stands at her hour honestly · and the set clears its throat',
-      noticedText: 'the hands stand where you put them · the set clears its throat · and pauses, first, the length of a look',
+      bandLowKhz: 2100,
+      bandHighKhz: 2500,
+      targetKhz: 2314,
+      lockedText: 'drag the dial · the marks wait on the wave the van could never file',
+      unlockedText: 'the carrier stands where her hour stands · of course it does · it was never only a time of night',
     },
     {
       kind: 'voice',

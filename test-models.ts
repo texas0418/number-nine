@@ -210,16 +210,20 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
       trace.order.every((i) => i >= 0 && i < trace.nodes.length) &&
       !trace.order.includes(trace.nodes.indexOf('E')),
   );
-  // two-condition gates exist: ink and hour both keep her hour
+  // her hour and her wave are ONE fact: the ink keeps 23:14 and the result
+  // tunes at 2314 kHz (Simon, round 3: the hour gate repeated the ink's
+  // solution; the frequency leap replaced it)
   const ink = b4.find((b) => b.kind === 'ink');
-  const hourGate = b4.find((b) => b.kind === 'hour');
+  const radio = b4.find((b) => b.kind === 'radio');
   ok(
-    'b4 ink and hour gates share her hour',
+    'b4 result frequency encodes the ink gate\'s hour',
     ink?.kind === 'ink' &&
-      hourGate?.kind === 'hour' &&
+      radio?.kind === 'radio' &&
       ink.hour === 23 && ink.minute === 14 &&
-      hourGate.hour === 23 && hourGate.minute === 14,
+      radio.targetKhz === ink.hour * 100 + ink.minute,
   );
+  ok('b4 keeps no hour gate (the clock lie lives in the ink alone)',
+    !b4.some((b) => b.kind === 'hour'));
   // every pressure-valve hint points at a real gate id
   const gateIds = new Set(
     b4Gates.flatMap((b) => ('id' in b ? [(b as { id: string }).id] : [])),
