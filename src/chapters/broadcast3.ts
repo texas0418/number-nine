@@ -94,6 +94,7 @@ export const BROADCAST_THREE: Chapter = {
       kind: 'shake',
       id: 'b3-valve',
       prompt: 'the valve · rusted fast · half measures rust over again',
+      solveCue: 'rust-break',
       unlockedText: 'the rust lets go all at once · the set pulls air like a swimmer surfacing',
     },
     {
@@ -113,6 +114,7 @@ export const BROADCAST_THREE: Chapter = {
       image: 'hall',
       target: { x: 0.06, y: 0.72, w: 0.22, h: 0.16 },
       prompt: 'the hall wall · the knocking has left its mark somewhere',
+      solveCue: 'plaster-fall',
       unlockedText: 'the plaster gives · behind it, folded paper · a great deal of folded paper',
     },
     {
@@ -157,6 +159,7 @@ export const BROADCAST_THREE: Chapter = {
       ],
       targetWord: 'wall',
       prompt: 'her sheet · typed, exact, and wrong somehow',
+      solveCue: 'sheet-rustle',
       unlockedText: 'held the other way, the sheet confesses',
     },
     {
@@ -177,6 +180,7 @@ export const BROADCAST_THREE: Chapter = {
       kind: 'mains',
       id: 'b3-feed',
       prompt: 'the set is hungry · give it the mains',
+      solveCue: 'hum-settle',
       unlockedText: 'it drinks · the dial lamp steadies, satisfied, like an eye refocusing',
     },
 
@@ -243,6 +247,7 @@ export const BROADCAST_THREE: Chapter = {
       answer: '7392',
       feltGroups: [7, 3, 9, 2],
       prompt: 'the poor-box · four wheels · it says the number once each pressing',
+      solveCue: 'hasp-open',
       unlockedText: 'the hasp falls open · paper, banded, addressed to him alone',
       stopsCue: 'marsh-wind',
     },

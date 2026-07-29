@@ -56,6 +56,11 @@ const SFX_FILES: Record<string, number> = {
   'letter-tear': require('../assets/audio/letter-tear.wav'),
   'page-flip': require('../assets/audio/page-flip.wav'),
   'pips-muffled': require('../assets/audio/pips-muffled.wav'),
+  'rust-break': require('../assets/audio/rust-break.wav'),
+  'plaster-fall': require('../assets/audio/plaster-fall.wav'),
+  'hasp-open': require('../assets/audio/hasp-open.wav'),
+  'hum-settle': require('../assets/audio/hum-settle.wav'),
+  'sheet-rustle': require('../assets/audio/sheet-rustle.wav'),
 };
 // Loops (the phone ringing) keep persistent players; one-shots get a FRESH
 // player per play — expo-audio players don't reliably restart after they

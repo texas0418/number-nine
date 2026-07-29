@@ -115,6 +115,11 @@ export const AUDIO_CUES = [
   'knock-far',
   'letter-tear',
   'pips-muffled',
+  'rust-break',
+  'plaster-fall',
+  'hasp-open',
+  'hum-settle',
+  'sheet-rustle',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 
