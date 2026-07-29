@@ -369,8 +369,41 @@ export function Ritual({
   };
 
   if (stage >= 4) {
+    // the settled set: the four instruments stay on the page, inert, so the
+    // solve never collapses the layout under the reader (device QA: the
+    // screen jumped) — and the opened set is the better image anyway
     return (
       <View style={styles.wrap}>
+        <View style={styles.instrument} pointerEvents="none">
+          <Text style={styles.readout} allowFontScaling={false}>
+            {targetKhz} kc/s
+          </Text>
+          <View style={styles.strip}>
+            <View style={[styles.needle, { left: `${((targetKhz - bandLowKhz) / (bandHighKhz - bandLowKhz)) * 100}%`, backgroundColor: colors.dial }]} />
+          </View>
+        </View>
+        <View style={styles.instrument} pointerEvents="none">
+          <View style={styles.scale}>
+            {Array.from({ length: 9 }, (_, i) => (
+              <View key={i} style={styles.tick} />
+            ))}
+            <View style={[styles.gainNeedle, { left: `${(gainMark / 9) * 100}%`, backgroundColor: colors.dial }]} />
+          </View>
+        </View>
+        <View style={styles.instrument} pointerEvents="none">
+          <View style={styles.clockDragSurface}>
+            <Text style={[styles.clockText, { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
+              {`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.instrument} pointerEvents="none">
+          <View style={styles.stillWell}>
+            <View style={styles.meterTrack}>
+              <View style={[styles.meterFill, { width: '100%', backgroundColor: colors.dial }]} />
+            </View>
+          </View>
+        </View>
         <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
           {unlockedText}
         </Text>
