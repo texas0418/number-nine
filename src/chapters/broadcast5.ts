@@ -172,8 +172,9 @@ export const BROADCAST_FIVE: Chapter = {
       text: 'At the next evening’s hour the hedge-voices did a thing they had not done: they went quiet all together, like a room when the chairman stands, and then one of them — Portman, by the soft dairyman’s fist of him — sent the same short question over and over, patient as milking. The second log gave Edwin the old operator’s card to answer with; it had lived pasted in the toolbox lid under the wiring rhyme all along.',
     },
     {
+      // no page-turn cue here: the send key's re-renders jitter this block
+      // across the cue line and the page flips over and over (device QA)
       kind: 'logbook',
-      cue: 'page-turn',
       lines: [
         'PORTMAN ASKS: WHO KEEPS THE HOUSE',
         '',

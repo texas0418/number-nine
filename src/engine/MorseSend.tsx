@@ -10,7 +10,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { cue, setLoopVolume, setStaticLevel, startSfxLoop, stopSfx } from '../audio';
+import { cue, setLoopVolume, setStaticLevel, startSfxLoop, stopSfx, warmLoop } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -66,9 +66,11 @@ export function MorseSend({
   );
 
   // the parish stands back while the reader's own fist is on the key
-  // (device QA: the clicks drowned under the crowd)
+  // (device QA: the clicks drowned under the crowd) — and the sidetone's
+  // player warms up NOW, so the first dit is not eaten by player spin-up
   useEffect(() => {
     if (done) return;
+    warmLoop('sidetone');
     setLoopVolume('parish', 0.07);
     return () => setLoopVolume('parish', 0.22);
   }, [done]);
@@ -112,7 +114,7 @@ export function MorseSend({
     // the SIDETONE: the operator hears his own keying for exactly as long
     // as the key is down — dits are short beeps, dahs long ones (device QA:
     // every cut of the clicks take read as pages turning)
-    startSfxLoop('sidetone', 0.35);
+    startSfxLoop('sidetone', 0.5);
     Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Rigid);
   };
 

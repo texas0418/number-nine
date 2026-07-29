@@ -240,6 +240,20 @@ export function stopOneShot(name: string): void {
   live.clear(); // their release timers still clean the players up
 }
 
+/** Pre-create a loop's player so its first start is INSTANT — expo-audio
+ *  spins a fresh player up in ~100-300ms, which ate the send key's short
+ *  dits entirely (device QA: "still no morse SFX"). */
+export function warmLoop(name: string): void {
+  const a = audio();
+  const mod = SFX_FILES[name];
+  if (!a || mod === undefined || loopPlayers[name]) return;
+  try {
+    loopPlayers[name] = a.createAudioPlayer(mod);
+  } catch {
+    /* fail open */
+  }
+}
+
 /** Start a looping effect (e.g. the hall telephone ringing on and on). */
 export function startSfxLoop(name: string, volume = 0.5): void {
   const a = audio();
