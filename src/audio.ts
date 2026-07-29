@@ -82,23 +82,41 @@ let whistlePlayer: any | null = null;
 let whistleOn = false;
 let appStateSub: { remove?: () => void } | null = null;
 
+function resumeBeds(): void {
+  try {
+    staticPlayer?.play(); // volume carries the level; play() is idempotent
+    if (musicOn) musicPlayer?.play();
+    if (whistleOn) whistlePlayer?.play();
+    for (const name of activeLoops) loopPlayers[name]?.play();
+  } catch {
+    /* fail open */
+  }
+}
+
 function watchAppState(): void {
   if (appStateSub) return;
   try {
     appStateSub = AppState.addEventListener('change', (state: string) => {
       if (state !== 'active') return;
-      try {
-        staticPlayer?.play(); // volume carries the level; play() is idempotent
-        if (musicOn) musicPlayer?.play();
-        if (whistleOn) whistlePlayer?.play();
-        for (const name of activeLoops) loopPlayers[name]?.play();
-      } catch {
-        /* fail open */
-      }
+      resumeBeds();
     });
   } catch {
     appStateSub = null;
   }
+}
+
+/** After the mic (B5): recording flips the iOS session and PAUSES every
+ *  player — and expo-audio players never resume themselves (device QA:
+ *  "no background music at all" from the first mic use onward). Restore
+ *  the playback session, then wake everything that should be sounding. */
+export function resumeAfterRecording(): void {
+  const a = audio();
+  try {
+    a?.setAudioModeAsync?.({ allowsRecording: false, playsInSilentMode: true });
+  } catch {
+    /* fail open */
+  }
+  setTimeout(resumeBeds, 350); // let the session settle before waking players
 }
 
 export function initAudio(): void {

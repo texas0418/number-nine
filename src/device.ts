@@ -575,12 +575,10 @@ export function watchBreath(
       sub?.remove?.();
       stream?.stop?.();
       stream?.release?.();
-      // Drop the RECORD session too — without this iOS keeps the orange
-      // mic indicator lit after the gate is done (device QA). Mirrors
-      // initAudio's playback mode.
-      a?.setAudioModeAsync?.({ allowsRecording: false, playsInSilentMode: true })?.catch?.(
-        () => {},
-      );
+      // Drop the RECORD session (the orange mic light) AND wake the beds —
+      // recording paused every player and they never resume themselves
+      // (device QA: the music died at the first mic use and stayed dead).
+      require('./audio').resumeAfterRecording();
     } catch {
       /* fail open */
     }
