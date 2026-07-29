@@ -42,14 +42,18 @@ const DECOY_POOL = [
 
 /** The gate's candidate words for a night: tonight's word hidden among
  *  decoys, order deterministic from the day key (all players see the same
- *  card). `count` includes the answer. */
+ *  card). `count` includes the answer. `deal` re-deals the card after a
+ *  wrong touch — fresh decoys, same answer — so elimination teaches
+ *  nothing; only having HEARD tonight's signal does (device QA: four fixed
+ *  words fell to brute force in three touches). */
 export function nightWordChoices(
   dayKey: string,
   count = 4,
+  deal = 0,
 ): { words: string[]; answerIndex: number } {
   const answer = tonightsWord(dayKey);
   const line = transmissionForDay(dayKey).plaintext.toUpperCase();
-  const rand = mulberry32(hashSeed(`number-nine:crossover:${dayKey}`));
+  const rand = mulberry32(hashSeed(`number-nine:crossover:${dayKey}:${deal}`));
   const pool = DECOY_POOL.filter((w) => !line.includes(w));
   const decoys: string[] = [];
   const bag = [...pool];

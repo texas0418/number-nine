@@ -58,6 +58,11 @@ export function InkAtHour({
   const dimAnim = useRef(new Animated.Value(0)).current;
   const sawBright = useRef(false);
   const clock = useWoundClock(hour, minute, !done);
+  // Ink, once risen, does not sink back (device QA: the reader dimmed the
+  // screen, the line appeared, and raising the lamp to READ it hid it
+  // again). The reveal latches; the lie is judged at the moment it rose.
+  const [latched, setLatched] = useState(solved);
+  const [lieAtReveal, setLieAtReveal] = useState(false);
 
   useEffect(() => {
     if (done) return;
@@ -69,7 +74,28 @@ export function InkAtHour({
   }, [done]);
 
   const dark = done || screenDark || wick > 0.6;
-  const revealed = done || (dark && clock.matches);
+  const liveReveal = dark && clock.matches;
+
+  // Mirror the live conditions into a ref; a slow watcher does the latching
+  // (never a sync setState inside an effect body — cascading-render rule).
+  const latchWatch = useRef({ live: false, lied: false, latched: solved, done: solved });
+  latchWatch.current.live = liveReveal;
+  latchWatch.current.lied = clock.lied;
+  latchWatch.current.done = done;
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      const s = latchWatch.current;
+      if (!s.done && s.live && !s.latched) {
+        s.latched = true;
+        setLatched(true);
+        setLieAtReveal(s.lied);
+      }
+    }, 250);
+    return () => clearInterval(t);
+  }, []);
+
+  const revealed = done || latched || liveReveal;
 
   useEffect(() => {
     Animated.timing(dimAnim, {
@@ -100,7 +126,7 @@ export function InkAtHour({
 
   const touchWord = () => {
     if (done || !revealed) return;
-    if (clock.lied) {
+    if (lieAtReveal || clock.lied) {
       setWasLie(true);
       try {
         setKv(CLOCK_LIE_KV, '1');

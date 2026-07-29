@@ -88,17 +88,25 @@ ok('transmissions are cipher-safe (A-Z, space, apostrophe only)',
     card.words[card.answerIndex] === tonightsWord('2026-08-01'));
   ok('crossover card is deterministic per night',
     JSON.stringify(nightWordChoices('2026-08-01')) === JSON.stringify(card));
-  // Fairness guard, a year out: exactly one candidate must appear in the
-  // night's line — decoys verifiably absent, every single night.
+  // Fairness guard, a year out AND across re-deals (wrong touches re-deal
+  // the card): exactly one candidate must appear in the night's line —
+  // decoys verifiably absent — every night, every deal.
   let crossoverFails = 0;
   for (let d = 0; d < 365; d++) {
     const day = new Date(Date.UTC(2026, 7, 1 + d)).toISOString().slice(0, 10);
     const line = transmissionForDay(day).plaintext.toUpperCase();
-    const c = nightWordChoices(day);
-    const present = c.words.filter((w) => line.includes(w)).length;
-    if (present !== 1 || c.words[c.answerIndex] !== tonightsWord(day)) crossoverFails++;
+    for (let deal = 0; deal < 4; deal++) {
+      const c = nightWordChoices(day, 4, deal);
+      const present = c.words.filter((w) => line.includes(w)).length;
+      if (present !== 1 || c.words[c.answerIndex] !== tonightsWord(day)) crossoverFails++;
+    }
   }
-  ok('365 crossover cards stay fair', crossoverFails === 0);
+  ok('365 nights x 4 deals of crossover cards stay fair', crossoverFails === 0);
+  ok(
+    're-deals change the decoys, not the answer',
+    JSON.stringify(nightWordChoices('2026-08-01', 4, 1).words) !==
+      JSON.stringify(nightWordChoices('2026-08-01', 4, 0).words),
+  );
 }
 
 // Solvability guard: every night of the next year must build a puzzle whose

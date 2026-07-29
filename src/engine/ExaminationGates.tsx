@@ -132,39 +132,63 @@ export function useWoundClock(hour: number, minute: number, active: boolean) {
   const [shown, setShown] = useState({ h: 0, m: 0 });
   const offsetRef = useRef(0); // wound minutes
   const dragStart = useRef(0);
+  // A clock WOUND to her hour stops there (device QA: every stray touch
+  // knocked it off 23:14). Once locked it neither ticks nor drags.
+  const lockedRef = useRef(false);
   const [wound, setWound] = useState(false);
+
+  const target = hour * 60 + minute;
+  const minuteDiff = (total: number) => {
+    const d = Math.abs(total - target) % 1440;
+    return Math.min(d, 1440 - d);
+  };
+
+  const apply = (total: number) => {
+    setShown({ h: Math.floor(total / 60), m: total % 60 });
+    setWound(offsetRef.current !== 0);
+  };
 
   useEffect(() => {
     if (!active) return;
     const tick = () => {
+      if (lockedRef.current) return; // a stopped clock keeps her hour
       const now = new Date();
       const total =
         (now.getHours() * 60 + now.getMinutes() + offsetRef.current + 1440) % 1440;
-      setShown({ h: Math.floor(total / 60), m: total % 60 });
-      setWound(offsetRef.current !== 0);
+      apply(total);
     };
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
   const pan = useMemo(
     () =>
       PanResponder.create({
-        onStartShouldSetPanResponder: () => active,
-        onMoveShouldSetPanResponder: (_e, g) => active && Math.abs(g.dx) > 6,
+        onStartShouldSetPanResponder: () => active && !lockedRef.current,
+        onMoveShouldSetPanResponder: (_e, g) =>
+          active && !lockedRef.current && Math.abs(g.dx) > 6,
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: () => {
           dragStart.current = offsetRef.current;
         },
         onPanResponderMove: (_e, g) => {
+          if (lockedRef.current) return;
           offsetRef.current = dragStart.current + Math.round(g.dx / 12);
           const now = new Date();
-          const total =
-            (now.getHours() * 60 + now.getMinutes() + offsetRef.current + 1440) % 1440;
-          setShown({ h: Math.floor(total / 60), m: total % 60 });
-          setWound(offsetRef.current !== 0);
+          const nowMin = now.getHours() * 60 + now.getMinutes();
+          let total = (nowMin + offsetRef.current + 1440) % 1440;
+          // wound within a minute of her hour: the hands take the last step
+          // themselves, and stop
+          if (offsetRef.current !== 0 && minuteDiff(total) <= 1) {
+            offsetRef.current = ((target - nowMin) % 1440 + 1440) % 1440;
+            total = target;
+            lockedRef.current = true;
+            Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Medium);
+          }
+          apply(total);
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

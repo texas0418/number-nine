@@ -3,10 +3,14 @@
 // long word in tonight's ACTUAL Tonight's Signal line — the one every
 // player on earth is decoding this evening. Candidates and their order come
 // from the pure module (src/daily/crossover.ts), deterministic per night.
-// A wrong word gets atmosphere (the room swallows it), never an error; the
-// card quietly re-derives itself if midnight passes mid-gate.
+// A wrong word sends the station OFF THE AIR — a swallowing hush that grows
+// with each miss — and when she returns, the card has been re-dealt: fresh
+// decoys, same answer, so elimination teaches nothing (device QA: four
+// fixed words fell to brute force). Knowing tonight's word stays instant.
+// Never an error message; the card quietly re-derives itself if midnight
+// passes mid-gate.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { nightWordChoices } from '../daily/crossover';
 import { dayKeyFromMs } from '../models';
@@ -19,6 +23,10 @@ try {
 } catch {
   Haptics = null;
 }
+
+// The hush after each wrong word: long enough to tax a guesser's patience,
+// growing fast enough that the fourth guess costs a pot of tea.
+const OFF_AIR_MS = [8000, 20000, 45000, 90000];
 
 export function SignalWord({
   prompt,
@@ -34,47 +42,68 @@ export function SignalWord({
   solveCue?: string;
 }) {
   const [done, setDone] = useState(solved);
-  const [attempts, setAttempts] = useState(0);
+  const [deal, setDeal] = useState(0);
+  const [offAir, setOffAir] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dayKey = dayKeyFromMs(Date.now());
-  const card = useMemo(() => nightWordChoices(dayKey), [dayKey]);
+  const card = useMemo(() => nightWordChoices(dayKey, 4, deal), [dayKey, deal]);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+      setStaticLevel(0.05);
+    },
+    [],
+  );
 
   const pick = (i: number) => {
-    if (done) return;
+    if (done || offAir) return;
     if (i === card.answerIndex) {
       setDone(true);
       cue(solveCue);
       Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
       onSolved();
     } else {
-      // the room absorbs the wrong word
-      setAttempts((a) => a + 1);
+      // the station goes off the air, and comes back holding different cards
       Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);
-      setStaticLevel(0.2);
-      setTimeout(() => setStaticLevel(0.05), 500);
+      setOffAir(true);
+      setStaticLevel(0.16);
+      const wait = OFF_AIR_MS[Math.min(deal, OFF_AIR_MS.length - 1)];
+      timer.current = setTimeout(() => {
+        setDeal((d) => d + 1);
+        setOffAir(false);
+        setStaticLevel(0.05);
+      }, wait);
     }
   };
 
   return (
     <View style={styles.wrap}>
       <View style={styles.card}>
-        {card.words.map((w, i) => (
-          <Pressable
-            key={`${w}-${attempts}`}
-            style={styles.word}
-            onPress={() => pick(i)}
-            disabled={done}
-          >
-            <Text
-              style={[
-                styles.wordText,
-                done && i === card.answerIndex && { color: colors.dial },
-              ]}
-              allowFontScaling={false}
+        {offAir ? (
+          <Text style={styles.offAir} allowFontScaling={false}>
+            {'· · ·   gone off the air   · · ·'}
+          </Text>
+        ) : (
+          card.words.map((w, i) => (
+            <Pressable
+              key={`${w}-${deal}`}
+              style={styles.word}
+              onPress={() => pick(i)}
+              disabled={done}
             >
-              {w}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={[
+                  styles.wordText,
+                  done && i === card.answerIndex && { color: colors.dial },
+                ]}
+                allowFontScaling={false}
+              >
+                {w}
+              </Text>
+            </Pressable>
+          ))
+        )}
       </View>
       <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
         {done ? unlockedText : prompt}
@@ -94,6 +123,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   word: { paddingVertical: 12, alignItems: 'center' },
+  offAir: {
+    fontFamily: fonts.mono,
+    fontSize: 12,
+    letterSpacing: 2,
+    color: colors.faint,
+    textAlign: 'center',
+    paddingVertical: 60,
+  },
   wordText: {
     fontFamily: fonts.mono,
     fontSize: 14,

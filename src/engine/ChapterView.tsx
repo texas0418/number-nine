@@ -29,6 +29,7 @@ import type { Chapter, ChapterBlock, SceneId } from '../models';
 import { cue, setStaticLevel, stopOneShot, stopSfx } from '../audio';
 import { colors, fonts } from '../theme';
 import { isGate, progressIndex, solvedGatesBefore, visibleCount } from './reveal';
+import { onScrollLock } from './scrollLock';
 import {
   ChapterCardBlock,
   ChapterEndBlock,
@@ -90,6 +91,10 @@ export function ChapterView({
   // (no reset needed: the render checks hintAt === frontier, so a stale
   // value from a previous gate is simply ignored)
   const [hintAt, setHintAt] = useState<number | null>(null);
+
+  // A gate with a live drag (the trace) freezes the page under the hand.
+  const [scrollLocked, setScrollLocked] = useState(false);
+  useEffect(() => onScrollLock(setScrollLocked), []);
   useEffect(() => {
     if (!frontierIsGate) return;
     const b = blocks[frontier];
@@ -276,6 +281,7 @@ export function ChapterView({
           setViewH(e.nativeEvent.layout.height);
         }}
         scrollEventThrottle={16}
+        scrollEnabled={!scrollLocked}
       >
         {blocks.slice(0, count).map((block, i) =>
           // Narration reveals line by line (its own scroll-driven opacity per

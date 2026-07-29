@@ -8,9 +8,10 @@
 // printed here; it is deduced (chapter clues), so this is a deduction gate
 // expressed through the hand, not typing.
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, Text, View } from 'react-native';
 import { cue, playSfx, setStaticLevel } from '../audio';
+import { setScrollLock } from './scrollLock';
 import { colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -22,6 +23,12 @@ try {
 
 const PANEL = 260;
 const NODE_R = 24; // touch radius around a terminal
+
+// The lock must never outlive the widget (leaving mid-drag would freeze the
+// whole chapter scroll).
+function useScrollLockRelease() {
+  useEffect(() => () => setScrollLock(false), []);
+}
 
 export function TraceBlock({
   nodes,
@@ -43,6 +50,7 @@ export function TraceBlock({
   const [done, setDone] = useState(solved);
   const [claimed, setClaimed] = useState<number[]>([]);
   const state = useRef({ done: solved, claimed: [] as number[] });
+  useScrollLockRelease();
 
   // Terminals around a ring, first at 12 o'clock.
   const positions = useMemo(
@@ -113,6 +121,7 @@ export function TraceBlock({
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: (e) => {
+          setScrollLock(true); // the page must not move under the tracing hand
           reset();
           visit(nearestNode(e.nativeEvent.locationX, e.nativeEvent.locationY));
         },
@@ -120,7 +129,12 @@ export function TraceBlock({
           visit(nearestNode(e.nativeEvent.locationX, e.nativeEvent.locationY));
         },
         onPanResponderRelease: () => {
+          setScrollLock(false);
           if (!state.current.done) reset(); // a broken path is no path
+        },
+        onPanResponderTerminate: () => {
+          setScrollLock(false);
+          if (!state.current.done) reset();
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
