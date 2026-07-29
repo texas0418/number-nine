@@ -12,6 +12,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { watchHeading, watchStepBounce } from '../device';
 import { cue } from '../audio';
+import { setScrollLock } from './scrollLock';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -121,6 +122,7 @@ export function MultiPace({
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: (e) => {
+          setScrollLock(true); // the page must not move under the turning hand
           dragStart.current = {
             angle: angleOf(e.nativeEvent.locationX, e.nativeEvent.locationY),
             offset: state.current.touchOffset,
@@ -131,9 +133,13 @@ export function MultiPace({
           state.current.touchOffset =
             dragStart.current.offset + (dragStart.current.angle - a);
         },
+        onPanResponderRelease: () => setScrollLock(false),
+        onPanResponderTerminate: () => setScrollLock(false),
       }),
     [],
   );
+
+  useEffect(() => () => setScrollLock(false), []);
 
   const aligned = !done && leg < legs.length && onBearing();
   return (
@@ -141,9 +147,12 @@ export function MultiPace({
       <View style={styles.row}>
         <View style={styles.card} {...(done ? {} : pan.panHandlers)}>
           <View
-            style={[styles.lubber, aligned && { backgroundColor: colors.lockGlow }]}
+            style={[styles.lubber, aligned && styles.lubberLit]}
             pointerEvents="none"
           />
+          <Text style={[styles.degrees, aligned && styles.degreesLit]} allowFontScaling={false} pointerEvents="none">
+            {`${Math.round(heading)}°`}
+          </Text>
           <View
             style={[styles.rose, { transform: [{ rotate: `${-heading}deg` }] }]}
             pointerEvents="none"
@@ -202,13 +211,25 @@ const styles = StyleSheet.create({
   lubber: {
     position: 'absolute',
     top: 3,
-    left: SIZE / 2 - 1.5,
-    width: 3,
-    height: 12,
+    left: SIZE / 2 - 2.5,
+    width: 5,
+    height: 16,
     borderRadius: 2,
     backgroundColor: colors.dialDim,
     zIndex: 2,
   },
+  lubberLit: { backgroundColor: colors.dial, ...amberViewGlow },
+  degrees: {
+    position: 'absolute',
+    bottom: 16,
+    alignSelf: 'center',
+    fontFamily: fonts.mono,
+    fontSize: 15,
+    letterSpacing: 1,
+    color: colors.muted,
+    zIndex: 2,
+  },
+  degreesLit: { color: colors.dial, ...amberGlow },
   rose: { position: 'absolute', width: SIZE, height: SIZE, alignItems: 'center' },
   roseN: { marginTop: 14, fontFamily: fonts.mono, fontSize: 13, color: colors.dial, ...amberGlow },
   ground: {

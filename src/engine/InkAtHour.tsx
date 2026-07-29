@@ -232,9 +232,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 16,
   },
+  // the whole face winds, digits centred (device QA, B6: matched to the
+  // ritual clock's feel)
   clockWell: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
     borderRadius: 8,
     backgroundColor: colors.bg,
     borderWidth: StyleSheet.hairlineWidth,

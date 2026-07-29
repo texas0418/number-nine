@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { watchHeading, watchStepBounce } from '../device';
 import { cue } from '../audio';
+import { setScrollLock } from './scrollLock';
 import { amberGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -108,6 +109,7 @@ export function PaceBlock({
         onPanResponderTerminationRequest: () => false,
         onShouldBlockNativeResponder: () => true,
         onPanResponderGrant: (e) => {
+          setScrollLock(true); // the page must not move under the turning hand
           dragStart.current = {
             angle: angleOf(e.nativeEvent.locationX, e.nativeEvent.locationY),
             offset: state.current.touchOffset,
@@ -118,9 +120,13 @@ export function PaceBlock({
           state.current.touchOffset =
             dragStart.current.offset + (dragStart.current.angle - a);
         },
+        onPanResponderRelease: () => setScrollLock(false),
+        onPanResponderTerminate: () => setScrollLock(false),
       }),
     [],
   );
+
+  useEffect(() => () => setScrollLock(false), []);
 
   const aligned = Math.abs(((heading - bearingDeg + 540) % 360) - 180) <= toleranceDeg;
   return (

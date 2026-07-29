@@ -233,14 +233,28 @@ function RitualClock({
       onDone();
     }
   }, [armed, clock.held, onDone]);
-  return (
-    <View style={[styles.instrument, !armed && styles.dimmed]}>
-      <Pressable onPress={armed ? undefined : refuse} disabled={armed}>
-        <View style={styles.clockWell} {...(armed ? clock.panHandlers : {})}>
+  // the WHOLE panel winds (device QA: dragging only worked started on the
+  // digits, and the finger hid them); the readout stays centred and clear
+  if (armed) {
+    return (
+      <View style={styles.instrument}>
+        <View style={styles.clockDragSurface} {...clock.panHandlers}>
           <Text
-            style={[styles.clockText, armed && clock.matches && { color: colors.dial, ...amberGlow }]}
+            style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
             allowFontScaling={false}
+            pointerEvents="none"
           >
+            {clock.display}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+  return (
+    <View style={[styles.instrument, styles.dimmed]}>
+      <Pressable onPress={refuse}>
+        <View style={styles.clockWell}>
+          <Text style={styles.clockText} allowFontScaling={false}>
             {clock.display}
           </Text>
         </View>
@@ -355,8 +369,41 @@ export function Ritual({
   };
 
   if (stage >= 4) {
+    // the settled set: the four instruments stay on the page, inert, so the
+    // solve never collapses the layout under the reader (device QA: the
+    // screen jumped) — and the opened set is the better image anyway
     return (
       <View style={styles.wrap}>
+        <View style={styles.instrument} pointerEvents="none">
+          <Text style={styles.readout} allowFontScaling={false}>
+            {targetKhz} kc/s
+          </Text>
+          <View style={styles.strip}>
+            <View style={[styles.needle, { left: `${((targetKhz - bandLowKhz) / (bandHighKhz - bandLowKhz)) * 100}%`, backgroundColor: colors.dial }]} />
+          </View>
+        </View>
+        <View style={styles.instrument} pointerEvents="none">
+          <View style={styles.scale}>
+            {Array.from({ length: 9 }, (_, i) => (
+              <View key={i} style={styles.tick} />
+            ))}
+            <View style={[styles.gainNeedle, { left: `${(gainMark / 9) * 100}%`, backgroundColor: colors.dial }]} />
+          </View>
+        </View>
+        <View style={styles.instrument} pointerEvents="none">
+          <View style={styles.clockDragSurface}>
+            <Text style={[styles.clockText, { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
+              {`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.instrument} pointerEvents="none">
+          <View style={styles.stillWell}>
+            <View style={styles.meterTrack}>
+              <View style={[styles.meterFill, { width: '100%', backgroundColor: colors.dial }]} />
+            </View>
+          </View>
+        </View>
         <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
           {unlockedText}
         </Text>
@@ -437,6 +484,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 20,
     paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: colors.bg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.panelBorder,
+  },
+  clockDragSurface: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingVertical: 12,
     borderRadius: 8,
     backgroundColor: colors.bg,
     borderWidth: StyleSheet.hairlineWidth,
