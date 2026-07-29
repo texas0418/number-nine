@@ -562,6 +562,12 @@ export function watchBreath(
       sub?.remove?.();
       stream?.stop?.();
       stream?.release?.();
+      // Drop the RECORD session too — without this iOS keeps the orange
+      // mic indicator lit after the gate is done (device QA). Mirrors
+      // initAudio's playback mode.
+      a?.setAudioModeAsync?.({ allowsRecording: false, playsInSilentMode: true })?.catch?.(
+        () => {},
+      );
     } catch {
       /* fail open */
     }
