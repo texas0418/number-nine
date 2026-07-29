@@ -113,6 +113,10 @@ export type ChapterBlock =
   // The pocket slip (NOT a gate): the station leaves `text` in the reader's
   // clipboard as this block reveals. They find it later, mid-paste.
   | { kind: 'slip'; text: string }
+  // THE REGISTER: a thumb held to the page like a seal; the entry is
+  // already dry in her type — the machine's own name. `{NAME}` in
+  // unlockedText is replaced with it.
+  | { kind: 'register'; id: string; prompt: string; unlockedText: string; solveCue?: AudioCue; cue?: AudioCue; stopsCue?: AudioCue }
   | { kind: 'chapterEnd'; title: string };
 
 /** Keys into the image registry in src/engine/scenes.ts (backdrops + plates). */

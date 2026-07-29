@@ -595,3 +595,28 @@ export function watchBreath(
     }
   };
 }
+
+let deviceMod: any | null | undefined;
+function deviceInfo(): any | null {
+  if (deviceMod !== undefined) return deviceMod;
+  if (!hasNative('ExpoDevice')) return (deviceMod = null);
+  try {
+    deviceMod = require('expo-device');
+  } catch {
+    deviceMod = null;
+  }
+  return deviceMod;
+}
+
+/** What the reader's machine is CALLED (B5's register: her type already
+ *  dry with a name that is usually the reader's own). Fail-open to null —
+ *  the register then takes "THE KEEPER OF THE SET". */
+export function machineName(): string | null {
+  const d = deviceInfo();
+  try {
+    const name = d?.deviceName;
+    return typeof name === 'string' && name.trim().length > 0 ? name.trim() : null;
+  } catch {
+    return null;
+  }
+}

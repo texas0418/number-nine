@@ -56,6 +56,7 @@ import { GainBlock, SeverBlock } from './ListenerGates';
 import { MorseSend } from './MorseSend';
 import { MicStage } from './MicStage';
 import { Triangulate } from './Triangulate';
+import { Register } from './Register';
 import { slipIntoPocket } from '../device';
 import { InkAtHour } from './InkAtHour';
 import { BearingVoice } from './BearingVoice';
@@ -862,6 +863,15 @@ function renderListenerGate(
           tinesAnswer={block.tinesAnswer}
           prompt={block.prompt}
           lampOutText={block.lampOutText}
+          unlockedText={block.unlockedText}
+          solveCue={block.solveCue}
+          {...common}
+        />
+      );
+    case 'register':
+      return (
+        <Register
+          prompt={block.prompt}
           unlockedText={block.unlockedText}
           solveCue={block.solveCue}
           {...common}

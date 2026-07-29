@@ -18,10 +18,11 @@
 //   3. triangulate — three weak listeners; three lines; one house. This one.
 //   4. flip+mirror — her sheet's verso, written for the wall's side
 //   5. morsesend   — the network asks WHO KEEPS THE HOUSE; he sends MARSH
-//   6. stillness   — PUT ME WHERE I CAN HEAR THE REST OF YOU: the
-//                    receiver flat to the chest, six still seconds (the mic
-//                    gate was cut after device QA — three rounds of hum
-//                    detection losses; the heartbeat ask lands harder anyway)
+//   6. register    — the listeners' register: a thumb held to the page
+//                    like a seal; the entry dries in her type with the
+//                    MACHINE'S OWN NAME (usually the reader's). Replaced
+//                    the mic gate (three QA rounds of hum losses) and then
+//                    a stillness reprise (B3's move) at Simon's call.
 //   7. fork        — the slip in the pocket: look now, or carry it
 //   8. cipher      — 52 05 42 N · 01 33 31 E -> the reader looks it up
 //                    in the real world -> ORFORD (never printed here)
@@ -37,7 +38,7 @@ export const BROADCAST_FIVE: Chapter = {
     'b5-triangulate': 'find each of them on the band — the log kept their numbers. locked aerials draw their own lines. stand where the lines agree.',
     'b5-verso': 'she writes for the wall’s side of the paper. turn the page with the phone face-down — and read it the way a mirror would.',
     'b5-send': 'the card in the toolbox knows the alphabet. the question is WHO KEEPS THE HOUSE, and the house has had one name for two hundred years.',
-    'b5-ear': 'not your voice. the other drum. lay the receiver flat against your chest and be still — or press a patient finger and be still that way.',
+    'b5-ear': 'the register wants no ink. a thumb, held to the worn place the way a seal is pressed — and left there while she does her counting under it.',
     'b5-where': 'the numbers in your pocket are a place on the earth. any chart that takes latitude will take you there. bring back its name, not its numbers.',
   },
   blocks: [
@@ -206,20 +207,20 @@ export const BROADCAST_FIVE: Chapter = {
     // --- She asks for him --------------------------------------------------
     {
       kind: 'prose',
-      text: 'Then the parish faded — stood aside, rather, the way a congregation parts — and she came up the middle of the band alone. Not counting. Asking. She had heard Portman and the widow and the boy a thousand nights each, and Edwin waited for her to ask for his voice, and she did not. Voices, said the card in the tin, are what liars keep. The set turned its own lamp down as he read, gently, like a nurse. PUT ME WHERE I CAN HEAR THE REST OF YOU.',
+      text: 'Then the parish faded — stood aside, rather, the way a congregation parts — and the next thing did not come over the air at all. It came out of the tin: a bound page, ruled, foxed at the corners from hands, and every line of it signed. PORTMAN in a milker’s copperplate. The widow’s spidery hand. The boy, printing. Names above them going back and back, older inks going brown, older hands going strange. The last ruled line was empty, and the paper there was worn faintly shiny, as though many thumbs had rested on exactly that place deciding. Her card lay under it: NO INK. THE PAGE KNOWS A HAND WHEN IT HOLDS ONE.',
     },
     {
-      kind: 'stillness',
+      kind: 'register',
       id: 'b5-ear',
       stopsCue: 'parish',
-      holdMs: 6000,
-      prompt: 'the receiver flat against your chest · be still · she is listening under the words',
-      unlockedText: 'six seconds of the drum · a long quiet · then, not counting: MARGARET’S WAS LOUDER. AT THE END.',
+      prompt: 'the empty line · your thumb where every thumb has rested · and hold',
+      unlockedText: 'the page warms · something in it counts your pulse back at you, politely · and then the line is no longer empty — the entry already dry, in her type: {NAME}',
     },
     {
       kind: 'thought',
-      text: 'Margaret’s was louder. At the end. Six words, and nineteen years of his brother’s marriage stood up in the dark of the cellar and looked at him.',
+      text: 'It had not asked his name. It had known his name for two hundred years. What it had wanted was his hand. And further up the page, in the older browns, he found her twice — MARGARET, and again MARGARET — and no line struck through either.',
     },
+    { kind: 'voice', text: 'MARGARET SIGNED TWICE. NOBODY SIGNS TWICE.', mirrored: false },
 
     // --- The slip -----------------------------------------------------------
     {
