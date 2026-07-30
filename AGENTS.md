@@ -16,6 +16,14 @@ load-bearing: everything must stay playable with sound failed open.
 - The nightly cipher is pure math in `src/daily/` — a FRESH substitution key
   per calendar day, deterministic from the day key so all players share the
   puzzle. Never let a fixed key ship: that kills the game after day one.
+- THREE VARIANT NIGHTS ARE DELIBERATE, not bugs (2026-07-30). Sunday sends the
+  line turned around; Monday derives the key from a word printed in the header;
+  Thursday keys the figures in Morse. Monday in particular looks like the
+  failure the line above forbids — `keyForDay` returns a non-random map — and it
+  is not: the key still changes every week and is still shared by every player.
+  Read `src/daily/headerkey.ts` before touching it. All three are proven in
+  `test-cipher.ts` to leave the plaintext, the key bijection and Broadcast
+  Four's crossover gate untouched, so those tests are the guard rail.
 - Pure modules (models, dbCore, daily/*) take no expo imports so Node can
   test them (`npm test`).
 
