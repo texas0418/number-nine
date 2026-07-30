@@ -84,6 +84,46 @@ export function useStoryUnlocked(): boolean {
   );
 }
 
+/** What the licence costs, in the reader's own currency. Null when there is
+ *  nothing to sell (no native module, placeholder key, no offering yet) — the
+ *  screen then says so plainly rather than inventing a price. */
+export interface LicenceOffer {
+  /** RevenueCat package, passed straight back to renewLicence. */
+  pkg: unknown;
+  /** Localised, e.g. "£5.99" — never hand-format money. */
+  price: string;
+}
+
+export async function getLicenceOffer(): Promise<LicenceOffer | null> {
+  const Purchases = getPurchases();
+  if (!Purchases || failOpen) return null;
+  try {
+    const offerings = await Purchases.getOfferings();
+    const pkg = offerings?.current?.availablePackages?.[0];
+    const price = pkg?.product?.priceString;
+    return pkg && price ? { pkg, price } : null;
+  } catch {
+    return null;
+  }
+}
+
+export type RenewResult = 'renewed' | 'cancelled' | 'failed';
+
+/** Take over the licence. Never throws: a refusal is a state, not a crash. */
+export async function renewLicence(pkg: unknown): Promise<RenewResult> {
+  const Purchases = getPurchases();
+  if (!Purchases || failOpen) return 'failed';
+  try {
+    const res = await Purchases.purchasePackage(pkg);
+    const active = Boolean(res?.customerInfo?.entitlements?.active?.[ENTITLEMENT_ID]);
+    setUnlocked(active);
+    return active ? 'renewed' : 'failed';
+  } catch (e: any) {
+    // The reader changing their mind is not an error and must not read as one.
+    return e?.userCancelled ? 'cancelled' : 'failed';
+  }
+}
+
 export async function restorePurchases(): Promise<boolean> {
   const Purchases = getPurchases();
   if (!Purchases || failOpen) return unlocked;

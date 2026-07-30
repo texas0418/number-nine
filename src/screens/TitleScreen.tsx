@@ -18,6 +18,7 @@ export default function TitleScreen({
   onStoryFive,
   onStorySix,
   onDaily,
+  onLicence,
   onSettings,
 }: {
   chapterOneStarted: boolean;
@@ -33,6 +34,8 @@ export default function TitleScreen({
   onStoryFive: () => void;
   onStorySix: () => void;
   onDaily: () => void;
+  /** The one thing this app sells. */
+  onLicence: () => void;
   onSettings: () => void;
 }) {
   const unlocked = useStoryUnlocked();
@@ -69,9 +72,9 @@ export default function TitleScreen({
         <MenuRow label={storyLabel} hint="the story · chapter one is free" onPress={onStory} />
         {!unlocked && (
           <MenuRow
-            label="broadcasts two — six · locked"
-            hint="one purchase, no ads, ever"
-            onPress={onStory}
+            label="broadcasts two — six · the licence"
+            hint="one payment, no ads, ever"
+            onPress={onLicence}
             dim
           />
         )}

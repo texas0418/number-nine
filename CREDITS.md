@@ -6,11 +6,12 @@ everything else is synthesized by `scripts/gen-foley.py`,
 
 ## Recorded (sourced)
 
-- **title-theme.m4a** — "Ghost" by Tim Beek. LICENSED: Tim Beek Premium
-  License purchased 2026-07-28, licensee SimonBuilds — lifetime,
+- **title-theme.m4a** — "Ghost" by Tim Beek (timbeek.com). LICENSED: Tim Beek
+  Premium License purchased 2026-07-28, licensee SimonBuilds — lifetime,
   non-exclusive, commercial, worldwide; modification allowed; **no
-  attribution required** (a courtesy credit in settings/about is still
-  planned). Not allowed: redistributing the track itself as music/stock, or
+  attribution required**. The courtesy credit now SHIPS: `the set → credits`
+  (`src/screens/CreditsScreen.tsx`) names the track and links the artist's
+  site, which was verified live before it was printed into the app. Not allowed: redistributing the track itself as music/stock, or
   claiming ownership (Content ID). License document: Simon holds the PDF
   ("Ghost License.pdf") — do NOT commit it to this public repo. In-app asset
   re-encoded 2026-07-28 from the licensed 320k master (ghost.mp3).
@@ -79,9 +80,13 @@ Scene art is Gemini-generated from Simon's prompts (B1 set 2026-07-27; B2
 set and B3 set — churchyard, obj-valve, obj-grave, wall-crack, wall-burst —
 2026-07-28), processed per the ART.md pipeline. The B4 séance pair and the
 B4 foley (whisper/murmur/spark) are script-synthesized placeholders
-(`scripts/gen-b4-scenes.py`, `scripts/gen-b4-foley.py`). Placeholder-grade
-by policy: real 1963-style photography is a pre-ship task. The phosphor "9"
-icon/splash is synthesized by `scripts/gen-icon.py`.
+(`scripts/gen-b4-scenes.py`, `scripts/gen-b4-foley.py`).
+
+The Gemini scene art SHIPS (Simon, 2026-07-30). It is not placeholder-grade
+pending photography: the Gemini terms were checked and permit commercial use,
+and the prompts were audited clean. Real 1963-style photography is no longer a
+pre-ship task. The phosphor "9" icon and splash, synthesized by
+`scripts/gen-icon.py`, is likewise the final icon rather than a stand-in.
 
 ## Synthesized (no license needed)
 
