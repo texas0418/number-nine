@@ -183,7 +183,11 @@ export function ClockDial({
           pointerEvents="none"
         />
         <View style={styles.hubDot} pointerEvents="none" />
-        <Text style={[styles.readout, done && { color: colors.lockGlow }]} allowFontScaling={false}>
+        <Text
+          style={[styles.readout, done && { color: colors.lockGlow }]}
+          allowFontScaling={false}
+          pointerEvents="none"
+        >
           {pad(hour)}:{pad(minute)}
         </Text>
       </View>
@@ -195,7 +199,7 @@ export function ClockDial({
 }
 
 const styles = StyleSheet.create({
-  wrap: { alignItems: 'center', marginVertical: 24 },
+  wrap: { alignItems: 'center', marginVertical: 24, paddingBottom: 30 },
   clock: {
     width: SIZE,
     height: SIZE,
@@ -250,11 +254,11 @@ const styles = StyleSheet.create({
   },
   readout: {
     position: 'absolute',
-    // Clear of the bottom numeral. On a 24h dial 12 sits at the BOTTOM, and
-    // at bottom: 34 the readout landed straight on top of it (Simon,
-    // playtest 2026-07-30). The numerals sit at radius SIZE/2 - 34, so the
-    // readout has to come in toward the hub, not merely shift a few points.
-    bottom: 58,
+    // BELOW the face, not inside it. Inside, every radius is either swept by
+    // a hand or occupied by a numeral: at bottom 34 it sat on the 12, and at
+    // 58 it sat in the hour hand's path and stole its touches. Out here it
+    // competes with nothing (Simon, playtest 2026-07-30).
+    bottom: -26,
     fontFamily: fonts.mono,
     fontSize: 14,
     letterSpacing: 3,

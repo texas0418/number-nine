@@ -480,13 +480,19 @@ export function watchGain(
   if (!vm?.addVolumeListener) return () => {};
   let sub: { remove?: () => void } | null = null;
   try {
+    // NEVER report a missing reading as ZERO. `?? 0` here meant any reading
+    // without a volume field became silence — and the gain gate remembers the
+    // first reading as the reader's real volume and restores it on the way
+    // out, so one bad report left the phone almost mute and the reader
+    // reaching for the rockers (Simon, playtest 2026-07-30). A reading we
+    // cannot trust is no reading at all.
+    const report = (v: unknown): void => {
+      const n = typeof v === 'number' ? v : (v as { volume?: number })?.volume;
+      if (typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= 1) cb(n);
+    };
     if (suppressUi) vm.showNativeVolumeUI?.({ enabled: false });
-    vm.getVolume?.()
-      .then((v: number | { volume?: number }) =>
-        cb(typeof v === 'number' ? v : (v?.volume ?? 0)),
-      )
-      .catch(() => {});
-    sub = vm.addVolumeListener((r: { volume?: number }) => cb(r?.volume ?? 0));
+    vm.getVolume?.().then(report).catch(() => {});
+    sub = vm.addVolumeListener(report);
   } catch {
     /* fail open */
   }
