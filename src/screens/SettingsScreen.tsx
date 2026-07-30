@@ -5,6 +5,7 @@
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { resetProgress } from '../db';
 import { restorePurchases, useStoryUnlocked } from '../proAccess';
+import { openSociety } from '../society';
 import { colors, fonts } from '../theme';
 
 export default function SettingsScreen({ onBack }: { onBack: () => void }) {
@@ -21,18 +22,32 @@ export default function SettingsScreen({ onBack }: { onBack: () => void }) {
     Alert.alert(ok ? 'Restored' : 'Nothing to restore', ok ? 'The story is unlocked.' : 'No previous purchase was found.');
   };
 
+  // Framed before it opens, for two reasons: help is a thing a listener
+  // should choose deliberately (the archive grades itself, but the door
+  // should still be a door), and it leaves the app for a browser.
+  const society = () =>
+    Alert.alert(
+      'The Listeners’ Society',
+      'A circle of listeners keeps notes on every broadcast. They open in three stages — where to listen, then a member saying it plainly, and only then the answer.\n\nIt opens outside the app.',
+      [
+        { text: 'Not yet', style: 'cancel' },
+        { text: 'Open', onPress: () => void openSociety() },
+      ],
+    );
+
   return (
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back}>‹ the set</Text>
+          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
         </Pressable>
-        <Text style={styles.title}>THE SET</Text>
+        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>THE SET</Text>
         <View style={{ width: 44 }} />
       </View>
 
       <View style={styles.rows}>
         <Row label={unlocked ? 'story unlocked' : 'restore purchases'} onPress={restore} />
+        <Row label="the listeners’ society" onPress={society} />
         <Row label="reset story progress" onPress={confirmReset} danger />
       </View>
 

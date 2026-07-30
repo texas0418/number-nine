@@ -1,18 +1,21 @@
 // test-db.ts — runs the real schema/SQL from dbCore.ts against node:sqlite.
 // Requires Node 22+ (node:sqlite). Run with: npx tsx test-db.ts
-// @ts-expect-error node:sqlite has no types under Expo's tsconfig; tsx runs it fine
 import { DatabaseSync } from 'node:sqlite';
 import {
   ALL_PROGRESS_SQL,
   ALL_SOLVE_DAYS_SQL,
   ChapterProgressRow,
   COUNT_SOLVES_SQL,
+  DELETE_KV_SQL,
   ENABLE_FK_SQL,
+  GET_KV_SQL,
   GET_PROGRESS_SQL,
   GET_SOLVE_SQL,
   INSERT_SOLVE_SQL,
   MIGRATIONS,
   RESET_PROGRESS_SQL,
+  RESET_STORY_KV_SQL,
+  SET_KV_SQL,
   TARGET_DB_VERSION,
   UPSERT_PROGRESS_SQL,
   progressToParams,
@@ -94,6 +97,36 @@ eq('first solve time wins',
 eq('solved days list in order',
   (db.prepare(ALL_SOLVE_DAYS_SQL).all() as { day_key: string }[]).map((r) => r.day_key),
   ['2026-07-24', '2026-07-25']);
+
+// ------------------------------------------------------------------- kv
+db.prepare(SET_KV_SQL).run('daily-guesses:2026-07-27', '{"3":"E"}');
+db.prepare(SET_KV_SQL).run('daily-guesses:2026-07-27', '{"3":"E","7":"T"}');
+eq('kv upserts',
+  (db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-27') as { v: string }).v,
+  '{"3":"E","7":"T"}');
+db.prepare(DELETE_KV_SQL).run('daily-guesses:2026-07-27');
+eq('kv deletes', db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-27'), undefined);
+
+// --- resetting the story must take its FLAGS with it ----------------------
+// Clearing chapter_progress alone left the wound-clock lie and every b6
+// night/hurried/ending mark behind, so a replay opened its night gates at
+// once and still remembered the ending. The nightly signal must survive:
+// the confirm dialog promises the log is kept.
+db.prepare(SET_KV_SQL).run('b4-clock-lie', '1');
+db.prepare(SET_KV_SQL).run('b6-n2-seen', '2026-07-29');
+db.prepare(SET_KV_SQL).run('b6-hurried', '1');
+db.prepare(SET_KV_SQL).run('b6-ending', 'seat');
+db.prepare(SET_KV_SQL).run('daily-guesses:2026-07-30', '{"1":"A"}');
+db.prepare(SET_KV_SQL).run('review-asked', '1');
+db.prepare(RESET_STORY_KV_SQL).run();
+
+for (const k of ['b4-clock-lie', 'b6-n2-seen', 'b6-hurried', 'b6-ending'])
+  eq(`reset clears ${k}`, db.prepare(GET_KV_SQL).get(k), undefined);
+eq('reset keeps the nightly signal log',
+  (db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-30') as { v: string }).v,
+  '{"1":"A"}');
+eq('reset keeps the review flag',
+  (db.prepare(GET_KV_SQL).get('review-asked') as { v: string }).v, '1');
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);

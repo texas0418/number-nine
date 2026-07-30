@@ -18,6 +18,14 @@ export const MIGRATIONS: string[][] = [
       solved_ms INTEGER NOT NULL
     )`,
   ],
+  // v2: small kv store (first use: tonight's in-progress cipher guesses, so
+  // leaving the screen never loses a half-finished transcription).
+  [
+    `CREATE TABLE IF NOT EXISTS kv (
+      k TEXT PRIMARY KEY,
+      v TEXT NOT NULL
+    )`,
+  ],
 ];
 
 export const TARGET_DB_VERSION = MIGRATIONS.length;
@@ -45,6 +53,16 @@ export const GET_PROGRESS_SQL =
 export const ALL_PROGRESS_SQL =
   'SELECT * FROM chapter_progress ORDER BY chapter_id';
 export const RESET_PROGRESS_SQL = 'DELETE FROM chapter_progress';
+/** Story flags that must die WITH a progress reset. Clearing chapter_progress
+ *  alone left b4-clock-lie and every b6 night/hurried/ending mark behind, so
+ *  a "reset" replay opened its night gates immediately and still remembered
+ *  which ending had been taken (Simon, playtest 2026-07-30). Scoped by prefix
+ *  on purpose: the nightly-signal keys (daily-guesses:*) and the review-asked
+ *  flag are NOT story progress and must survive, exactly as the confirm
+ *  dialog promises. */
+export const RESET_STORY_KV_SQL =
+  "DELETE FROM kv WHERE k LIKE 'b4-%' OR k LIKE 'b6-%'";
+export const RESET_CHAPTER_SQL = 'DELETE FROM chapter_progress WHERE chapter_id = ?';
 
 export const INSERT_SOLVE_SQL =
   'INSERT OR IGNORE INTO daily_solves (day_key, solved_ms) VALUES (?, ?)';
@@ -67,3 +85,8 @@ export const rowToSolve = (r: DailySolveRow): DailySolve => ({
   dayKey: r.day_key,
   solvedMs: r.solved_ms,
 });
+
+export const SET_KV_SQL =
+  'INSERT INTO kv (k, v) VALUES (?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v';
+export const GET_KV_SQL = 'SELECT v FROM kv WHERE k = ?';
+export const DELETE_KV_SQL = 'DELETE FROM kv WHERE k = ?';

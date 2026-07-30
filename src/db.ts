@@ -10,12 +10,17 @@ import {
   ALL_SOLVE_DAYS_SQL,
   ChapterProgressRow,
   COUNT_SOLVES_SQL,
+  DELETE_KV_SQL,
   ENABLE_FK_SQL,
+  GET_KV_SQL,
   GET_PROGRESS_SQL,
   GET_SOLVE_SQL,
   INSERT_SOLVE_SQL,
   MIGRATIONS,
+  RESET_CHAPTER_SQL,
   RESET_PROGRESS_SQL,
+  RESET_STORY_KV_SQL,
+  SET_KV_SQL,
   UPSERT_PROGRESS_SQL,
   progressToParams,
   rowToProgress,
@@ -67,6 +72,12 @@ export function listProgress(): ChapterProgress[] {
 
 export function resetProgress(): void {
   getDb().runSync(RESET_PROGRESS_SQL);
+  getDb().runSync(RESET_STORY_KV_SQL);
+}
+
+/** Erase ONE broadcast's progress (replay it) without touching the others. */
+export function resetChapter(chapterId: number): void {
+  getDb().runSync(RESET_CHAPTER_SQL, [chapterId]);
 }
 
 // ------------------------------------------------------------ daily solves
@@ -87,4 +98,18 @@ export function listSolvedDays(): string[] {
 
 export function countSolves(): number {
   return getDb().getFirstSync<{ n: number }>(COUNT_SOLVES_SQL)?.n ?? 0;
+}
+
+// ------------------------------------------------------------------- kv
+
+export function setKv(key: string, value: string): void {
+  getDb().runSync(SET_KV_SQL, [key, value]);
+}
+
+export function getKv(key: string): string | null {
+  return getDb().getFirstSync<{ v: string }>(GET_KV_SQL, [key])?.v ?? null;
+}
+
+export function deleteKv(key: string): void {
+  getDb().runSync(DELETE_KV_SQL, [key]);
 }

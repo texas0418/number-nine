@@ -1,0 +1,406 @@
+/* site/style.css — The Listeners' Society.
+ *
+ * The palette and type are lifted from the app's src/theme.ts so the site and
+ * the book are recognisably one object. If theme.ts moves, move these with it.
+ * DESIGN.md governs the rest: justified serif at a book measure, small-caps
+ * letterspaced labels, whitespace as fear, one amber accent and no other.
+ */
+
+:root {
+  /* --- from src/theme.ts, verbatim --- */
+  --bg: #0b0e0c;          /* the room */
+  --panel: #161d18;       /* logbook pages, tuner body */
+  --panel-border: #2b382f;
+  --hairline: #1e2721;
+  --prose: #edf1ec;       /* reading text — bright bone */
+  --prose-faded: #9aa79d;
+  --voice: #c4d2c8;       /* the station speaking */
+  --muted: #aebab1;
+  --faint: #6d7a71;
+  --dial: #e6c774;        /* amber: the one warm thing in the room */
+  --dial-dim: #a7924f;
+  --danger: #d67c6a;
+
+  --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --mono: Menlo, ui-monospace, 'SF Mono', 'Roboto Mono', monospace;
+
+  /* The amber bloom. In-app this is a text-shadow; the web equivalent. */
+  --glow: 0 0 8px rgba(230, 199, 116, 0.55);
+
+  /* Reading measure: ~75 characters at 19px. A screen is wider than this and
+   * that is fine — prose set to the window loses the reader on every carriage
+   * return. DESIGN.md: whitespace is fear, never fill space. */
+  --measure: 36rem;
+  /* Index pages are LISTS, not prose. Cards are short and scannable, so they
+   * may use the width that paragraphs may not. */
+  --measure-wide: 52rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--prose);
+  font-family: var(--serif);
+  font-size: 1.1875rem;   /* 19px — type.prose */
+  line-height: 1.79;      /* 34/19 — type.prose */
+  /* The room is darkest at its edges. */
+  background-image: radial-gradient(120% 80% at 50% 0%, #10150f 0%, var(--bg) 62%);
+  background-attachment: fixed;
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.wrap {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 1.4rem 6rem;
+}
+
+/* Index pages: a wider frame for the card grid, with any actual prose inside
+ * it pulled back to the reading measure and centred. */
+.wrap--wide { max-width: var(--measure-wide); }
+.wrap--wide .prose,
+.wrap--wide .aside,
+.wrap--wide .label {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --------------------------------------------------------------- masthead */
+
+.masthead {
+  padding: 3.5rem 0 0;
+  text-align: center;
+}
+
+.masthead a { text-decoration: none; border: 0; }
+
+.masthead__name {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+  /* letter-spacing pushes the line right; pull it back to true centre */
+  text-indent: 0.34em;
+}
+
+.masthead__rule {
+  margin: 1.15rem auto 1rem;
+  width: 100%;
+  height: 1px;
+  border: 0;
+  /* dit, dah, dit — a rule that carries a little signal */
+  background-image: linear-gradient(90deg, var(--hairline) 0 6px, transparent 6px 12px);
+  background-size: 12px 1px;
+  opacity: 0.9;
+}
+
+.masthead__sub {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 0;
+  text-indent: 0.22em;
+}
+
+/* The masthead is a plate; the page proper starts well below it. */
+main { display: block; margin-top: 2.4rem; }
+
+/* ------------------------------------------------------------------- type */
+
+h1, h2, h3 { font-weight: normal; }
+
+.title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 2rem;
+  line-height: 1.3;
+  color: var(--prose);
+  margin: 2.6rem 0 0.4rem;
+  text-align: center;
+}
+
+.subtitle {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dial-dim);
+  text-align: center;
+  margin: 0 0 2.4rem;
+  text-indent: 0.22em;
+}
+
+p { margin: 0 0 1.35rem; }
+
+/* Justified, but NOT hyphenated. React Native does not hyphenate, so the
+ * book's justified prose never breaks a word — turning hyphens on here made
+ * the site's paragraphs read as a different typesetter's work (three broken
+ * words in the first paragraph of Broadcast One). Rivers are the cheaper
+ * price. */
+.prose { text-align: justify; hyphens: none; }
+
+.standfirst {
+  color: var(--prose-faded);
+  font-style: italic;
+}
+
+/* Inner thoughts and asides: centred italics floating in whitespace. */
+.aside {
+  text-align: center;
+  font-style: italic;
+  color: var(--prose-faded);
+  margin: 2.6rem auto;
+  max-width: 26rem;
+}
+
+.label {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--faint);
+  display: block;
+  margin: 0 0 0.5rem;
+}
+
+a { color: var(--dial); text-decoration: none; border-bottom: 1px solid rgba(230, 199, 116, 0.28); }
+a:hover { border-bottom-color: var(--dial); }
+a:focus-visible {
+  outline: 2px solid var(--dial);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------- sections */
+
+.section-rule {
+  border: 0;
+  height: 1px;
+  background: var(--hairline);
+  margin: 3.2rem 0;
+}
+
+/* Cards sit in a grid; the grid owns the spacing, so the card owns none. */
+.cards {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0 0 0.85rem;
+}
+
+@media (min-width: 46rem) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* A broadcast's card on the archive index. */
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  padding: 1.3rem 1.4rem;
+  margin: 0;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+.card:hover { border-color: var(--panel-border); background: #19211b; }
+.card__no {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--faint);
+  display: block;
+}
+.card__name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--prose);
+  display: block;
+  margin: 0.25rem 0 0.3rem;
+}
+.card__note {
+  font-size: 0.9375rem;
+  line-height: 1.62;
+  color: var(--prose-faded);
+  display: block;
+}
+
+/* ------------------------------------------------- the three graded steps */
+
+.step {
+  border: 1px solid var(--hairline);
+  background: var(--panel);
+  margin: 0 0 0.7rem;
+}
+
+.step > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.95rem 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dial);
+  text-shadow: var(--glow);
+  display: flex;
+  /* Top-aligned: on a summary that wraps to two lines, a centred lamp floats
+   * in the gutter beside nothing. It belongs on the first line. */
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.step > summary::-webkit-details-marker { display: none; }
+
+/* The dial: a small amber lamp that opens when the drawer does. */
+.step > summary::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  margin-top: 0.32rem;   /* sit on the cap-height of the first line */
+  border-radius: 50%;
+  border: 1px solid var(--dial-dim);
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+.step[open] > summary::before {
+  background: var(--dial);
+  box-shadow: 0 0 6px rgba(230, 199, 116, 0.7);
+}
+
+.step > summary:focus-visible { outline: 2px solid var(--dial); outline-offset: -2px; }
+
+.step__body {
+  padding: 0.2rem 1.2rem 0.4rem;
+  border-top: 1px solid var(--hairline);
+}
+.step__body p { margin: 1.1rem 0; }
+
+/* Step two is a member speaking: set it as quoted matter. */
+.voice {
+  color: var(--voice);
+  font-style: italic;
+}
+
+/* Step three — the answer, behind its own second door. */
+.step--transcript { border-color: var(--panel-border); }
+.step--transcript > summary { color: var(--danger); text-shadow: none; }
+.step--transcript > summary::before { border-color: var(--danger); }
+.step--transcript[open] > summary::before {
+  background: var(--danger);
+  box-shadow: 0 0 6px rgba(214, 124, 106, 0.6);
+}
+
+.warning {
+  color: var(--prose-faded);
+  font-size: 0.9375rem;
+  line-height: 1.66;
+  margin: 1.1rem 0;
+}
+
+.confirm { margin: 0 0 1.1rem; }
+.confirm > summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--danger);
+  border: 1px solid rgba(214, 124, 106, 0.4);
+  padding: 0.5rem 0.9rem;
+}
+.confirm > summary::-webkit-details-marker { display: none; }
+.confirm > summary:hover { border-color: var(--danger); }
+.confirm > summary:focus-visible { outline: 2px solid var(--danger); outline-offset: 2px; }
+.confirm[open] > summary { display: none; }
+
+.answer {
+  font-family: var(--mono);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--dial);
+  text-shadow: var(--glow);
+  border-left: 2px solid var(--dial-dim);
+  padding: 0.2rem 0 0.2rem 1rem;
+  margin: 1.1rem 0;
+}
+
+/* ---------------------------------------------------------------- nav/foot */
+
+.backlink {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border: 0;
+  display: inline-block;
+  margin: 2.6rem 0 0;
+}
+.backlink:hover { color: var(--muted); border: 0; }
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.6rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.pager a { border: 0; color: var(--muted); }
+.pager a:hover { color: var(--dial); border: 0; }
+
+.colophon {
+  margin: 5rem 0 0;
+  padding: 1.8rem 0 0;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  line-height: 2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-align: center;
+}
+.colophon a { color: var(--faint); border: 0; }
+.colophon a:hover { color: var(--muted); }
+
+/* ------------------------------------------------------------ small print */
+
+@media (max-width: 30rem) {
+  body { font-size: 1.0625rem; line-height: 1.76; }
+  .wrap { padding: 0 1.15rem 4.5rem; }
+  .title { font-size: 1.6rem; }
+  .masthead { padding-top: 2.4rem; }
+  .masthead__name { font-size: 0.6875rem; letter-spacing: 0.26em; text-indent: 0.26em; }
+  /* Both masthead lines must hold one line at 375px or the plate falls apart. */
+  .masthead__sub { font-size: 0.625rem; letter-spacing: 0.14em; text-indent: 0.14em; }
+  .prose { text-align: left; }  /* justification needs a measure it cannot get here */
+  /* Two long intercept names will not sit side by side on a phone. */
+  .pager { flex-direction: column; gap: 0.55rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* The book is dark-only by design and so is this. Readers who force a light
+ * scheme still get the room — the amber has no light-mode equivalent. */
+@media print {
+  body { background: #fff; color: #000; }
+  .step__body, .confirm { display: block !important; }
+}

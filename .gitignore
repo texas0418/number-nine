@@ -9,6 +9,10 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-ios/
-android/
+# Anchored: the top-level prebuild-managed projects only. Bare "ios/" also
+# matched modules/*/ios, which silently kept the local Expo modules'
+# native source out of git (expo-doctor flags this).
+/ios
+/android
 .DS_Store
+site/*.zip

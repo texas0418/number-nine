@@ -15,9 +15,12 @@ import {
 
 type Listener = (unlocked: boolean) => void;
 
-let unlocked = false;
+// Placeholder-key builds are BORN unlocked — no init race can ever show the
+// paid chapters as locked (QA: after a stressed force-quit relaunch, the
+// title briefly gated Broadcast Two).
+let unlocked = isPlaceholderKey(keyForPlatform());
 let initialized = false;
-let failOpen = false; // true once we decide RC can't gate (no native module / placeholder key)
+let failOpen = unlocked; // true once we decide RC can't gate (no native module / placeholder key)
 const listeners = new Set<Listener>();
 
 function setUnlocked(next: boolean): void {

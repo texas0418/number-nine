@@ -38,15 +38,43 @@ generated audio beds (static loop, six-note ident).
 
 ## Pre-ship checklist
 
-Tracked as `pre-ship` GitHub issues once the repo is on GitHub; seeded here:
+Tracked as `pre-ship` GitHub issues once the repo is on GitHub; seeded here.
+This is the single canonical list — build items and the cross-cutting launch
+items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
+"build" and "launch." Design bar for the content items: [DESIGN.md](DESIGN.md)
+(typography as architecture) + the puzzle doctrine in [AGENTS.md](AGENTS.md).
 
-- [ ] **Write the real Broadcast One** (current prose is placeholder scaffolding) and Broadcasts Two–Six
-- [ ] **Author 365+ transmissions** for the nightly serial (30 placeholders now)
-- [ ] Real audio: voice reading digits, degraded ident variants per chapter, Morse night, haptic knock passages
-- [ ] Share card as an image (currently text share)
+### Build — content
+
+- [x] **Write Broadcasts Two–Six.** All six broadcasts are written, playtested
+      on device and merged. Broadcast One remains the top of the funnel and can
+      still take a polish pass.
+- [x] **Author 365+ transmissions** for the nightly serial — 365 authored, a
+      full year of Halloran's log ending where Broadcast One begins. Constraints
+      (charset, two eligible words, word width, cryptogram length) are enforced
+      in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
 - [ ] Cipher variant nights (header-key days, Morse days, transposition days)
-- [ ] VoiceOver pass — a text game should be the most accessible game on the store
-- [ ] Real icon/splash art (current: generated pixel "9")
+- [ ] Real audio: voice reading digits, degraded ident variants per chapter, Morse night, haptic knock passages
+
+### Build — craft
+
+- [ ] **Share card as a rendered IMAGE, not text** — black bars over unsolved
+      letters, amber-on-black identity, serial + streak, "receive tonight's
+      signal → App Store" footer, deep link. This is Channel 1 in
+      [MARKETING.md](MARKETING.md): the card is the always-on ad, so it's a
+      launch dependency, not a nicety. (Spoiler-safety already holds in
+      `redactedTranscript`.)
+- [ ] **VoiceOver pass** — a text game can be the most accessible game on the
+      store; it's both the right thing and a graded Apple-featuring criterion
+      (Channel 4). Dynamic Type is already audited to the largest accessibility size.
+- [ ] Polish icon/splash (current: generated glowing "9" — good, not final)
+
+### Launch — store + marketing (see [MARKETING.md](MARKETING.md))
+
 - [ ] App Store Connect record, RevenueCat project + real keys, $5.99 `nn_story_unlock`
-- [ ] Featuring Nomination in App Store Connect ≥3 weeks before launch
+- [ ] **Featuring Nomination** in App Store Connect **≥3 weeks** before launch
+- [ ] Mood trailers (15s teaser + 40s launch), vertical-first — sound-led, NOT gameplay
+- [ ] Store page: preview video, haunted-hardcover screenshots, voice-consistent copy
+- [ ] ASO long-tail: "numbers station," "shortwave horror," "no ads horror story," "interactive novella"
+- [ ] Pre-launch ARG teaser account (numbers-station intercepts; the campaign is the ad)
 - [ ] Privacy + support pages (house pattern: `number-nine-privacy`, `number-nine-support` repos)
