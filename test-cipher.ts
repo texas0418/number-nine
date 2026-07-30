@@ -3,6 +3,8 @@
 import { ALPHABET, REVEALS_BY_WEEKDAY, buildPuzzle, isSolved, keyForDay, lettersByFrequency, redactedTranscript, revealCount } from './src/daily/cipher';
 import { isMorseNight, MORSE_DIGITS, MORSE_WEEKDAY, morseForNumber } from './src/daily/morse';
 import { HEADER_KEYWORDS, HEADER_KEY_WEEKDAY, isHeaderKeyNight, keyedAlphabet, keywordForDay } from './src/daily/headerkey';
+import { TRANSPOSITION_WEEKDAY, isTurnedAroundNight, turnAround } from './src/daily/transposition';
+import { nightWordChoices } from './src/daily/crossover';
 import { TRANSMISSIONS, daysSinceEpoch, transmissionForDay } from './src/daily/schedule';
 
 let failures = 0;
@@ -139,7 +141,11 @@ for (let d = 0; d < 365; d++) {
   const { plaintext } = transmissionForDay(day);
   const puz = buildPuzzle(day, plaintext);
   const full = new Map([...puz.answerByNum]);
-  if (redactedTranscript(puz, full) !== plaintext.toUpperCase()) roundTripFails++;
+  // A turned-around night round-trips to the line AS SENT, back to front. The
+  // guard is that a fully-solved puzzle reproduces what she transmitted, not
+  // that she always transmits forwards.
+  const asSent = (isTurnedAroundNight(day) ? turnAround(plaintext) : plaintext).toUpperCase();
+  if (redactedTranscript(puz, full) !== asSent) roundTripFails++;
 }
 ok('365 nightly puzzles round-trip', roundTripFails === 0);
 
@@ -235,6 +241,47 @@ ok('365 nightly puzzles round-trip', roundTripFails === 0);
     [...hk.answerByNum.values()].sort().join('') ===
       [...plain.answerByNum.values()].sort().join(''));
   ok('a header-key night still solves', isSolved(hk, new Map([...hk.answerByNum])));
+}
+
+// --- Turned-around nights --------------------------------------------------
+// The station's own rule, one night a week. These assert that a reversal costs
+// the solver nothing they actually use, and reaches nothing it must not.
+{
+  const sun = '2026-08-02';
+  const mon = '2026-08-03';
+  ok('turned-around night lands on Sunday', isTurnedAroundNight(sun));
+  ok('other nights are not turned around', !isTurnedAroundNight(mon));
+  ok('the three variants never collide',
+    new Set([TRANSPOSITION_WEEKDAY, HEADER_KEY_WEEKDAY, MORSE_WEEKDAY]).size === 3);
+  ok('turning around twice is the identity',
+    turnAround(turnAround('THE MARSH GIVES NOTHING BACK')) === 'THE MARSH GIVES NOTHING BACK');
+
+  const line = TRANSMISSIONS[0];
+  const turned = buildPuzzle(sun, line);
+  const plain = buildPuzzle(mon, line);
+  const sortLetters = (t: string) => [...t.replace(/[^A-Z]/g, '')].sort().join('');
+
+  // Frequency analysis must be untouched: same letters, same counts.
+  ok('a reversal preserves the letter multiset',
+    sortLetters(line.toUpperCase()) === sortLetters(turnAround(line).toUpperCase()));
+  ok('turned-around night resolves the same letters',
+    [...turned.answerByNum.values()].sort().join('') ===
+      [...plain.answerByNum.values()].sort().join(''));
+
+  // Word shapes must survive, merely mirrored: same lengths, reversed order.
+  const lens = (p: typeof turned) => p.words.map((w) => w.length);
+  ok('word lengths are the same set, reversed',
+    lens(turned).join(',') === [...lens(plain)].reverse().join(','));
+
+  ok('a turned-around night still solves',
+    isSolved(turned, new Map([...turned.answerByNum])));
+
+  // THE CROSSOVER. b4-night deals from the FORWARD line, so its answer is a
+  // real forward word however the night was displayed.
+  const card = nightWordChoices(sun, 4, 0);
+  const forward = transmissionForDay(sun).plaintext.toUpperCase();
+  ok('the crossover answer is a forward word from the real line',
+    forward.includes(card.words[card.answerIndex]));
 }
 
 if (failures) {

@@ -7,6 +7,7 @@
 // Tested in Node by test-cipher.ts.
 
 import { headerKeyMap, isHeaderKeyNight } from './headerkey';
+import { isTurnedAroundNight, turnAround } from './transposition';
 import { isMorseNight, MORSE_NIGHT_BONUS_REVEALS, weekdayOf } from './morse';
 
 export const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -93,9 +94,13 @@ export function revealCount(dayKey: string): number {
 }
 
 export function buildPuzzle(dayKey: string, plaintext: string): DailyPuzzle {
+  // On a turned-around night the line is sent back to front, which is the
+  // station's own rule rather than a new one. Letter frequencies and word
+  // shapes survive it intact, so the solve is unchanged. See ./transposition.ts.
+  const line = isTurnedAroundNight(dayKey) ? turnAround(plaintext) : plaintext;
   const key = keyForDay(dayKey);
   const answerByNum = new Map<number, string>();
-  const words: CipherSymbol[][] = plaintext
+  const words: CipherSymbol[][] = line
     .toUpperCase()
     .split(/\s+/)
     .filter(Boolean)
@@ -107,7 +112,7 @@ export function buildPuzzle(dayKey: string, plaintext: string): DailyPuzzle {
         return [{ num }];
       }),
     );
-  const revealed = lettersByFrequency(plaintext).slice(0, revealCount(dayKey));
+  const revealed = lettersByFrequency(line).slice(0, revealCount(dayKey));
   return { dayKey, words, answerByNum, revealedLetters: revealed };
 }
 
