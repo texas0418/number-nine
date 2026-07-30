@@ -34,11 +34,14 @@ The single most important channel and the one Simogo lacked. The nightly
 cryptogram ships free forever and produces a **redacted-transcript share**
 ("I decoded tonight's transmission · 12 nights listening"). That share is the ad.
 
-What actually ships: **text**, via the system share sheet
-(`DailySignalScreen`), spoiler-safe because `redactedTranscript` never leaks an
-unsolved letter. The rendered-image version — black bars, amber-on-black
-identity, serial, streak, an App Store footer — was DESCOPED (Simon,
-2026-07-30). Plan the channel around a text share and do not re-open this.
+What ships: **an image**, captured from a real view so it looks like a page of
+the book rather than an app export. Black bars over unsolved letters, amber on
+near-black, serial and streak, the site address in the footer. Reinstated on
+2026-07-30 after a same-day descope, once the schedule allowed it.
+
+The text share remains underneath as the floor: if the capture is unavailable
+the share still goes, carrying the redacted transcript and the address. Nothing
+about this channel is load-bearing.
 
 - [x] Spoiler-safe result, so sharing is inviting rather than a spoiler.
 - [ ] The serialized prequel means streak-keepers are reading a second story —
