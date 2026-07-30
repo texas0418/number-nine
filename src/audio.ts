@@ -63,6 +63,41 @@ const SFX_FILES: Record<string, number> = {
   'sheet-rustle': require('../assets/audio/sheet-rustle.wav'),
   // B4 placeholders (scripts/gen-b4-foley.py) until the real set lands
   whisper: require('../assets/audio/whisper.wav'),
+  // THE STATION'S VOICE. Recorded dry and treated offline (scripts note in
+  // VOICE.md): the shortwave path, the per-broadcast decay and the reversal
+  // of her mirrored lines are all baked into the files, because the engine
+  // has no DSP and should not grow any.
+  'whisper-line': require('../assets/audio/whisper-line.wav'),
+  'station-ident': require('../assets/audio/station-ident.wav'),
+  'num-9-name': require('../assets/audio/num-9-name.wav'),
+  'num-0': require('../assets/audio/num-0.wav'),
+  'num-1': require('../assets/audio/num-1.wav'),
+  'num-2': require('../assets/audio/num-2.wav'),
+  'num-3': require('../assets/audio/num-3.wav'),
+  'num-4': require('../assets/audio/num-4.wav'),
+  'num-5': require('../assets/audio/num-5.wav'),
+  'num-6': require('../assets/audio/num-6.wav'),
+  'num-7': require('../assets/audio/num-7.wav'),
+  'num-8': require('../assets/audio/num-8.wav'),
+  'num-9': require('../assets/audio/num-9.wav'),
+  'v-b1-1': require('../assets/audio/v-b1-1.wav'),
+  'v-b1-2': require('../assets/audio/v-b1-2.wav'),
+  'v-b1-3': require('../assets/audio/v-b1-3.wav'),
+  'v-b2-1': require('../assets/audio/v-b2-1.wav'),
+  'v-b2-2': require('../assets/audio/v-b2-2.wav'),
+  'v-b2-3': require('../assets/audio/v-b2-3.wav'),
+  'v-b3-1': require('../assets/audio/v-b3-1.wav'),
+  'v-b3-2': require('../assets/audio/v-b3-2.wav'),
+  'v-b4-1': require('../assets/audio/v-b4-1.wav'),
+  'v-b4-2': require('../assets/audio/v-b4-2.wav'),
+  'v-b5-1': require('../assets/audio/v-b5-1.wav'),
+  'v-b5-2': require('../assets/audio/v-b5-2.wav'),
+  'v-b5-3': require('../assets/audio/v-b5-3.wav'),
+  'v-b6-1': require('../assets/audio/v-b6-1.wav'),
+  'v-b6-2': require('../assets/audio/v-b6-2.wav'),
+  'v-b6-3': require('../assets/audio/v-b6-3.wav'),
+  'v-b6-4': require('../assets/audio/v-b6-4.wav'),
+  'v-b6-5': require('../assets/audio/v-b6-5.wav'),
   murmur: require('../assets/audio/murmur.wav'),
   spark: require('../assets/audio/spark.wav'),
   parish: require('../assets/audio/parish.wav'),
@@ -161,6 +196,54 @@ export function playSfx(name: string, volume = 0.9): void {
  *  with each beat for haptics/visuals — and still fires when audio is
  *  unavailable, so the felt channel never depends on the heard one.
  *  Returns a cancel function. */
+/** SPEAK NUMBERS, digit by digit, the way a numbers station reads them:
+ *  the group 14 09 becomes "one four, zero nine". Sequenced from ten recorded
+ *  digits rather than pre-baked groups, because Tonight's Signal is a
+ *  different transmission every night and could never be voiced otherwise.
+ *
+ *  Returns a stop() — the reader may leave the page mid-count, and she must
+ *  not follow them. Fail-open: no audio module, no sound, no harm. */
+export function speakNumbers(
+  groups: number[][],
+  opts: { digitMs?: number; groupMs?: number; volume?: number } = {},
+): () => void {
+  const { digitMs = 420, groupMs = 900, volume = 0.85 } = opts;
+  const a = audio();
+  const timers: ReturnType<typeof setTimeout>[] = [];
+  if (!a) return () => {};
+  let at = 0;
+  for (const g of groups) {
+    for (const n of g) {
+      for (const ch of String(n)) {
+        const file = SFX_FILES[`num-${ch}`];
+        if (file === undefined) continue;
+        const delay = at;
+        timers.push(
+          setTimeout(() => {
+            try {
+              const p = a.createAudioPlayer(file);
+              p.volume = volume;
+              p.play();
+              setTimeout(() => {
+                try {
+                  p.remove?.();
+                } catch {
+                  /* fail open */
+                }
+              }, 4000);
+            } catch {
+              /* fail open */
+            }
+          }, delay),
+        );
+        at += digitMs;
+      }
+    }
+    at += groupMs - digitMs;
+  }
+  return () => timers.forEach(clearTimeout);
+}
+
 export function playSfxPattern(
   name: string,
   delaysMs: number[],
@@ -514,6 +597,27 @@ const LOOP_CUES: Record<string, number> = {
   parish: 0.22,
 };
 
+/** Per-cue levels. A table rather than a branch each: the chain outgrew the
+ *  complexity limit once her voice arrived, and the levels are data anyway.
+ *  Anything absent takes playSfx's default. Each number is a device-QA
+ *  verdict, not a guess. */
+const SFX_VOLUME: Record<string, number> = {
+  'morse-key': 0.45, // he answers, under the prose
+  'knock-far': 0.4, // through the walls, far off
+  'letter-tear': 0.45, // paper, not violence
+  pips: 0.35, // the clean line: matched to the muffled tail, not louder
+  footsteps: 0.8, // 0.5 vanished under the bed
+  'page-turn': 0.5,
+  'rust-break': 0.5, // the default drowned the room
+  'break-set': 0.8, // once, ever, on one ending
+};
+
+/** She is RECEIVED, so she sits just under the room. The clips are loudness
+ *  matched offline, so one level serves every line she speaks. */
+const VOICE_VOLUME = 0.85;
+const isVoice = (name: string): boolean =>
+  name.startsWith('v-b') || name === 'station-ident';
+
 export function cue(name: string): void {
   // The static bed is ATMOSPHERE — it must never drown the diegetic one-shots
   // (device feedback: "all I hear is static"). Levels kept low.
@@ -521,23 +625,18 @@ export function cue(name: string): void {
   else if (name === 'silence') setStaticLevel(0.03);
   else if (name === 'ident') playIdent();
   else if (name in LOOP_CUES) startSfxLoop(name, LOOP_CUES[name]);
-  else if (name === 'morse-key') playSfx('morse-key', 0.45); // he answers, under the prose
-  else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
-  else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
-  // The clean pips rode the 0.9 default and were far too loud beside the
-  // muffled tail; Simon's ear put the right level at the muffled 0.35, so the
-  // handover is a change of CHARACTER (clean -> through cloth), not of volume.
-  else if (name === 'pips') playSfx('pips', 0.35);
-  else if (name === 'pips-muffled') {
+  else if (isVoice(name)) playSfx(name, VOICE_VOLUME);
+  // Broadcast One's arrival: she plays the six notes FIRST and speaks over the
+  // dying music box, exactly as the prose has it.
+  else if (name === 'ident-then-voice') {
+    playIdent();
+    setTimeout(() => playSfx('v-b1-1', VOICE_VOLUME), 2600);
+  } else if (name === 'pips-muffled') {
     stopOneShot('pips'); // the receiver is DOWN — the clean pips end there…
     playSfx('pips-muffled', 0.35); // …and continue through the sleeve
-  }
-  else if (name === 'footsteps') playSfx('footsteps', 0.8); // 0.5 vanished under the bed
-  else if (name === 'page-turn') playSfx('page-turn', 0.5);
-  else if (name === 'rust-break') playSfx('rust-break', 0.5); // device QA: default drowned the room
-  else if (name === 'break-set') playSfx('break-set', 0.8); // once, ever, on one ending
-  else playSfx(name); // key-unlock, safe-open, unlock, lamp-off, hinge-creak, scrape
+  } else playSfx(name, SFX_VOLUME[name]); // undefined falls back to the default
 }
+
 
 export function stopAll(): void {
   try {

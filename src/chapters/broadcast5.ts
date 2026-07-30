@@ -137,7 +137,7 @@ export const BROADCAST_FIVE: Chapter = {
       kind: 'thought',
       text: 'Every aerial in the parish, pointed here. She does not come to this house. She comes FROM it.',
     },
-    { kind: 'voice', text: 'NOW YOU KNOW WHERE YOU LIVE.', mirrored: false },
+    { kind: 'voice', text: 'NOW YOU KNOW WHERE YOU LIVE.', mirrored: false, cue: 'v-b5-1' },
 
     // --- The verso ---------------------------------------------------------
     {
@@ -220,7 +220,7 @@ export const BROADCAST_FIVE: Chapter = {
       kind: 'thought',
       text: 'It had not asked his name. It had known his name for two hundred years. What it had wanted was his hand. And further up the page, in the older browns, he found her twice — MARGARET, and again MARGARET — and no line struck through either.',
     },
-    { kind: 'voice', text: 'MARGARET SIGNED TWICE. NOBODY SIGNS TWICE.', mirrored: false },
+    { kind: 'voice', text: 'MARGARET SIGNED TWICE. NOBODY SIGNS TWICE.', mirrored: false, cue: 'v-b5-2' },
 
     // --- The slip -----------------------------------------------------------
     {
@@ -284,7 +284,7 @@ export const BROADCAST_FIVE: Chapter = {
       text: 'The eighth has bought himself a set. Edwin thought of Prentice’s van in the lane, of the new aerial he had watched go up over a council roof in the village that very week, guyed with washing-line, and of the particular lightness in the detection man’s step as he had walked away from this house. Seven, and Prentice the eighth. He did the arithmetic he had refused at the sheet, slowly, in the second log, where the wall could watch him do it.',
       faded: true,
     },
-    { kind: 'voice', text: 'THE SEAT IS KEPT. SHE WILL CALL THE NINTH BY NAME.', mirrored: true },
+    { kind: 'voice', text: 'THE SEAT IS KEPT. SHE WILL CALL THE NINTH BY NAME.', mirrored: true, cue: 'v-b5-3' },
     {
       kind: 'thought',
       text: 'And the house went quiet the way a church goes quiet — not empty. Attending.',

@@ -38,7 +38,7 @@ import {
   recordSolve,
   setKv,
 } from '../db';
-import { playIdent, setStaticLevel } from '../audio';
+import { playIdent, setStaticLevel, speakNumbers } from '../audio';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -91,6 +91,40 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
   );
   const puzzle = useMemo(() => buildPuzzle(todayKey, plaintext), [todayKey, plaintext]);
   const kvKey = `daily-guesses:${todayKey}`;
+
+  // SHE READS IT ALOUD. The transmission is different every night, so this is
+  // sequenced from the ten recorded digits rather than any pre-baked take —
+  // numbers-station fashion, digit by digit. Atmosphere only: the figures are
+  // already on the page and nothing here is needed to solve.
+  const speaking = useRef<(() => void) | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  useEffect(() => () => speaking.current?.(), []);
+
+  const listen = () => {
+    if (speaking.current) {
+      speaking.current();
+      speaking.current = null;
+      setIsSpeaking(false);
+      return;
+    }
+    const groups = puzzle.words.map((w) =>
+      w.flatMap((sym) => ('num' in sym ? [sym.num] : [])),
+    ).filter((g) => g.length > 0);
+    if (groups.length === 0) return;
+    setIsSpeaking(true);
+    playIdent();
+    const stop = speakNumbers(groups, { digitMs: 430, groupMs: 950 });
+    const total = 2600 + groups.reduce(
+      (n, g) => n + g.reduce((m, v) => m + String(v).length, 0) * 430 + 950, 0);
+    const done = setTimeout(() => {
+      speaking.current = null;
+      setIsSpeaking(false);
+    }, total);
+    speaking.current = () => {
+      stop();
+      clearTimeout(done);
+    };
+  };
 
   const [solvedAlready] = useState(() => isDaySolved(todayKey));
   const [guesses, setGuesses] = useState<Map<number, string>>(() =>
@@ -157,9 +191,16 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
         <Text style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
           TONIGHT’S SIGNAL
         </Text>
-        <Pressable onPress={share} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>share</Text>
-        </Pressable>
+        <View style={styles.headRight}>
+          <Pressable onPress={listen} hitSlop={12}>
+            <Text style={[styles.back, isSpeaking && styles.backLive]} maxFontSizeMultiplier={1.3}>
+              {isSpeaking ? 'stop' : 'listen'}
+            </Text>
+          </Pressable>
+          <Pressable onPress={share} hitSlop={12}>
+            <Text style={styles.back} maxFontSizeMultiplier={1.3}>share</Text>
+          </Pressable>
+        </View>
       </View>
       <Text style={styles.meta} maxFontSizeMultiplier={1.3} numberOfLines={2}>
         intercepted · 4625 kHz · no. {serial} · {puzzle.revealedLetters.length} letters clear
@@ -319,6 +360,8 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62, paddingHorizontal: 22 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },
+  backLive: { color: colors.dial, ...amberGlow },
+  headRight: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   title: {
     flex: 1,
     textAlign: 'center',

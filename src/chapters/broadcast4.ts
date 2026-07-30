@@ -240,8 +240,7 @@ export const BROADCAST_FOUR: Chapter = {
     {
       kind: 'voice',
       text: 'CANDIDATES TWO. PAPERS ONE. MARKS FOLLOW.',
-      mirrored: false,
-    },
+      mirrored: false, cue: 'v-b4-1' },
     {
       kind: 'prose',
       text: 'The counting voice read the marks the way she read everything: numbers, in her flat clear evening voice, while Prentice sat in the chair with his eyes closed — not asleep; listening, the way a man listens when he has just learned how — and Edwin took them down in the second book, in the order given, exactly as given.',
@@ -274,8 +273,7 @@ export const BROADCAST_FOUR: Chapter = {
     {
       kind: 'voice',
       text: 'HE PASSED. YOU BOTH PASSED. SHE IS PLEASED WITH WHAT YOU BROUGHT.',
-      mirrored: true,
-    },
+      mirrored: true, cue: 'v-b4-2' },
     {
       kind: 'thought',
       text: 'I brought no one, he told the dark, and the dark let it stand, the way an examiner lets a wrong answer stand — marked, not corrected.',

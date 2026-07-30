@@ -91,6 +91,7 @@ export const BROADCAST_SIX: Chapter = {
     {
       kind: 'prose',
       text: 'She did not count. For the first time in ninety broadcasts she did not count at all: she read six figures, slowly, in the voice of a woman dictating a will, and then she said GOOD NIGHT, EDWIN — which she had never said — and the carrier folded itself away like a hand closing.',
+      cue: 'v-b6-2',
     },
     {
       kind: 'logbook',
@@ -104,7 +105,7 @@ export const BROADCAST_SIX: Chapter = {
         '"THE REST TOMORROW. SLEEP."',
       ],
     },
-    { kind: 'voice', text: 'SLEEP. YOU WILL WANT IT.', mirrored: false },
+    { kind: 'voice', text: 'SLEEP. YOU WILL WANT IT.', mirrored: false, cue: 'v-b6-1' },
     {
       kind: 'nightgate',
       id: 'b6-night2',
@@ -241,6 +242,7 @@ export const BROADCAST_SIX: Chapter = {
     {
       kind: 'prose',
       text: 'The light went out, and the band came alive. Not one carrier — ALL of them: Portman and the widow and the boy and the browner, stranger names above them in the register, every listener the marsh had ever kept, up and sending at once, and it took him a moment to hear the shape in it. A roll-call. Name after name after name, each answered in its own fist, each with the same single word. And then, in her clear evening voice, unhurried, terminal: EDWIN MARSH.',
+      cue: 'v-b6-5',
     },
     {
       kind: 'morsesend',
@@ -252,6 +254,7 @@ export const BROADCAST_SIX: Chapter = {
     {
       kind: 'prose',
       text: 'Then the last transmission of the ninety-one began, and it was not counting and it was not instruction. It was TWELVE FIGURES, read once, with the care of a woman laying out her own effects; and he took them down in the second log with a steady pencil, every strange sum she had taught him standing ready at his shoulder like pall-bearers. At the end she said one thing more: NOW YOU MAY KNOW WHO HAS BEEN COUNTING.',
+      cue: 'v-b6-4',
     },
     {
       kind: 'logbook',
@@ -276,7 +279,7 @@ export const BROADCAST_SIX: Chapter = {
       kind: 'thought',
       text: 'Margaret. Who asked to listen with him once, and was told the radio was off. Who hummed it flat. Who signed the register twice — once in ink, going in, and once in whatever she signs with now. The station was never a station. It was a widow with a wall between herself and the room, counting.',
     },
-    { kind: 'voice', text: 'THE COUNT IS COMPLETE. NINETY-ONE. THE SEAT IS DRAWN OUT FOR YOU.', mirrored: true },
+    { kind: 'voice', text: 'THE COUNT IS COMPLETE. NINETY-ONE. THE SEAT IS DRAWN OUT FOR YOU.', mirrored: true, cue: 'v-b6-3' },
     {
       kind: 'prose',
       text: 'And the cellar door stood open at the top of its stairs, and the lamplight coming up from below was the amber of every dial he had ever leaned toward in the dark, and the house — patient, replete, nineteen years and ninety-one broadcasts old in its work — left him alone in the hall with the choice it had been building him toward since the first evening the telephone rang. He could go down and take the ninth seat at her table. Or he could break the set, and the circle, and whatever else broke with them.',

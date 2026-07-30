@@ -420,6 +420,48 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
   );
 }
 
+// --- her voice: the cues, the files and the chapters must agree -----------
+// The clips are treated offline and dropped in by hand, so the three lists
+// can drift silently: a cue with no file plays nothing, a file no chapter
+// names is dead weight in the bundle, and neither fails a build.
+{
+  const fs = require('fs') as typeof import('fs');
+  const audioSrc = fs.readFileSync('src/audio.ts', 'utf8');
+  const onDisk = new Set(
+    fs.readdirSync('assets/audio').filter((f: string) => f.endsWith('.wav')),
+  );
+
+  const registered = [...audioSrc.matchAll(/'([^']+)': require\('\.\.\/assets\/audio\/([^']+)'\)/g)]
+    .map((m) => ({ cue: m[1], file: m[2] }));
+  const missing = registered.filter((r) => !onDisk.has(r.file));
+  ok('every registered clip exists on disk', missing.length === 0,
+    missing.map((m) => m.file).join(', '));
+
+  // Every voice cue named by a chapter must be registered in SFX_FILES.
+  const named = new Set<string>();
+  for (const c of [BROADCAST_ONE, BROADCAST_TWO, BROADCAST_THREE,
+                   BROADCAST_FOUR, BROADCAST_FIVE, BROADCAST_SIX])
+    for (const b of c.blocks) {
+      const cue = (b as { cue?: string }).cue;
+      if (cue && (cue.startsWith('v-b') || cue === 'ident-then-voice')) named.add(cue);
+    }
+  const regCues = new Set(registered.map((r) => r.cue));
+  const unplayable = [...named].filter(
+    (c) => c !== 'ident-then-voice' && !regCues.has(c),
+  );
+  ok('every voice line a chapter names has a clip', unplayable.length === 0,
+    unplayable.join(', '));
+
+  // All ten digits, or the nightly signal cannot be spoken.
+  const digits = Array.from({ length: 10 }, (_, i) => `num-${i}.wav`);
+  ok('all ten digits are present for the sequencer',
+    digits.every((d) => onDisk.has(d)),
+    digits.filter((d) => !onDisk.has(d)).join(', '));
+
+  ok('her recorded lines are all reachable from the book',
+    [...regCues].filter((c) => c.startsWith('v-b') && c !== 'v-b1-1' && !named.has(c)).length === 0);
+}
+
 if (failures) {
   console.log(`\n${failures} failure(s)`);
   process.exit(1);
