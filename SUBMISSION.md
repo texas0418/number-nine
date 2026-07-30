@@ -38,8 +38,10 @@ browse. Books is wrong — this is not a reading app.
 
 Never in any of these fields: DEVICE 6, Simogo, "puzzle game", "AI",
 "hyper-casual" (MARKETING.md trademark guardrails and voice rules). Also not
-in these fields: any claim about accessibility beyond text size — VoiceOver
-was descoped 2026-07-30, so "accessible" is not ours to say yet.
+in these fields: any claim about accessibility beyond text size. VoiceOver was
+descoped (Simon, 2026-07-30), so "accessible" is not ours to say — that is a
+standing decision, not a pending task. See MARKETING.md's Channel 4 for the
+honest answer if it is ever asked directly.
 
 **Subtitle** (30 max, 26 used)
 
