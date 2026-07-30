@@ -59,6 +59,17 @@ const PUBLISHER = 'Simon Shih';
 // tells a reader the policy changed when it did not.
 const POLICY_DATE = '30 July 2026';
 
+// The game itself. Issue #8 is explicit that this domain IS the official game
+// page and the Society archive is a section of it, so the root is the game page
+// and the Society's own front sits at /society/.
+const GAME_NAME = 'Number Nine';
+// EMPTY UNTIL THE APP IS LIVE. A store link that 404s on the front page is worse
+// than no link, so `storeCta` checks this and says "not yet" instead. On release
+// day set it to the app's own URL — the ASC Apple ID is 6796237101, so that is
+// https://apps.apple.com/app/id6796237101 — and rebuild.
+const APP_STORE_URL = '';
+const PRICE = 'Broadcast One free · the rest for one payment';
+
 // ------------------------------------------------------------------ helpers
 
 const esc = (s: string): string =>
@@ -80,14 +91,32 @@ interface Page {
   /** Index pages take the wider frame so their card grid can use it. Reading
    *  pages never do — prose stays at the book measure. */
   wide?: boolean;
+  /** Which masthead this page wears. 'society' is the 1963 correspondence
+   *  circle and belongs to the archive and its about page. 'plain' speaks as
+   *  the publisher and belongs to the game page, the press kit, privacy and
+   *  support: App Review and journalists read those, and a fictional letterhead
+   *  over a privacy notice is a worse joke than it is a flourish. */
+  frame?: 'society' | 'plain';
 }
 
 function layout(page: Page): string {
   const base = up(page.depth);
-  // The front page IS the Society; suffixing it with its own name reads as a
-  // bug in a browser tab and in a search result.
-  const title =
-    page.title === SITE_NAME ? SITE_NAME : `${page.title} · ${SITE_NAME}`;
+  const plain = page.frame === 'plain';
+  const brand = plain ? GAME_NAME : SITE_NAME;
+  // A front page suffixed with its own name reads as a bug in a browser tab and
+  // in a search result.
+  const title = page.title === brand ? brand : `${page.title} · ${brand}`;
+  const masthead = plain
+    ? `<a href="${base}index.html">
+<p class="masthead__name">${esc(GAME_NAME)}</p>
+<hr class="masthead__rule">
+<p class="masthead__sub">A shortwave horror novella</p>
+</a>`
+    : `<a href="${base}society/index.html">
+<p class="masthead__name">${esc(SITE_NAME)}</p>
+<hr class="masthead__rule">
+<p class="masthead__sub">Established 1963 · Correspondence only</p>
+</a>`;
   return `<!doctype html>
 <html lang="en-GB">
 <head>
@@ -104,15 +133,11 @@ function layout(page: Page): string {
 <body>
 <div class="wrap${page.wide ? ' wrap--wide' : ''}">
 <header class="masthead">
-<a href="${base}index.html">
-<p class="masthead__name">${esc(SITE_NAME)}</p>
-<hr class="masthead__rule">
-<p class="masthead__sub">Established 1963 · Correspondence only</p>
-</a>
+${masthead}
 </header>
 ${page.body}
 <footer class="colophon">
-<p><a href="${base}index.html">The Society</a> · <a href="${base}archive/index.html">The archive</a> · <a href="${base}about/index.html">About these notes</a></p>
+<p><a href="${base}index.html">${esc(GAME_NAME)}</a> · <a href="${base}society/index.html">The Society</a> · <a href="${base}archive/index.html">The archive</a> · <a href="${base}press/index.html">Press</a></p>
 <p><a href="${base}support/index.html">Support</a> · <a href="${base}privacy/index.html">Privacy</a></p>
 <p>Number Nine is a work of fiction. So is the Society.</p>
 </footer>
@@ -121,6 +146,12 @@ ${page.body}
 </html>
 `;
 }
+
+/** The store button, or an honest absence of one. */
+const storeCta = (): string =>
+  APP_STORE_URL
+    ? `<p class="aside"><a href="${APP_STORE_URL}">Receive it on the App Store</a></p>`
+    : `<p class="aside">Coming to the App Store for iPhone. The nightly signal goes out to everyone, free, from the day it lands.</p>`;
 
 const paras = (text: string, cls = 'prose'): string =>
   text
@@ -238,18 +269,18 @@ function archiveIndexPage(sections: ArchiveSection[]): Page {
 <p class="aside">Take the first. Put the book down. Come back to the second only if the first was not enough.</p>
 <hr class="section-rule">
 <div class="cards">${cards}</div>
-<a class="backlink" href="../index.html">← The Society</a>
+<a class="backlink" href="../society/index.html">← The Society</a>
 </main>`,
   };
 }
 
-function frontPage(sections: ArchiveSection[]): Page {
+function societyPage(sections: ArchiveSection[]): Page {
   return {
-    path: 'index.html',
+    path: 'society/index.html',
     title: SITE_NAME,
+    depth: 1,
     description:
       'A shortwave listeners’ circle, keeping graded notes on the ninety-one broadcasts. Clues, never solutions.',
-    depth: 0,
     wide: true,
     body: `<main>
 <h1 class="title">Clues, never solutions</h1>
@@ -259,17 +290,18 @@ function frontPage(sections: ArchiveSection[]): Page {
 <p class="aside">Nothing here opens by itself. Nothing here is printed where a search engine can find it.</p>
 <hr class="section-rule">
 <div class="cards">
-<a class="card" href="archive/index.html">
+<a class="card" href="../archive/index.html">
 <span class="card__no">The archive</span>
 <span class="card__name">All ${sections.reduce((n, s) => n + s.intercepts.length, 0)} intercepts</span>
 <span class="card__note">Graded notes on every gate in the six broadcasts, in the order a listener meets them.</span>
 </a>
-<a class="card" href="about/index.html">
+<a class="card" href="../about/index.html">
 <span class="card__no">About these notes</span>
 <span class="card__name">How the Society works</span>
 <span class="card__note">Why we grade our help, what we will not publish, and who is actually writing this.</span>
 </a>
 </div>
+<a class="backlink" href="../index.html">← ${esc(GAME_NAME)}</a>
 </main>`,
   };
 }
@@ -295,7 +327,7 @@ function aboutPage(): Page {
 <p class="prose">The Society is a fiction, and so is every member quoted in the archive. Number Nine is a typographic horror novella for iPhone: six broadcasts, a free first chapter, and a nightly cryptogram that goes out to everyone at once. It has no advertising and no tracking, and it works with the aeroplane switch on — which is, as it turns out, how it is best played.</p>
 <p class="prose">The notes are maintained alongside the book itself, so a puzzle cannot quietly change out from under its own annotation.</p>
 
-<a class="backlink" href="../index.html">← The Society</a>
+<a class="backlink" href="../society/index.html">← The Society</a>
 </main>`,
   };
 }
@@ -307,6 +339,7 @@ function privacyPage(): Page {
     description:
       'Number Nine has no accounts, no advertising and no analytics. Your reading stays on your phone. The full detail, in plain English.',
     depth: 1,
+    frame: 'plain',
     body: `<main>
 <h1 class="title">Privacy</h1>
 <p class="subtitle">Number Nine · updated ${esc(POLICY_DATE)}</p>
@@ -341,7 +374,7 @@ function privacyPage(): Page {
 
 <p class="aside">Refunds are Apple's to give, not ours — see <a href="../support/index.html">Support</a>.</p>
 
-<a class="backlink" href="../index.html">← The Society</a>
+<a class="backlink" href="../society/index.html">← The Society</a>
 </main>`,
   };
 }
@@ -353,6 +386,7 @@ function supportPage(): Page {
     description:
       'Help with Number Nine: restoring a purchase, sound, hardware puzzles, text size, lost progress, and where to write.',
     depth: 1,
+    frame: 'plain',
     body: `<main>
 <h1 class="title">Support</h1>
 <p class="subtitle">Number Nine · a real person reads this</p>
@@ -387,7 +421,120 @@ function supportPage(): Page {
 
 <p class="aside">See also: <a href="../privacy/index.html">Privacy</a>.</p>
 
-<a class="backlink" href="../index.html">← The Society</a>
+<a class="backlink" href="../society/index.html">← The Society</a>
+</main>`,
+  };
+}
+
+function gamePage(sections: ArchiveSection[]): Page {
+  const gates = sections.reduce((n, s) => n + s.intercepts.length, 0);
+  return {
+    path: 'index.html',
+    title: GAME_NAME,
+    description:
+      'A shortwave horror novella for iPhone. Six broadcasts, the first one free, and a nightly cryptogram that goes out to every listener at once.',
+    depth: 0,
+    wide: true,
+    frame: 'plain',
+    body: `<main>
+<h1 class="title">A story you receive, not read</h1>
+<p class="subtitle">${esc(GAME_NAME)} · six broadcasts · iPhone</p>
+
+<p class="prose">Your estranged brother is dead. He has left you a house where the land gives up and becomes marsh, a war-surplus shortwave receiver, and nineteen years of listening logs kept in a hand that never once wavered. On the fourteenth of June his entries stop mid-sentence, and every night after it is blank.</p>
+
+<p class="prose">Tune the set. There is a station where none should be: a music box running down, and then a woman counting in groups of five, unhurried, as though she had every night in the world and meant to spend them one at a time. She has been counting for nineteen years. Tonight she says your name.</p>
+
+<p class="aside">The prose is the map. It turns, it mirrors, it goes down the cellar stairs and climbs back up them, and you turn the phone in your hands to follow it, because the room turned and not the typeface.</p>
+
+${storeCta()}
+
+<hr class="section-rule">
+
+<div class="cards">
+<a class="card" href="society/index.html">
+<span class="card__no">The Listeners’ Society</span>
+<span class="card__name">Stuck? Graded notes on all ${gates}</span>
+<span class="card__note">A 1963 correspondence circle keeps clues, never solutions. Three doors per puzzle, and you choose how far in to go.</span>
+</a>
+<a class="card" href="press/index.html">
+<span class="card__no">Press kit</span>
+<span class="card__name">Facts, assets, and what we ask</span>
+<span class="card__note">Fact sheet, descriptions, screenshots on request, and a spoiler policy worth reading before you write.</span>
+</a>
+<a class="card" href="support/index.html">
+<span class="card__no">Support</span>
+<span class="card__name">A real person reads it</span>
+<span class="card__note">Restoring a purchase, sound, text size, lost progress, and where to write.</span>
+</a>
+<a class="card" href="privacy/index.html">
+<span class="card__no">Privacy</span>
+<span class="card__name">Almost nothing, and here is the detail</span>
+<span class="card__note">No accounts, no advertising, no analytics. Your reading never leaves the phone.</span>
+</a>
+</div>
+
+<hr class="section-rule">
+
+<h2 class="label">What you get</h2>
+<p class="prose">Six broadcasts, one a night, and ${gates} puzzles between the first page and the last. Broadcast One is free start to finish; the other five unlock with a single payment that is not a subscription. Tonight’s signal, a new cryptogram every night with the same one going to every listener on earth, is free forever and needs nothing bought.</p>
+<p class="prose">No advertising. No tracking. No account. It honours the text size you have set, and it works with the aeroplane switch on.</p>
+
+<p class="aside">Headphones on. Lights off. One broadcast a night.</p>
+</main>`,
+  };
+}
+
+function pressPage(sections: ArchiveSection[]): Page {
+  const gates = sections.reduce((n, s) => n + s.intercepts.length, 0);
+  return {
+    path: 'press/index.html',
+    title: 'Press kit',
+    description:
+      'Number Nine press kit: fact sheet, short and long descriptions, assets, spoiler policy and contact.',
+    depth: 1,
+    frame: 'plain',
+    body: `<main>
+<h1 class="title">Press kit</h1>
+<p class="subtitle">${esc(GAME_NAME)} · updated ${esc(POLICY_DATE)}</p>
+
+<p class="prose">Everything here is free to quote, edit down, or ignore. If you need something that is not on this page, write to <a href="mailto:${esc(SUPPORT_EMAIL)}">${esc(SUPPORT_EMAIL)}</a> and say what you are writing for.</p>
+
+<hr class="section-rule">
+
+<h2 class="label">Fact sheet</h2>
+<p class="prose"><strong>Title:</strong> ${esc(GAME_NAME)}<br>
+<strong>Publisher and developer:</strong> ${esc(PUBLISHER)}<br>
+<strong>Platform:</strong> iPhone, iOS. Portrait only and dark only, both by design<br>
+<strong>Price:</strong> ${esc(PRICE)}<br>
+<strong>Release:</strong> to be announced<br>
+<strong>Category:</strong> Games, Adventure<br>
+<strong>Language:</strong> English<br>
+<strong>Offline:</strong> completely. There is no server and no account</p>
+
+<h2 class="label">One line</h2>
+<p class="prose">A shortwave horror novella where the phone is the haunted object, and a woman on a numbers station has been counting for nineteen years.</p>
+
+<h2 class="label">One paragraph</h2>
+<p class="prose">A man inherits his estranged brother’s house on the marsh, a war-surplus shortwave receiver, and nineteen years of listening logs that stop mid-sentence. ${esc(GAME_NAME)} is a typographic horror novella in six broadcasts, one a night, in which the text is the architecture: it turns, mirrors and climbs, and the reader turns the phone to follow it. ${gates} puzzles stand between the first page and the last, and none of them is a quiz. Broadcast One is free; the rest unlock with a single payment. A nightly cryptogram, free forever and identical for every listener in the world, serialises a second story a night at a time.</p>
+
+<h2 class="label">What is unusual about it</h2>
+<p class="prose">The typography is diegetic. Text does not rotate for effect; it rotates because the room the prose describes has turned, so the reader turns the device to keep reading. The puzzles are acts rather than quizzes, and several of them use the instrument in your hand rather than a keypad on screen. The nightly cipher is generated from the calendar date, which means every player on earth is working the same puzzle on the same night, and yesterday’s solution teaches nothing about tonight’s.</p>
+<p class="prose">There is no advertising, no tracking, no account, no timer and no energy meter. The one purchase is paid once. Sound is atmosphere and never information, so the whole book is solvable in silence.</p>
+
+<h2 class="label">What we ask</h2>
+<p class="prose">Please do not print puzzle solutions. The difficulty is the product, and a solution in a review is spent for every reader who sees it. If a piece needs to describe a puzzle, the Society archive on this site is written for exactly that: it opens in three graded stages so you can quote the flavour without the answer. Screenshots that show a solved gate are the other easy way to spoil one, and we would rather send you replacements than have you avoid illustrating the piece.</p>
+<p class="prose">Comparisons are yours to draw and not ours to claim. We do not describe the book as a successor to anything, and we would rather earn the comparison in your words than assert it in ours.</p>
+
+<h2 class="label">Assets</h2>
+<p class="prose">Screenshots at App Store resolution, the app icon, and the six-note station ident as audio are all available on request; say which sizes and formats suit you and they will come back the same day. There is no embargo on anything published here.</p>
+
+<h2 class="label">Accessibility, plainly</h2>
+<p class="prose">The book honours the system text size throughout and re-typesets to match, including at the largest accessibility sizes. Every puzzle that asks the reader to move the phone can also be solved by touch, so no puzzle depends on physically turning or shaking the device. There is no screen-reader support: it is not built, and we would rather say so here than have you discover it.</p>
+
+<h2 class="label">Contact</h2>
+<p class="prose"><a href="mailto:${esc(SUPPORT_EMAIL)}">${esc(SUPPORT_EMAIL)}</a> reaches ${esc(PUBLISHER)} directly.</p>
+
+<a class="backlink" href="../index.html">← ${esc(GAME_NAME)}</a>
 </main>`,
   };
 }
@@ -404,9 +551,11 @@ function main(): void {
   }
 
   const pages: Page[] = [
-    frontPage(SECTIONS),
+    gamePage(SECTIONS),
+    societyPage(SECTIONS),
     archiveIndexPage(SECTIONS),
     aboutPage(),
+    pressPage(SECTIONS),
     privacyPage(),
     supportPage(),
   ];
