@@ -91,14 +91,70 @@ nomination, a press pitch, or store copy. If it is ever asked directly, the true
 answer is: Dynamic Type is audited to the largest accessibility size, every
 hardware puzzle has a touch alternative, and screen-reader support is not there.
 
-- [ ] Submit a **Featuring Nomination** in App Store Connect **≥3 weeks**
-      before launch (also on the pre-ship checklist).
-- [ ] Lead the pitch with the criteria we actually meet: a premium narrative
-      novella, no ads and no tracking, no dark patterns, one honest purchase
-      and no subscription, fully playable offline, an original typographic
-      craft angle, and a free daily puzzle that runs on its own.
-- [ ] Polished product page: the mood trailer as preview, screenshots that
-      look like a haunted book (not UI), tight copy in our voice.
+- [ ] Submit the nomination **≥3 weeks before launch**. It is a nomination, not
+      a dependency: submit it before the app is approved rather than after.
+      Nominate again for any major update.
+- [ ] Polished product page: screenshots that look like a haunted book rather
+      than a UI, tight copy in our voice. Both done — see `SUBMISSION.md`.
+
+### The angle: this game could not exist anywhere but a phone
+
+Lead with the platform, not the prose. Editorial rewards apps that could only be
+built for the device, and this one has an unusually literal claim to it — the
+puzzles are not *about* a phone, they are *performed on* one. Verified against
+the code, the book uses:
+
+| Capability | What the story does with it |
+|---|---|
+| Core Haptics | Digits delivered ONLY as felt knock-groups. A number you cannot see or hear, and must count with your hands. |
+| Core Motion | Hold the device perfectly still while she measures you. Shake a seized valve loose. Turn the page over by turning the phone over. |
+| Magnetometer | Bring a fallen aerial round to a true bearing and hold it there. |
+| Screen brightness | Ink too shy for a bright lamp, which surfaces only when the reader takes the light down. |
+| Volume buttons | A gain knob where the thumb already rests. |
+| Battery state | A set that hungers, and is fed from the mains. |
+| The real calendar | The station keeps real nights. Two gates wait for tomorrow to actually arrive. |
+| StoreKit 2 | One non-consumable. No subscription, no consumables, no second charge. |
+
+Every one of those also has a touch path, so none of it is a gimmick that locks
+a reader out.
+
+### The one-paragraph pitch
+
+> Number Nine is a horror novella in six broadcasts where the typography is the
+> architecture: the prose turns, mirrors and descends, and the reader turns the
+> phone to follow it, because the room turned and not the typeface. Fifty
+> puzzles stand between the first page and the last and none of them is a quiz —
+> they are performed on the device itself, with the compass, the haptics, the
+> brightness and the real calendar. Broadcast One is free in full; the rest is
+> one payment that is never a subscription. A nightly cryptogram, free forever
+> and identical for every listener on earth, serialises a second story a night
+> at a time. No advertising, no tracking, no account, and it plays with the
+> aeroplane switch on.
+
+### The privacy card, which is worth playing
+
+The App Privacy label is a single line: Purchases, not linked to identity, not
+used for tracking. No analytics SDK, no crash reporter, no ad SDK, and not one
+network call in the app's own source. Apple has spent years promoting exactly
+this and very few games can say it.
+
+### What NOT to write in the nomination
+
+- **"Accessible", or anything near it.** See above.
+- **DEVICE 6 or Simogo**, in any field. The trademark guardrail below applies to
+  the nomination exactly as it applies to store metadata.
+- **"Puzzle game", "AI", "hyper-casual".** House voice rules.
+- **Any gate answer, frequency, or her hour.** Same rule as store copy and the
+  trailer; the nomination is read by people, and one of them will play it.
+- **Any claim about the ident degrading per broadcast.** Not built.
+
+### Practical
+
+Read the form's own field limits off the page rather than assuming them; that
+assumption already cost a redo on screenshots. Supporting material that exists
+today: nine screenshots at 1242 × 2688, the press kit at
+`numbernine.simonbuilds.app/press/`, and the Society archive as evidence of the
+craft around the product.
 
 ## Channel 5 — press ladder (timed beats, daily puzzle already live)
 
