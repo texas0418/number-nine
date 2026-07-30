@@ -73,11 +73,27 @@ A shortwave horror novella
 Broadcast One is free. Tonight's signal is free forever: a new cryptogram every night, and every listener on earth gets the same one.
 ```
 
-**Keywords** (100 max, 97 used — comma-separated, no spaces, never repeat the app name)
+**Keywords** (100 max, 96 used — comma-separated, no spaces after commas, never repeat the app name)
 
 ```
-numbers station,shortwave,cryptogram,interactive fiction,novella,decode,typography,offline,no ads
+numbers,station,cryptogram,cipher,analog,haunted,radio,decode,offline,no ads,interactive,fiction
 ```
+
+Why these and not the obvious ones. Apple indexes the **title, the subtitle and
+this field together**, so a word already in the subtitle is dead weight here.
+The old field spent 17 of its 100 characters on `shortwave` and `novella`, both
+of which the subtitle already supplies.
+
+Apple also builds phrases by combining terms across all three, which is why
+single words beat phrases. `analog` + the subtitle's `horror` gives *analog
+horror*, a live genre search this book genuinely belongs to. `radio` + the
+subtitle's `shortwave` gives *shortwave radio*. `numbers` + `station` gives
+*numbers station*, the hook MARKETING.md says travels, without paying for the
+space twice.
+
+Deliberately absent: `puzzle` and `horror` alone, which MARKETING.md rules out
+as unwinnable against the whole store; `typography`, which nobody searches for
+in games; and the app's own name, which the title already indexes.
 
 **Description** (4000 max, 2373 used)
 
