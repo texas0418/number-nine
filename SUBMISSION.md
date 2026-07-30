@@ -242,11 +242,35 @@ The app requests no permissions.
 
 ## Screenshots
 
-1242 × 2688 or 1290 × 2796, **no alpha channel, 72 dpi**. macOS screenshots are
-RGBA at 144 dpi, and ASC reports both problems as *"The dimensions of one or
-more screenshots are wrong"*, which sends you hunting pixel sizes instead.
-Convert to JPEG (which cannot carry alpha) and set 72 dpi. This cost a session
-already.
+### The size is 1242 × 2688. Do not deduce it again.
+
+This app's version page has **one iPhone slot: 6.5" Display**, accepting
+`1242 × 2688` · `2688 × 1242` · `1284 × 2778` · `2778 × 1284`. **Use
+1242 × 2688.**
+
+Do *not* target 1290 × 2796. Apple's general guidance says 6.9" is the required
+modern set, and that is the wrong answer for this record — an earlier draft of
+this very section offered "1242 × 2688 or 1290 × 2796", which is how a session
+on 2026-07-30 converted nine shots to the wrong size and had to redo them. The
+ASC upload box prints its own accepted sizes; read them off the page.
+
+Simon's screenshots arrive as `~/Downloads/IMG_*.PNG` at **1125 × 2436, 144 dpi**
+(iPhone X-class 5.8"), which is not a slot on its own. One command per file:
+
+```bash
+sips -s format jpeg -s formatOptions 95 -s dpiWidth 72 -s dpiHeight 72 \
+  -z 2688 1242 IMG_6256.PNG --out 01-staircase.jpg
+```
+
+- **`-z` takes HEIGHT then WIDTH.** `-z 2688 1242`, not the other way round.
+- **72 dpi matters.** Sources are 144. ASC reports a dpi mismatch as *"The
+  dimensions of one or more screenshots are wrong"* — which sends you measuring
+  pixels that were never the problem. That cost a whole session once.
+- **JPEG, not PNG**: JPEG cannot carry alpha, so that failure mode is closed by
+  the format rather than by remembering to check.
+- **No crop or pad.** Source aspect 2.1653 against the slot's 2.1642 — a straight
+  `-z` scale distorts by ~0.05%. The upscale is ~10%, so type stays acceptable.
+- Verify: `sips -g pixelWidth -g pixelHeight -g dpiWidth -g hasAlpha out.jpg`.
 
 Content per MARKETING.md: read as a haunted hardcover, not an app. No
 gameplay-video framing.
