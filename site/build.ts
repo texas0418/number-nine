@@ -451,7 +451,7 @@ function signalPage(): Page {
 <summary>One · Where to listen</summary>
 <div class="step__body">
 <p class="prose">The rhythm is WEEKLY and it does not wander. Whatever she does on a given night of the week, she will do again on that night next week, and every listener on earth receives it at the same time. If tonight looks wrong, the first thing to establish is not what the figures mean but what day it is.</p>
-<p class="prose">Three nights in seven are not ordinary. On one of them nothing about the figures has changed at all and only their appearance has. On another the whole line has been treated exactly as this station treats everything, and a member who has read the first broadcast already knows the rule and has simply not thought to apply it here. On the third the station has been unusually generous, and has printed something in its header that it does not normally print.</p>
+<p class="prose">Three nights in seven are not ordinary, and none of them is harder than the rest — this station's variations reward a listener who notices, and never punish one who does not. On another the whole line has been treated exactly as this station treats everything, and a member who has read the first broadcast already knows the rule and has simply not thought to apply it here. On the third the station has been unusually generous, and has printed something in its header that it does not normally print.</p>
 </div>
 </details>
 
@@ -460,7 +460,7 @@ function signalPage(): Page {
 <div class="step__body">
 <p class="prose voice">“Sunday is the one that catches people, and it should not, because it is the first rule the family ever wrote down: her words arrive turned around. Solve the night exactly as you always would. When every figure has its letter and the line still reads as nonsense, do not assume you have erred. Read it from the far end.” — a member of thirty years</p>
 <p class="prose voice">“Monday she prints a word in the header that has no business being there. It is not decoration and it is not the transmission. Write it out, strike any letter that repeats, follow it with the rest of the alphabet in order, and number what you have from one. That is the whole key, handed to you, and it takes a half minute.” — the Chair, in correspondence</p>
-<p class="prose voice">“Thursday she keys her figures rather than printing them, which is what a real station does and what half of us learned as boys. Nothing else about the night has changed. Read the figures back and carry on as normal. She hands you an extra letter that night, which we take as an apology.” — our member at the coast</p>
+<p class="prose voice">“Thursday the grid is perfectly ordinary and the interesting part sits ABOVE it, in a short line of keying that the station offers without a word of explanation. It is a courtesy, not an obstacle: she is naming a letter and then the figure that stands for it, and she does it twice. Read it and you begin two pairings ahead of everybody who could not. Ignore it entirely and you have lost nothing — Thursday is an ordinary night for anyone who cannot key.” — our member at the coast</p>
 </div>
 </details>
 
@@ -473,7 +473,7 @@ function signalPage(): Page {
 <div>
 <p class="answer">Sunday: the line is sent back to front. Letter frequencies and word shapes are untouched, so solve normally and read the finished line in reverse.</p>
 <p class="answer">Monday: the word in the header is the key. Drop repeated letters from it, append the remainder of A–Z in order, number the result one to twenty-six.</p>
-<p class="answer">Thursday: the figures are keyed in Morse. One group per digit. The night carries one extra revealed letter.</p>
+<p class="answer">Thursday: the grid is ordinary. Above it, two pairings are keyed in Morse — a letter, then the figure standing for it, one Morse group per digit. Decode them and enter them yourself; they are not filled in for you. There is no bonus letter: the keying IS the bonus.</p>
 <p class="answer">0 ····· &nbsp; 1 ·−−−− &nbsp; 2 ··−−− &nbsp; 3 ···−− &nbsp; 4 ····− &nbsp; 5 ·····<br>
 6 −···· &nbsp; 7 −−··· &nbsp; 8 −−−·· &nbsp; 9 −−−−·</p>
 <p class="answer">The remaining four nights are ordinary, and the number of letters given away for nothing varies with the day: most generous at the start of the week, meanest on a Saturday.</p>
