@@ -71,11 +71,17 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
 
 ### Build — craft
 
-- DESCOPED (Simon, 2026-07-30): **share card as a rendered image** and the
-  **VoiceOver pass**. The nightly share ships as text (`Share.share`, spoiler-
-  safety in `redactedTranscript`) and that is the shipping form; Dynamic Type
-  stays audited to the largest accessibility size, and no accessibility props
-  are going into the engine. Do not re-add either as outstanding work.
+- [x] **Share card as a rendered IMAGE.** Descoped on 2026-07-30 and REINSTATED
+      the same day once the schedule allowed it (Simon: "we have three weeks
+      before launch, let's give people something great"). Black bars over
+      unsolved letters, amber-on-black identity, serial and streak, the site
+      address in the footer. Image first, the text share kept as the floor so a
+      missing native module costs a picture and never a share. Content rules
+      (never print an unsolved or WRONG letter) are tested in `test-cipher.ts`.
+- DESCOPED and staying so (Simon, 2026-07-30): the **VoiceOver pass**. Dynamic
+  Type stays audited to the largest accessibility size and every hardware puzzle
+  keeps a touch alternative, but no accessibility props are going into the
+  engine. Do not re-add it as outstanding work.
 - [x] **Icon and splash: the generated phosphor "9" is the icon** (Simon,
       2026-07-30). Not a placeholder, not awaiting a polish pass. It is
       regenerable from `scripts/gen-icon.py` if a size is ever needed.

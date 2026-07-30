@@ -1,5 +1,6 @@
 // test-cipher.ts — the daily transmission math, run in Node: npx tsx test-cipher.ts
 
+import { cardStatusLine, cardWords, solvedFraction } from './src/daily/card';
 import {
   ALPHABET,
   buildPuzzle,
@@ -148,6 +149,51 @@ for (let d = 0; d < 365; d++) {
   if (redactedTranscript(puz, full) !== plaintext.toUpperCase()) roundTripFails++;
 }
 ok('365 nightly puzzles round-trip', roundTripFails === 0);
+
+
+// --- The share card --------------------------------------------------------
+// It is posted publicly to an audience who mostly have not solved tonight, so
+// the leak test is the one that matters.
+{
+  const day = '2026-08-05';
+  const line = transmissionForDay(day).plaintext;
+  const puz = buildPuzzle(day, line);
+  const truth = new Map([...puz.answerByNum]);
+
+  const full = cardWords(puz, truth);
+  ok('a solved card reproduces the line as sent',
+    full.map((w) => w.map((c) => c.letter).join('')).join(' ') ===
+      redactedTranscript(puz, truth));
+
+  const none = cardWords(puz, new Map());
+  ok('an unsolved card bars every enciphered cell',
+    none.every((w) => w.every((c) => c.literal || c.letter === null)));
+
+  // The leak: a WRONG guess must bar, not print. Printing it would be both a
+  // lie and, for anyone reading the post, a false clue.
+  const wrong = new Map<number, string>();
+  for (const [num, letter] of puz.answerByNum)
+    wrong.set(num, letter === 'A' ? 'B' : 'A');
+  const wrongCard = cardWords(puz, wrong);
+  const leaked = wrongCard.flat().filter(
+    (c) => !c.literal && c.letter !== null,
+  );
+  ok('a wrong guess is barred, never printed', leaked.length === 0);
+
+  ok('the card grid matches the puzzle shape',
+    full.map((w) => w.length).join(',') === puz.words.map((w) => w.length).join(','));
+
+  const half = new Map([...puz.answerByNum].slice(0, Math.ceil(puz.answerByNum.size / 2)));
+  const f = solvedFraction(puz, half);
+  ok('solved fraction is between 0 and 1', f > 0 && f < 1);
+  ok('an empty board is zero', solvedFraction(puz, new Map()) === 0);
+  ok('a full board is one', solvedFraction(puz, truth) === 1);
+
+  ok('status speaks in nights, never a score',
+    cardStatusLine(12, true) === 'RECEIVED · 12 NIGHTS LISTENING' &&
+      cardStatusLine(1, true) === 'RECEIVED · FIRST NIGHT' &&
+      cardStatusLine(9, false) === 'STILL DECODING');
+}
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);
