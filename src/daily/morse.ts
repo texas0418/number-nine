@@ -1,11 +1,22 @@
 // src/daily/morse.ts
-// MORSE NIGHTS. One night a week she sends in CW instead of counting aloud.
+// MORSE NIGHTS. One night a week she keys part of the transmission in CW.
 //
-// This is a PRESENTATION change and nothing else. The plaintext, the key, the
-// answer map and the solved check are all untouched: on a Morse night the cell
-// still carries the same ciphertext number, it is simply printed as the dots
-// and dashes a real numbers station would key. Solve it exactly as any other
-// night, once you have read the figures back.
+// FIRST DESIGN, ABANDONED 2026-07-30: the ciphertext figures themselves were
+// printed as Morse. It was safe and it was worthless. Reading the marks got you
+// the number the other six nights print for free, so knowing Morse let you read
+// faster and never let you solve better. Every player paid; nobody was paid.
+// The tell was that the night needed a compensating extra letter — you do not
+// compensate for a feature, you compensate for friction.
+//
+// WHAT IT IS NOW: the grid is ordinary. Above it she keys a short GIFT — a
+// letter and the number it stands for, in Morse, unexplained. A listener who
+// reads it starts two pairings ahead. A listener who cannot reads an ordinary
+// Thursday and loses nothing they ever had. Knowledge is an advantage rather
+// than a toll, which is how the header-key night already works.
+//
+// The gift must be a PAIRING. "E is free" is worth nothing on its own: a reveal
+// in this puzzle is the number-to-letter link, so she keys the letter and then
+// its figure.
 //
 // Why that matters beyond taste: Broadcast Four's crossover gate (`b4-night`,
 // "WHAT DID I SAY TONIGHT") resolves against the transmission's PLAINTEXT. If a
@@ -54,8 +65,19 @@ export function morseForNumber(n: number): string {
     .join(' ');
 }
 
-/** The reading burden of a Morse night is real even though the puzzle is
- *  identical, so the night hands back one more letter than its weekday would
- *  normally give. Presentation change, not difficulty change — this is the line
- *  that keeps that claim honest. */
-export const MORSE_NIGHT_BONUS_REVEALS = 1;
+/** International Morse for the letters, so she can key which letter she is
+ *  giving away. */
+export const MORSE_LETTERS: Readonly<Record<string, string>> = {
+  A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.', G: '--.',
+  H: '....', I: '..', J: '.---', K: '-.-', L: '.-..', M: '--', N: '-.',
+  O: '---', P: '.--.', Q: '--.-', R: '.-.', S: '...', T: '-', U: '..-',
+  V: '...-', W: '.--', X: '-..-', Y: '-.--', Z: '--..',
+};
+
+export const morseForLetter = (ch: string): string =>
+  MORSE_LETTERS[ch.toUpperCase()] ?? '';
+
+/** How many pairings she keys on a Morse night. Two: enough to be worth the
+ *  reading, few enough that a listener who cannot read Morse is playing an
+ *  ordinary night rather than a crippled one. */
+export const MORSE_GIFT_COUNT = 2;

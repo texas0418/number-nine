@@ -1,7 +1,8 @@
 // test-cipher.ts — the daily transmission math, run in Node: npx tsx test-cipher.ts
 
 import { ALPHABET, REVEALS_BY_WEEKDAY, buildPuzzle, isSolved, keyForDay, lettersByFrequency, redactedTranscript, revealCount } from './src/daily/cipher';
-import { isMorseNight, MORSE_DIGITS, MORSE_WEEKDAY, morseForNumber } from './src/daily/morse';
+import { isMorseNight, MORSE_DIGITS, MORSE_WEEKDAY, morseForLetter, morseForNumber } from './src/daily/morse';
+import { giftToMorse, keyedGifts } from './src/daily/keyedGift';
 import { HEADER_KEYWORDS, HEADER_KEY_WEEKDAY, isHeaderKeyNight, keyedAlphabet, keywordForDay } from './src/daily/headerkey';
 import { TRANSPOSITION_WEEKDAY, isTurnedAroundNight, turnAround } from './src/daily/transposition';
 import { nightWordChoices } from './src/daily/crossover';
@@ -178,10 +179,23 @@ ok('365 nightly puzzles round-trip', roundTripFails === 0);
       [...b.answerByNum.values()].sort().join(''));
   const solve = (p: typeof a) => new Map([...p.answerByNum]);
   ok('a morse night still solves', isSolved(a, solve(a)));
-  ok('morse night hands back one extra letter',
-    revealCount(morseThu) === REVEALS_BY_WEEKDAY[4] + 1);
+  ok('a morse night gets NO bonus reveal — the gift is the reward now',
+    revealCount(morseThu) === REVEALS_BY_WEEKDAY[4]);
   ok('a plain night is unchanged',
     revealCount(plainWed) === REVEALS_BY_WEEKDAY[3]);
+
+  // THE GIFT. It must be strictly additive: never a letter the grid already
+  // gave away, and always a real pairing from tonight's key.
+  const gifts = keyedGifts(a);
+  ok('a morse night keys two pairings', gifts.length === 2);
+  ok('gifts are never already-revealed letters',
+    gifts.every((g) => !a.revealedLetters.includes(g.letter)));
+  ok('every gift is a true pairing',
+    gifts.every((g) => a.answerByNum.get(g.num) === g.letter));
+  ok('gifts are distinct', new Set(gifts.map((g) => g.letter)).size === gifts.length);
+  ok('the keyed line carries both letter and figure',
+    giftToMorse(gifts[0]) === `${morseForLetter(gifts[0].letter)}  =  ${morseForNumber(gifts[0].num)}`);
+  ok('a plain night keys nothing', !isMorseNight(plainWed));
 }
 
 // --- Header-key nights -----------------------------------------------------

@@ -8,7 +8,7 @@
 
 import { headerKeyMap, isHeaderKeyNight } from './headerkey';
 import { isTurnedAroundNight, turnAround } from './transposition';
-import { isMorseNight, MORSE_NIGHT_BONUS_REVEALS, weekdayOf } from './morse';
+import { weekdayOf } from './morse';
 
 export const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -87,10 +87,10 @@ export function lettersByFrequency(plaintext: string): string[] {
 export const REVEALS_BY_WEEKDAY = [3, 4, 3, 3, 3, 2, 1] as const;
 
 export function revealCount(dayKey: string): number {
-  const base = REVEALS_BY_WEEKDAY[weekdayOf(dayKey)];
-  // A Morse night is the same puzzle behind a slower read, so it hands back one
-  // more letter. See src/daily/morse.ts.
-  return base + (isMorseNight(dayKey) ? MORSE_NIGHT_BONUS_REVEALS : 0);
+  // A Morse night gets no bonus: its grid is ordinary and what it adds is a
+  // keyed GIFT above the grid, which must be read to be claimed. See
+  // ./keyedGift.ts.
+  return REVEALS_BY_WEEKDAY[weekdayOf(dayKey)];
 }
 
 export function buildPuzzle(dayKey: string, plaintext: string): DailyPuzzle {

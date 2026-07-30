@@ -41,7 +41,8 @@ import {
 } from '../db';
 import { playIdent, setStaticLevel, speakNumbers } from '../audio';
 import { isHeaderKeyNight, keywordForDay } from '../daily/headerkey';
-import { isMorseNight, morseForNumber } from '../daily/morse';
+import { giftLine, keyedGifts } from '../daily/keyedGift';
+import { isMorseNight } from '../daily/morse';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -59,19 +60,16 @@ const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
  *  digit instead of one or two glyphs, so the cell grows taller and the figure
  *  font shrinks. Width is untouched: the grid already only just fits the
  *  longest word at the largest text size, and widening would overflow it. */
-function boxSizes(maxWordLen: number, morse = false) {
+function boxSizes(maxWordLen: number) {
   const scale = Math.min(PixelRatio.getFontScale(), 1.9);
   const win = Dimensions.get('window').width;
-  // Morse cells carry two stacked groups, so their width is capped tighter:
-  // letting Dynamic Type inflate the width inflates the HEIGHT twice as fast.
-  const cellW = Math.max(22, Math.min((morse ? 23 : 26) * scale, (win - 74) / maxWordLen));
+  const cellW = Math.max(22, Math.min(26 * scale, (win - 74) / maxWordLen));
   const keyW = Math.min(44, Math.max(30, (win - 44 - 8 * 6) / 9));
   return {
     cellW,
-    cellH: Math.round(cellW * (morse ? 1.9 : 1.55)),
+    cellH: Math.round(cellW * 1.55),
     cellFont: Math.round(cellW * 0.58),
     numFont: Math.max(9, Math.round(cellW * 0.35)),
-    morseFont: Math.max(7, Math.round(cellW * 0.28)),
     keyW,
     keyH: Math.round(Math.max(40, 40 * Math.min(scale, 1.4))),
     keyFont: Math.round(Math.min(22, 15 * Math.min(scale, 1.5))),
@@ -191,9 +189,10 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
   // puzzle, same key, same plaintext — see src/daily/morse.ts.
   const morseNight = isMorseNight(puzzle.dayKey);
   const headerKeyNight = isHeaderKeyNight(puzzle.dayKey);
+  const gifts = useMemo(() => (morseNight ? keyedGifts(puzzle) : []), [morseNight, puzzle]);
   const sizes = useMemo(
-    () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length)), morseNight),
-    [puzzle, morseNight],
+    () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length))),
+    [puzzle],
   );
 
   return (
@@ -202,7 +201,18 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
         <Pressable onPress={onBack} hitSlop={12}>
           <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ set</Text>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
+        {/* Shrinks rather than truncating. The row holds three competing
+            elements on a narrow screen, and the buttons scale faster than the
+            title does (1.3 against 1.15), so at a large text size the title was
+            squeezed until it ellipsised into its neighbours (device,
+            2026-07-30: "TONIGHT'S S… listen share"). */}
+        <Text
+          style={styles.title}
+          maxFontSizeMultiplier={1.15}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
+        >
           TONIGHT’S SIGNAL
         </Text>
         <View style={styles.headRight}>
@@ -225,6 +235,16 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
         {headerKeyNight ? ` · ${keywordForDay(puzzle.dayKey)}` : ''}
       </Text>
 
+      {/* A Morse night keys two pairings above the grid, unexplained. Read it
+          and you start ahead; do not and this is an ordinary Thursday. It is
+          deliberately NOT applied for you — a gift you did not have to read is
+          just a reveal with extra steps. */}
+      {morseNight && gifts.length > 0 && (
+        <Text style={styles.keyed} maxFontSizeMultiplier={1.2} numberOfLines={2}>
+          {giftLine(gifts)}
+        </Text>
+      )}
+
       <ScrollView style={styles.paper} contentContainerStyle={styles.paperInner}>
         {puzzle.words.map((word, wi) => (
           <View key={wi} style={styles.word}>
@@ -240,7 +260,6 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
                   guess={guesses.get(sym.num)}
                   selected={selected === sym.num}
                   revealed={revealedSet.has(sym.num)}
-                  morse={morseNight}
                   sizes={sizes}
                   onPress={() => !solved && setSelected(sym.num)}
                 />
@@ -311,7 +330,6 @@ function Cell({
   guess,
   selected,
   revealed,
-  morse,
   sizes,
   onPress,
 }: {
@@ -319,7 +337,6 @@ function Cell({
   guess: string | undefined;
   selected: boolean;
   revealed: boolean;
-  morse: boolean;
   sizes: ReturnType<typeof boxSizes>;
   onPress: () => void;
 }) {
@@ -368,45 +385,25 @@ function Cell({
       >
         {spin ?? guess ?? ' '}
       </Text>
-      {morse ? (
-        // One group per digit, stacked, because a keyed two-figure number is
-        // eleven glyphs wide and the cell is not.
-        <View style={styles.morseStack} pointerEvents="none">
-          {morseForNumber(num)
-            .split(' ')
-            .map((group, gi) => (
-              <Text
-                key={gi}
-                style={[
-                  styles.cellMorse,
-                  { fontSize: sizes.morseFont },
-                  selected && { color: colors.dial, ...amberGlow },
-                ]}
-                allowFontScaling={false}
-              >
-                {group}
-              </Text>
-            ))}
-        </View>
-      ) : (
-        <Text
-          style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial, ...amberGlow }]}
-          allowFontScaling={false}
-        >
-          {num}
-        </Text>
-      )}
+      <Text
+        style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial, ...amberGlow }]}
+        allowFontScaling={false}
+      >
+        {num}
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  morseStack: { alignItems: 'center', justifyContent: 'center' },
-  cellMorse: {
+  keyed: {
     fontFamily: fonts.mono,
-    color: colors.faint,
+    fontSize: 11,
     letterSpacing: 0,
-    lineHeight: 9,
+    color: colors.dialDim,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 2,
   },
   root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62, paddingHorizontal: 22 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
@@ -415,10 +412,15 @@ const styles = StyleSheet.create({
   headRight: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   title: {
     flex: 1,
+    flexShrink: 1,
     textAlign: 'center',
     fontFamily: fonts.mono,
     fontSize: 13,
-    letterSpacing: 3,
+    // Was 3. Mono already spaces generously, and three points across sixteen
+    // glyphs cost ~48pt of a ~183pt slot — the single largest reason the title
+    // did not fit.
+    letterSpacing: 1.5,
+    marginHorizontal: 4,
     color: colors.prose,
   },
   meta: {
