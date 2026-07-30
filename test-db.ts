@@ -14,6 +14,7 @@ import {
   INSERT_SOLVE_SQL,
   MIGRATIONS,
   RESET_PROGRESS_SQL,
+  RESET_STORY_KV_SQL,
   SET_KV_SQL,
   TARGET_DB_VERSION,
   UPSERT_PROGRESS_SQL,
@@ -105,6 +106,27 @@ eq('kv upserts',
   '{"3":"E","7":"T"}');
 db.prepare(DELETE_KV_SQL).run('daily-guesses:2026-07-27');
 eq('kv deletes', db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-27'), undefined);
+
+// --- resetting the story must take its FLAGS with it ----------------------
+// Clearing chapter_progress alone left the wound-clock lie and every b6
+// night/hurried/ending mark behind, so a replay opened its night gates at
+// once and still remembered the ending. The nightly signal must survive:
+// the confirm dialog promises the log is kept.
+db.prepare(SET_KV_SQL).run('b4-clock-lie', '1');
+db.prepare(SET_KV_SQL).run('b6-n2-seen', '2026-07-29');
+db.prepare(SET_KV_SQL).run('b6-hurried', '1');
+db.prepare(SET_KV_SQL).run('b6-ending', 'seat');
+db.prepare(SET_KV_SQL).run('daily-guesses:2026-07-30', '{"1":"A"}');
+db.prepare(SET_KV_SQL).run('review-asked', '1');
+db.prepare(RESET_STORY_KV_SQL).run();
+
+for (const k of ['b4-clock-lie', 'b6-n2-seen', 'b6-hurried', 'b6-ending'])
+  eq(`reset clears ${k}`, db.prepare(GET_KV_SQL).get(k), undefined);
+eq('reset keeps the nightly signal log',
+  (db.prepare(GET_KV_SQL).get('daily-guesses:2026-07-30') as { v: string }).v,
+  '{"1":"A"}');
+eq('reset keeps the review flag',
+  (db.prepare(GET_KV_SQL).get('review-asked') as { v: string }).v, '1');
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);

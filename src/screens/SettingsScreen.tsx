@@ -3,26 +3,18 @@
 // (reset story progress) behind a confirm.
 
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { getProgress, resetChapter, resetProgress } from '../db';
-import { BROADCAST_TWO } from '../chapters/broadcast2';
+import { resetProgress } from '../db';
 import { restorePurchases, useStoryUnlocked } from '../proAccess';
 import { openSociety } from '../society';
 import { colors, fonts } from '../theme';
 
 export default function SettingsScreen({ onBack }: { onBack: () => void }) {
   const unlocked = useStoryUnlocked();
-  const b2Started = (getProgress(BROADCAST_TWO.id)?.blockIndex ?? 0) > 0;
 
   const confirmReset = () =>
     Alert.alert('Reset the story?', 'Broadcast progress is erased. The nightly signal log is kept.', [
       { text: 'Keep listening', style: 'cancel' },
       { text: 'Reset', style: 'destructive', onPress: () => resetProgress() },
-    ]);
-
-  const confirmResetTwo = () =>
-    Alert.alert('Receive Broadcast Two again?', 'Only Broadcast Two starts over. Broadcast One and the nightly signal are kept.', [
-      { text: 'Keep listening', style: 'cancel' },
-      { text: 'Begin again', style: 'destructive', onPress: () => resetChapter(BROADCAST_TWO.id) },
     ]);
 
   const restore = async () => {
@@ -56,7 +48,6 @@ export default function SettingsScreen({ onBack }: { onBack: () => void }) {
       <View style={styles.rows}>
         <Row label={unlocked ? 'story unlocked' : 'restore purchases'} onPress={restore} />
         <Row label="the listeners’ society" onPress={society} />
-        {b2Started && <Row label="receive broadcast two again" onPress={confirmResetTwo} danger />}
         <Row label="reset story progress" onPress={confirmReset} danger />
       </View>
 

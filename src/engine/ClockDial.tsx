@@ -250,7 +250,11 @@ const styles = StyleSheet.create({
   },
   readout: {
     position: 'absolute',
-    bottom: 34,
+    // Clear of the bottom numeral. On a 24h dial 12 sits at the BOTTOM, and
+    // at bottom: 34 the readout landed straight on top of it (Simon,
+    // playtest 2026-07-30). The numerals sit at radius SIZE/2 - 34, so the
+    // readout has to come in toward the hub, not merely shift a few points.
+    bottom: 58,
     fontFamily: fonts.mono,
     fontSize: 14,
     letterSpacing: 3,

@@ -19,6 +19,7 @@ import {
   MIGRATIONS,
   RESET_CHAPTER_SQL,
   RESET_PROGRESS_SQL,
+  RESET_STORY_KV_SQL,
   SET_KV_SQL,
   UPSERT_PROGRESS_SQL,
   progressToParams,
@@ -71,6 +72,7 @@ export function listProgress(): ChapterProgress[] {
 
 export function resetProgress(): void {
   getDb().runSync(RESET_PROGRESS_SQL);
+  getDb().runSync(RESET_STORY_KV_SQL);
 }
 
 /** Erase ONE broadcast's progress (replay it) without touching the others. */

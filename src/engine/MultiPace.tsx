@@ -221,7 +221,12 @@ const styles = StyleSheet.create({
   lubberLit: { backgroundColor: colors.dial, ...amberViewGlow },
   degrees: {
     position: 'absolute',
-    bottom: 16,
+    // At the HUB, not the rim. The rose rotates with the heading, so its N
+    // sweeps every point of the rim — at southerly bearings it landed on a
+    // readout pinned to the bottom (Simon, playtest 2026-07-30). Nudging it
+    // would only narrow the window; the centre is the one place nothing
+    // turns through, and is where a compass readout belongs anyway.
+    top: SIZE / 2 - 10,
     alignSelf: 'center',
     fontFamily: fonts.mono,
     fontSize: 15,
