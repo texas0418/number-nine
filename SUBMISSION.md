@@ -214,6 +214,27 @@ integration.
 If a future build adds analytics, a crash reporter, or `Purchases.logIn`, this
 answer stops being true. Nothing else in the app can change it.
 
+### The data-type list: tick Purchases, and nothing else
+
+The governing definition, which settles most of that long page: **"collected"
+means transmitted off the device** to you or a third party. Data that only ever
+sits in the app's own storage is not collected. Progress, solved gates, streaks
+and the signal log are all on-device SQLite, so none of them are disclosable.
+
+The types that look plausible and are still **No**:
+
+| Type | Why not |
+|---|---|
+| Payment Info | Apple's own note on the page: payment happens outside the app through a payment service and the developer never has access, so it is not Collected |
+| User ID | No custom app user identifier is ever set and `logIn` is never called; RevenueCat's guide ties this to custom identifiers |
+| Device ID | No IDFA and no advertising integration; their guide ties this to ad ID systems |
+| Product Interaction | The trap on this page. "Saved place in a game" is exactly what the app stores, but locally, and never transmits |
+| Crash / Performance Data | No crash reporter and no analytics SDK. Apple's own OS-level crash collection is not the developer's to declare |
+| Fitness | The other arguable one: `expo-sensors` reads the accelerometer and gyroscope, but in the moment, to open a gate. Never stored, never sent, and not exercise data |
+| Coarse Location | No location request at all, and the compass is a magnetometer heading rather than a position. RevenueCat states it does not store IP |
+| Audio Data | No microphone; `expo-audio` ships `microphonePermission: false` |
+| Gameplay / Other User Content | The nightly share hands text to whichever app the user picks. It never reaches us |
+
 ---
 
 ## Age rating
