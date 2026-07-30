@@ -58,15 +58,11 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
 
 ### Build — craft
 
-- [ ] **Share card as a rendered IMAGE, not text** — black bars over unsolved
-      letters, amber-on-black identity, serial + streak, "receive tonight's
-      signal → App Store" footer, deep link. This is Channel 1 in
-      [MARKETING.md](MARKETING.md): the card is the always-on ad, so it's a
-      launch dependency, not a nicety. (Spoiler-safety already holds in
-      `redactedTranscript`.)
-- [ ] **VoiceOver pass** — a text game can be the most accessible game on the
-      store; it's both the right thing and a graded Apple-featuring criterion
-      (Channel 4). Dynamic Type is already audited to the largest accessibility size.
+- DESCOPED (Simon, 2026-07-30): **share card as a rendered image** and the
+  **VoiceOver pass**. The nightly share ships as text (`Share.share`, spoiler-
+  safety in `redactedTranscript`) and that is the shipping form; Dynamic Type
+  stays audited to the largest accessibility size, and no accessibility props
+  are going into the engine. Do not re-add either as outstanding work.
 - [ ] Polish icon/splash (current: generated glowing "9" — good, not final)
 
 ### Launch — store + marketing (see [MARKETING.md](MARKETING.md))
@@ -77,4 +73,7 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
 - [ ] Store page: preview video, haunted-hardcover screenshots, voice-consistent copy
 - [ ] ASO long-tail: "numbers station," "shortwave horror," "no ads horror story," "interactive novella"
 - [ ] Pre-launch ARG teaser account (numbers-station intercepts; the campaign is the ad)
-- [ ] Privacy + support pages (house pattern: `number-nine-privacy`, `number-nine-support` repos)
+- [ ] Privacy + support pages — written, at `site/privacy/` and `site/support/`
+      on the Society site (which absorbs the old `number-nine-privacy` /
+      `number-nine-support` repo pattern, per issue #8). Outstanding: confirm
+      the support address and publisher name in `site/build.ts`, then deploy.
