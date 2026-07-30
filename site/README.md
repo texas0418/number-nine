@@ -92,12 +92,41 @@ figures, which the fiction says out loud constantly and legitimately.
 If a playtest round changes an answer, the build breaks until the note is
 rewritten. That is the point of it.
 
+## Structure
+
+Issue #8 is explicit that this domain IS the official game page and the Society
+archive is a section of it, so:
+
+| Path | What | Masthead |
+|---|---|---|
+| `/` | The game page. Premise, what you get, store link, cards out to everything else | plain |
+| `/society/` | The Society's own front, "Clues, never solutions" | 1963 |
+| `/archive/` | All 50 intercepts, six sections deep | 1963 |
+| `/about/` | How the Society grades its help, plus the colophon | 1963 |
+| `/press/` | Press kit: fact sheet, descriptions, assets, spoiler policy | plain |
+| `/privacy/` | Privacy notice | plain |
+| `/support/` | Support | plain |
+
+Two mastheads, and the split is deliberate. Pages App Review and journalists read
+speak as the publisher; a fictional 1963 letterhead over a privacy notice is a
+worse joke than it is a flourish. Pages a stuck reader visits keep the fiction.
+
+`APP_STORE_URL` at the top of `build.ts` is EMPTY until launch. A store link that
+404s on the front page is worse than no link, so `storeCta` prints a "coming
+soon" line instead. Set it on release day and rebuild.
+
+Note that moving the Society front from `/` to `/society/` added a URL rather
+than breaking one: `/archive/`, `/about/`, `/privacy/` and `/support/` are all
+unchanged, so nothing already published or linked goes dead.
+
 ## Not yet built
 
-- Game page, privacy, support and press kit (issue #8 also parks these here).
-  Privacy in particular wants care: the app is offline and ad-free, but
-  RevenueCat handles the IAP, so "zero tracking" needs verifying against what
-  that SDK actually collects before anything is published.
-- Real photography. The scene art in `assets/scenes/` is Gemini placeholder
-  work (see ART.md) and none of it appears here — a public site is where art
-  gets judged, and for the hotspot gates the image *is* the puzzle.
+- The trailer. The game page has no video embed yet because there is no video;
+  it wants a slot above the cards when there is one.
+- `simonbuilds.app` itself, the plain publisher front (issue #8: games and
+  contact, what App Review and a licence paper trail expect). That is the
+  parent domain rather than this subdomain, and a separate upload.
+- Real photography is NOT outstanding. The Gemini scene art ships (Simon,
+  2026-07-30, terms checked for commercial use). None of it appears on the site
+  yet, though, and for the hotspot gates the image *is* the puzzle, so putting
+  scene art on a public page needs a spoiler decision first.
