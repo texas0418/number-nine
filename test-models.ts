@@ -14,7 +14,7 @@ import { BROADCAST_THREE } from './src/chapters/broadcast3';
 import { BROADCAST_FOUR } from './src/chapters/broadcast4';
 import { BROADCAST_FIVE } from './src/chapters/broadcast5';
 import { BROADCAST_SIX } from './src/chapters/broadcast6';
-import type { ChapterBlock } from './src/models';
+import type { Chapter, ChapterBlock } from './src/models';
 
 let failures = 0;
 const ok = (name: string, cond: boolean, detail = '') => {
@@ -91,6 +91,36 @@ const answersNearGates = (bs: ChapterBlock[]): boolean =>
     );
   });
 ok('no gate answer within three blocks of its gate', !answersNearGates(blocks));
+
+// Pressure-valve doctrine: a margin note removes a WALL, it never hands over
+// the number. No hint may contain the literal thing its own gate wants —
+// including the word a flip/lamp gate asks you to touch and the figures a
+// knocking wall wants echoed.
+const secretOf = (b: ChapterBlock): string | null => {
+  if (b.kind === 'knock') return b.groups.join('');
+  if ('targetWord' in b && typeof b.targetWord === 'string') return b.targetWord;
+  return answerKeyOf(b);
+};
+const gatesById = (ch: Chapter): Map<string, ChapterBlock> =>
+  new Map(
+    ch.blocks.flatMap((b) =>
+      (ENGINE_GATE_KINDS as readonly string[]).includes(b.kind) && 'id' in b
+        ? [[(b as { id: string }).id, b] as const]
+        : [],
+    ),
+  );
+const hintsLeakAnswers = (ch: Chapter): boolean => {
+  const byId = gatesById(ch);
+  return Object.entries(ch.hints ?? {}).some(([id, note]) => {
+    const gate = byId.get(id);
+    const secret = gate ? secretOf(gate) : null;
+    return !!secret && note.toUpperCase().includes(secret.toUpperCase());
+  });
+};
+/** Every gate the reader can stall at must have a note. B1 and B2 predate the
+ *  valve, so this is the check that keeps the retro-fit complete. */
+const hintsCoverEveryGate = (ch: Chapter): boolean =>
+  [...gatesById(ch).keys()].every((id) => !!ch.hints?.[id]);
 ok('reveal stops at first gate',
   visibleCount(blocks, new Set()) === gateIdxs[0] + 1);
 ok('reveal stops at second gate once first solved',
@@ -112,6 +142,12 @@ ok('fresh start reconstructs none', solvedGatesBefore(blocks, 0).size === 0);
     restored.size === 1 && restored.has(gateIdxs[0]) && !restored.has(gateIdxs[1]));
 }
 ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEnd');
+ok(
+  'b1 hints all reference real gates',
+  Object.keys(BROADCAST_ONE.hints ?? {}).every((id) => gatesById(BROADCAST_ONE).has(id)),
+);
+ok('b1 hints cover every gate', hintsCoverEveryGate(BROADCAST_ONE));
+ok('b1 hints never contain their own answer', !hintsLeakAnswers(BROADCAST_ONE));
 
 // --- Broadcast Two doctrine ----------------------------------------------
 {
@@ -145,6 +181,14 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
       knock.groups.join('') === String(radio.targetKhz)
     );
   })());
+  ok(
+    'b2 hints all reference real gates',
+    Object.keys(BROADCAST_TWO.hints ?? {}).every((id) => gatesById(BROADCAST_TWO).has(id)),
+  );
+  // Includes the two un-failable acts (the seal, the sending key): the page
+  // will not continue without the reader's hand, so they can strand too.
+  ok('b2 hints cover every gate', hintsCoverEveryGate(BROADCAST_TWO));
+  ok('b2 hints never contain their own answer', !hintsLeakAnswers(BROADCAST_TWO));
 }
 
 // --- Broadcast Three doctrine ---------------------------------------------
@@ -173,6 +217,8 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
     'b3 hints all reference real gates',
     Object.keys(BROADCAST_THREE.hints ?? {}).every((id) => gateIds.has(id)),
   );
+  ok('b3 hints never contain their own answer', !hintsLeakAnswers(BROADCAST_THREE));
+  ok('b3 hints cover every gate', hintsCoverEveryGate(BROADCAST_THREE));
 }
 
 // --- Broadcast Four doctrine ----------------------------------------------
@@ -235,6 +281,8 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
     'b4 hints all reference real gates',
     Object.keys(BROADCAST_FOUR.hints ?? {}).every((id) => gateIds.has(id)),
   );
+  ok('b4 hints never contain their own answer', !hintsLeakAnswers(BROADCAST_FOUR));
+  ok('b4 hints cover every gate', hintsCoverEveryGate(BROADCAST_FOUR));
 }
 
 // --- Broadcast Five doctrine ----------------------------------------------
@@ -304,6 +352,8 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
     'b5 hints all reference real gates',
     Object.keys(BROADCAST_FIVE.hints ?? {}).every((id) => gateIds.has(id)),
   );
+  ok('b5 hints never contain their own answer', !hintsLeakAnswers(BROADCAST_FIVE));
+  ok('b5 hints cover every gate', hintsCoverEveryGate(BROADCAST_FIVE));
 }
 
 // --- Broadcast Six doctrine -----------------------------------------------
@@ -382,6 +432,8 @@ ok('chapter ends with chapterEnd', blocks[blocks.length - 1].kind === 'chapterEn
     'b6 hints all reference real gates',
     Object.keys(BROADCAST_SIX.hints ?? {}).every((id) => gateIds.has(id)),
   );
+  ok('b6 hints never contain their own answer', !hintsLeakAnswers(BROADCAST_SIX));
+  ok('b6 hints cover every gate', hintsCoverEveryGate(BROADCAST_SIX));
 }
 
 // --- permissions the app must not ask for --------------------------------

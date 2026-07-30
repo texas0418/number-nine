@@ -27,6 +27,33 @@ import type { Chapter } from '../models';
 export const BROADCAST_ONE: Chapter = {
   id: 1,
   title: 'BROADCAST ONE',
+  // The pressure valve, retro-fitted (B1 predates it). This is the FREE
+  // chapter and the one correspondents stall on, so the notes point harder
+  // at WHERE a clue lives than the later broadcasts do — but they still name
+  // no answer, and the two rules (numbers are letters / words arrive turned
+  // around) are pointed at, never applied for the reader.
+  hints: {
+    'b1-find-safe':
+      'the list does not lie; the room does. a listener keeps his business behind something ordinary — and in that study the ordinary thing has been HUNG, left of the cold window, level as judgement.',
+    'b1-safe':
+      'the churchyard stone hands you two figures and invites you to feel something about the distance between them. decline. nobody carries the year he was born — he was not there for it.',
+    'b1-tune':
+      'the card is not an instruction. it is an ADDRESS, and it was itemised for probate before the safe was ever opened. one document in that house answers to the word licensed; drop the little dash out of its middle.',
+    'b1-decode':
+      'the margin told you already: the numbers are letters, with patience. and a listener in 1963 reached for the plainest arrangement first — a is one. count on your fingers if you must.',
+    'b1-musicbox':
+      'you have heard this. she plays it before she counts, every night in the log since the third of june. four tines, six notes — one of them is struck more than once, and the ear knows which even when the hand does not.',
+    'b1-brick':
+      'the wall sweats evenly everywhere, which is what makes the exception visible — low, and to your left as you face the little barred window, about halfway down the frame.',
+    'b1-tin':
+      'this lock will not take a number you have merely found. her words arrive turned around, says the margin — and his brother locked the tin with the station’s own address, read the station’s own way.',
+    'b1-phone':
+      'she spoke mirrored, and the margin warned you of exactly this on your first evening in the study. what she says is not what you write down. it is what you write down and then turn.',
+    'b1-count':
+      'no cipher here. only arithmetic, and the nerve to do arithmetic after a fright. the log gives her nightly figure more than once — then attend to the one thing she did tonight that she has never done in nineteen years. a name spoken inside a count is a group like any other.',
+    'b1-lastword':
+      'both rules at once, and neither will serve alone: the numbers are letters, and her words arrive turned around. set the eight down as letters and you will have nonsense. do not stop at the nonsense.',
+  },
   blocks: [
     // No cue on the card: entering the book should be silent under the theme
     // — the ident belongs to the STATION, and the station hasn't found him yet.

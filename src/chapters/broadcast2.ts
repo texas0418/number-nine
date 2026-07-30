@@ -23,6 +23,33 @@ import type { Chapter } from '../models';
 export const BROADCAST_TWO: Chapter = {
   id: 2,
   title: 'BROADCAST TWO',
+  // The pressure valve, retro-fitted. Unlike the Society archive (which
+  // leaves the two un-failable ACTS uncatalogued because they cannot strand
+  // anybody), the valve DOES cover the seal and the sending key: a reader who
+  // never realises a gesture is wanted is stranded exactly as hard as one who
+  // cannot solve a cipher, and the page will not continue without the hand.
+  hints: {
+    'b2-knocks':
+      'it knocks, waits, and knocks again in parcels. count the parcels, count what is in them, and do the same back. write the figures down: it will not repeat itself, and it is saying more than one thing.',
+    'b2-letter-seal':
+      'nineteen years he did not dare post it, and it will not open itself for you either. take the corner in your fingers and pull.',
+    'b2-overleaf':
+      'paper that thin was a remark about more than stationery. your machine turns over as a sheet does: face it down, or drag the dog-ear. then find the word the pencil pressed hardest.',
+    'b2-shyink':
+      'not the paper. the LAMP — and there is one in your hand, turned up far too high for this ink. take it down, in the machine’s settings or by the wick on the page. then touch the bearing that surfaces.',
+    'b2-exchange':
+      'the margin has the method whole: ask the exchange for the girl by name, three letters. in 1963 those letters lived on the finger-holes of the dial. the name is a man’s, which she always thought funny.',
+    'b2-schedule':
+      'the first log records the hour she keeps, and records it more than once. the tin margin takes an hour off for every night unanswered, and the pencil on the letter’s back counts how many.',
+    'b2-aerial':
+      'the shy ink already said where the wire must look. bring her nose round to that quarter and HOLD it — a lucky sweep past the mark will not seat the ring. or drag the ring round by hand.',
+    'b2-tune':
+      'card ninety is the whole of it: her count, once done, carries up the band — every kilocycle, and she does not round down. you have known the count since the tally marks in the music box lid.',
+    'b2-message':
+      'three rules at once. two you own: the numbers are letters, her words arrive turned around. the third is a quantity — the letter’s back, the tin margin, where she is above herself. give it to every figure, and run past z and round again.',
+    'b2-send':
+      'the slate did not give you a message. it gave you an instruction, and the channel is still open. his brother built the key and never dared it. two fingers.',
+  },
   blocks: [
     { kind: 'chapterCard', number: 'BROADCAST TWO', title: 'The Aerial' },
 
