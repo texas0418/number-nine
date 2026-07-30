@@ -244,43 +244,84 @@ encryption question; no documentation is required.
 
 ## Notes for App Review
 
-Paste this into the review notes field. It exists because a reviewer who
-cannot open the first gate will file the app as broken.
+Paste this into the App Review Information notes field. Apple is the only reader,
+so unlike the store copy this one gives puzzles away freely: a reviewer who
+cannot open the first gate files the app as broken, and the free chapter runs ten
+puzzles deep before the purchase is even offered.
+
+The four "can look broken" items exist because each is a real rejection risk.
+The night gates matter most: Broadcast Six waits for the calendar day to turn,
+and a reviewer who meets "come back tomorrow" with no visible way through has
+been handed an incomplete app. The wind-the-clock override is verified in
+[FinaleGates.tsx:105](src/engine/FinaleGates.tsx:105) — 24 wound hours opens it
+immediately.
 
 ```
-No account or login is required. Nothing is time-limited.
+Number Nine is a horror novella in six chapters ("broadcasts"), plus a free
+daily cipher puzzle. Broadcast One is free in full; one non-consumable purchase
+unlocks Broadcasts Two to Six.
 
-Broadcast One is free in full. It contains ten gates, and a reviewer is not
-expected to solve them — here are the answers, in order, so you can reach the
-purchase point quickly:
+NO SIGN-IN OF ANY KIND
+There is no account, no login and no demo credentials to supply. The app has no
+server: all progress is stored on the device, and the whole app works in
+Airplane Mode. Nothing is time-limited or trial-based.
 
-1. Study wall: tap the framed watercolour on the LEFT of the wall, about a
-   third of the way down. It swings open on a hinge.
-2. Desk safe: 1963
-3. Radio dial: tune to 4625 kHz
-4. Decode slate: NINE
-5. Music box: strike the tines 1 - 2 - 3 - 1 - 3 - 4
-6. Cellar wall: tap LOW on the left, beneath the small barred window
-7. Tin box: 5264
-8. Telephone: 295
-9. Fill the card: 91
+REACHING THE PURCHASE QUICKLY
+Broadcast One contains ten puzzles. You are not expected to solve them, so here
+are the answers in order:
+
+ 1. Study wall: tap the framed watercolour on the LEFT of the wall, about a
+    third of the way down. It swings open on a hinge.
+ 2. Desk safe: 1963
+ 3. Radio dial: drag it to 4625 kHz
+ 4. Decode slate: NINE
+ 5. Music box: strike the tines 1, 2, 3, 1, 3, 4
+ 6. Cellar wall: tap LOW on the left, beneath the small barred window
+ 7. Tin box: 5264
+ 8. Telephone: 295
+ 9. Fill the card: 91
 10. Last transmission: MARGARET
 
-The in-app purchase ("The Licence", nn_story_unlock, non-consumable) unlocks
-Broadcasts Two to Six. It is offered at the end of Broadcast One and from the
-title screen. Restore is under "the set" on the title screen.
+There is also one fork ("READ THE LOG" or "OPEN THE BENCH"). It is a narrative
+choice, not a puzzle, and either option continues the story.
 
-Two things that look like faults and are not:
-- The app is portrait-locked and dark-only by design. Text inside the story
-  rotates and mirrors — the reader is meant to turn the device, while the
-  interface itself does not.
-- Sound is atmosphere, never information. The story is fully completable in
-  silence, and audio failing is not an error state.
+THE IN-APP PURCHASE
+"The Licence" (nn_story_unlock), non-consumable, one payment, not a
+subscription. It is offered at the end of Broadcast One and from the title
+screen. Restore Purchases is on the title screen under "the set". This is the
+app's first non-consumable, so it is submitted together with this version.
 
-Some puzzles read the compass or the motion sensors. Every one of them also
-has a touch alternative, so no gate requires physically moving the device.
-The app requests no permissions.
+FOUR THINGS THAT CAN LOOK BROKEN AND ARE NOT
+
+1. Broadcast Six has two gates that wait for a real night to pass. You do not
+   have to wait. Drag the dark clock face sideways to wind it forward, and the
+   gate opens once you have wound 24 hours. The story acknowledges that you
+   hurried, which is intended.
+
+2. Broadcast Five asks you to make the device unreachable, and Broadcast Two
+   asks you to reduce screen brightness. Both are story beats, both are
+   reversible, and both can also be satisfied by an on-screen control without
+   leaving the app or changing system settings.
+
+3. Some puzzles read the compass or the motion sensors. Every one of them also
+   accepts touch instead, so no puzzle requires physically moving or shaking the
+   device. The app requests no permissions at all.
+
+4. The app is portrait-locked and dark-only by design. Text inside the story
+   rotates and mirrors so that the reader turns the device; the interface itself
+   deliberately does not rotate.
+
+Audio is atmosphere and never information. Every puzzle is solvable with sound
+off, and audio failing is not an error state.
+
+IF YOU WANT TO GO FURTHER
+Answers for all fifty puzzles across the six broadcasts are published at
+https://numbernine.simonbuilds.app/archive/ (each one behind two taps, so the
+page can be read without spoiling anything by accident).
 ```
+
+Contact information (name, phone, email Apple can reach during review) is
+Simon's to fill in and is never shown to customers.
 
 ---
 
