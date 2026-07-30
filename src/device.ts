@@ -9,6 +9,8 @@
 // module-factory throw as FATAL — a try/catch around require() does NOT
 // protect a release build whose pod is missing.
 
+import { AppState } from 'react-native';
+
 const hasNative = (name: string): boolean =>
   !!(globalThis as unknown as { expo?: { modules?: Record<string, unknown> } }).expo?.modules?.[
     name
@@ -394,13 +396,35 @@ export function watchSeverance(cb: (severed: boolean) => void): () => void {
   if (!n?.addNetworkStateListener) return () => {};
   let live = true;
   let sub: { remove?: () => void } | null = null;
+  let appSub: { remove?: () => void } | null = null;
+  let timer: ReturnType<typeof setInterval> | null = null;
+
+  const poll = () => {
+    try {
+      n.getNetworkStateAsync?.()
+        .then((s: { isConnected?: boolean }) => live && cb(!(s?.isConnected ?? true)))
+        .catch(() => {});
+    } catch {
+      /* fail open */
+    }
+  };
+
   try {
-    n.getNetworkStateAsync?.()
-      .then((s: { isConnected?: boolean }) => live && cb(!(s?.isConnected ?? true)))
-      .catch(() => {});
+    poll();
     sub = n.addNetworkStateListener((s: { isConnected?: boolean }) => {
       if (live) cb(!(s?.isConnected ?? true));
     });
+    // THE LISTENER ALONE IS NOT ENOUGH (Simon, playtest 2026-07-30: the gate
+    // could never be satisfied). Reaching the Wi-Fi and cellular switches
+    // means LEAVING the app, and iOS suspends the path monitor while we are
+    // backgrounded — so the one change that matters is the one change we
+    // miss, and the value read at subscribe time (connected, obviously)
+    // sticks forever. Re-read on the way back in, and keep a slow poll while
+    // the gate is on screen in case the monitor stays quiet.
+    appSub = AppState.addEventListener('change', (state: string) => {
+      if (state === 'active') poll();
+    });
+    timer = setInterval(poll, 1500);
   } catch {
     /* fail open */
   }
@@ -408,6 +432,8 @@ export function watchSeverance(cb: (severed: boolean) => void): () => void {
     live = false;
     try {
       sub?.remove?.();
+      appSub?.remove?.();
+      if (timer) clearInterval(timer);
     } catch {
       /* fail open */
     }

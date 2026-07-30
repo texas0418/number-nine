@@ -524,6 +524,10 @@ export function cue(name: string): void {
   else if (name === 'morse-key') playSfx('morse-key', 0.45); // he answers, under the prose
   else if (name === 'knock-far') playSfx('knock-far', 0.4); // through the walls, far off
   else if (name === 'letter-tear') playSfx('letter-tear', 0.45); // paper, not violence
+  // The clean pips rode the 0.9 default and were far too loud beside the
+  // muffled tail; Simon's ear put the right level at the muffled 0.35, so the
+  // handover is a change of CHARACTER (clean -> through cloth), not of volume.
+  else if (name === 'pips') playSfx('pips', 0.35);
   else if (name === 'pips-muffled') {
     stopOneShot('pips'); // the receiver is DOWN — the clean pips end there…
     playSfx('pips-muffled', 0.35); // …and continue through the sleeve

@@ -51,17 +51,26 @@ export function LampBlock({
   // reader who always plays dim) must not pre-solve the page — the lamp has
   // to be seen lit once before turning it down means anything (QA).
   const sawBright = useRef(false);
+  // The reveal LATCHES. Without it the reader is asked to read a line that
+  // only exists while the screen is too dark to read it — bring the light
+  // back up to read it and it vanishes (Simon, playtest 2026-07-30). Earning
+  // the dark is unchanged; only its PERSISTENCE is new. Latched from the two
+  // callbacks where darkness can arise, never from an effect body, which
+  // would cascade renders (the lint rule InkAtHour's interval dodges).
+  const [latched, setLatched] = useState(solved);
 
   useEffect(() => {
     if (done) return;
     const stop = watchLamp((level) => {
       if (level >= 0.45) sawBright.current = true;
-      setScreenDark(sawBright.current && level < DARK_ENOUGH);
+      const nowDark = sawBright.current && level < DARK_ENOUGH;
+      setScreenDark(nowDark);
+      if (nowDark) setLatched(true);
     });
     return stop;
   }, [done]);
 
-  const dark = done || screenDark || wick > 0.6;
+  const dark = done || latched || screenDark || wick > 0.6;
 
   useEffect(() => {
     Animated.timing(dimAnim, {
@@ -86,6 +95,7 @@ export function LampBlock({
         onPanResponderMove: (_e, gs) => {
           const next = Math.max(0, Math.min(1, wickStart.current + gs.dy / WICK_TRAVEL));
           setWick(next);
+          if (next > 0.6) setLatched(true);
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

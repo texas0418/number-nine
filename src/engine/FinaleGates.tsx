@@ -175,7 +175,11 @@ export function EndingFork({
       /* fail open */
     }
     Haptics?.notificationAsync?.(Haptics.NotificationFeedbackType?.Success);
-    cue(side === 'seat' ? 'silence' : 'break-set');
+    // He WALKS DOWN in the seat ending — "the stairs took his weight the way
+    // a handshake takes a hand" — so the descent is heard (Simon, playtest
+    // 2026-07-30). The silence still arrives, just after the footsteps
+    // rather than instead of them.
+    cue(side === 'seat' ? 'footsteps' : 'break-set');
     onSolved();
   };
 

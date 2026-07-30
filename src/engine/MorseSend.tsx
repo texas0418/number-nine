@@ -102,9 +102,14 @@ export function MorseSend({
         onSolved();
       }
     } else {
-      // the ether swallows a badly-made letter; the fist tries again
+      // A badly-made letter loses the WHOLE word (Simon, playtest
+      // 2026-07-30): the parish hears the transmission entire, so a garble
+      // means sending it again from the first letter. The lamps go out with
+      // it — static and a heavy knock carry the failure, never error copy.
       s.symbols = '';
+      s.sent = 0;
       setSymbols('');
+      setSent(0);
       setStaticLevel(0.18);
       setTimeout(() => setStaticLevel(0.05), 400);
       Haptics?.impactAsync?.(Haptics.ImpactFeedbackStyle?.Heavy);

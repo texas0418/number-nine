@@ -342,7 +342,10 @@ export function Ritual({
   unlockedText,
   solved,
   onSolved,
-  solveCue = 'ident',
+  // One bell for every lock (Simon, 2026-07-28). This defaulted to 'ident'
+  // — the station's six-note song — so the ritual was the only gate in the
+  // book that never rang on solving.
+  solveCue = 'unlock',
 }: {
   bandLowKhz: number;
   bandHighKhz: number;
@@ -357,16 +360,20 @@ export function Ritual({
   solveCue?: string;
 }) {
   const [stage, setStage] = useState(solved ? 4 : 0);
-  const advance = (from: number) => () => {
-    setStage((s) => {
-      const next = Math.max(s, from + 1);
-      if (next >= 4 && s < 4) {
-        cue(solveCue);
-        onSolved();
-      }
-      return next;
-    });
-  };
+  // The solve fires from an EFFECT, never from inside the state updater.
+  // An updater must be pure: React may run it twice or replay it, so a cue
+  // and an onSolved living in there can double up or be dropped entirely.
+  const rang = useRef(solved);
+  const advance = (from: number) => () =>
+    setStage((s) => Math.max(s, from + 1));
+
+  useEffect(() => {
+    if (stage < 4 || rang.current) return;
+    rang.current = true;
+    cue(solveCue);
+    onSolved();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
 
   if (stage >= 4) {
     // the settled set: the four instruments stay on the page, inert, so the
