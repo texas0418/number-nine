@@ -14,6 +14,7 @@ import StoryScreen from './src/screens/StoryScreen';
 import DailySignalScreen from './src/screens/DailySignalScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import GalleryScreen from './src/screens/GalleryScreen';
+import CreditsScreen from './src/screens/CreditsScreen';
 import { getProgress, isDaySolved, listSolvedDays } from './src/db';
 import { currentStreak, dayKeyFromMs } from './src/models';
 import { initPurchases } from './src/proAccess';
@@ -21,9 +22,9 @@ import { initAudio, setStaticLevel, startMusic } from './src/audio';
 import { maybeAskForReview } from './src/review';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 
-type Screen = 'title' | 'story' | 'daily' | 'settings' | 'gallery';
+type Screen = 'title' | 'story' | 'daily' | 'settings' | 'gallery' | 'credits';
 
-const SCREENS: Screen[] = ['title', 'story', 'daily', 'settings', 'gallery'];
+const SCREENS: Screen[] = ['title', 'story', 'daily', 'settings', 'gallery', 'credits'];
 
 function Root() {
   const [screen, setScreen] = useState<Screen>('title');
@@ -61,7 +62,8 @@ function Root() {
   if (screen === 'gallery') return <GalleryScreen onBack={back} />;
   if (screen === 'story') return <StoryScreen chapterId={chapterId} onBack={back} />;
   if (screen === 'daily') return <DailySignalScreen onBack={back} />;
-  if (screen === 'settings') return <SettingsScreen onBack={back} />;
+  if (screen === 'settings') return <SettingsScreen onBack={back} onCredits={() => setScreen('credits')} />;
+  if (screen === 'credits') return <CreditsScreen onBack={() => setScreen('settings')} />;
 
   const todayKey = dayKeyFromMs(Date.now());
   const progress = getProgress(BROADCAST_ONE.id);
