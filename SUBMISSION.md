@@ -236,22 +236,25 @@ gameplay-video framing.
 
 ---
 
-## ⛔ Two blockers before submission
+## Content rights
 
-**1. Content rights — unresolved, and this is an attestation.** ASC makes you
-declare that you hold the rights to everything in the build. Right now only
-one audio asset has a real paper trail: `title-theme.m4a`, under a purchased
-Tim Beek Premium License. [CREDITS.md](CREDITS.md) carries its own pre-ship
-warning that the remaining SFX have *filenames as their only provenance* — and
-four of them (`murmur.wav`, `parish.wav`, `break-set.wav`, and the `spark.wav`
-source) were pulled from **YouTube via yt-dlp**. An uploader captioning a video
-"free sound effect" does not grant a commercial licence, and ripping audio from
-YouTube is against its terms regardless. These need a verifiable source page
-and licence each, or replacing with something from a library that issues a
-licence document. Attesting to content rights before that is a false
-declaration.
+Answer **yes** — the build contains third-party audio, and the rights are held.
 
-**2. RevenueCat is not live.** The build still carries
+Simon checked every sourced clip for commercial-use permission before it went
+in and used nothing banned from commercial use (2026-07-30); he is the one
+making the declaration. `title-theme.m4a` additionally has a purchased licence
+document (Tim Beek Premium, licensee SimonBuilds) which he holds outside this
+public repo. Per-asset sourcing is in [CREDITS.md](CREDITS.md).
+
+Not a submission blocker, just worth having: source URLs and licence wording
+saved next to the raw files, so a rights query is an afternoon rather than an
+excavation.
+
+---
+
+## ⛔ One blocker before submission
+
+**RevenueCat is not live.** The build still carries
 `REVENUECAT_IOS_KEY_PLACEHOLDER`, which means `proAccess.ts` fails open and the
 paid broadcasts are FREE. Shipping this build sells nothing. The purchase flow
 itself is also still unmerged ([PR #31](https://github.com/texas0418/number-nine/pull/31)).
@@ -260,7 +263,7 @@ itself is also still unmerged ([PR #31](https://github.com/texas0418/number-nine
 
 ## Everything else, in order
 
-1. Resolve the two blockers above.
+1. RevenueCat: the real key, and [PR #31](https://github.com/texas0418/number-nine/pull/31) merged.
 2. `PUBLISHER` / `SUPPORT_EMAIL` confirmed in `site/build.ts`; privacy and
    support pages live at the URLs above.
 3. Screenshots and preview video.
