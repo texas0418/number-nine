@@ -105,8 +105,12 @@ export default function CreditsScreen({ onBack }: { onBack: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62, paddingHorizontal: 22 },
-  header: { flexDirection: 'row', alignItems: 'center' },
+  // The horizontal padding lives on the CONTENT, not the root. With it on the
+  // root the ScrollView was inset too, which put its indicator exactly on the
+  // right edge of the text (device, 2026-07-30). Full-width scroller, padded
+  // content: the indicator now rides in the margin where it belongs.
+  root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62 },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 22 },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },
   spacer: { width: 52 },
   title: {
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     color: colors.prose,
   },
-  body: { paddingTop: 30, paddingBottom: 60 },
+  body: { paddingTop: 30, paddingBottom: 60, paddingHorizontal: 22 },
   entry: { marginBottom: 26 },
   role: {
     fontFamily: fonts.mono,
