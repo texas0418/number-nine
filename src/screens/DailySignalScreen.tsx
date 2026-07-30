@@ -39,6 +39,7 @@ import {
   setKv,
 } from '../db';
 import { playIdent, setStaticLevel, speakNumbers } from '../audio';
+import { SITE_URL } from '../society';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -169,6 +170,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
         `NUMBER NINE · signal no. ${serial}`,
         redactedTranscript(puzzle, guesses),
         solved ? `received · ${streak} nights listening` : 'still decoding',
+        SITE_URL,
       ].join('\n'),
     }).catch(() => {});
 

@@ -295,6 +295,11 @@ function societyPage(sections: ArchiveSection[]): Page {
 <span class="card__name">All ${sections.reduce((n, s) => n + s.intercepts.length, 0)} intercepts</span>
 <span class="card__note">Graded notes on every gate in the six broadcasts, in the order a listener meets them.</span>
 </a>
+<a class="card" href="../signal/index.html">
+<span class="card__no">Tonight’s signal</span>
+<span class="card__name">She does not always send the same way</span>
+<span class="card__note">The nightly transmission keeps a weekly rhythm. Three nights in seven are not ordinary, and this is where we explain that.</span>
+</a>
 <a class="card" href="../about/index.html">
 <span class="card__no">About these notes</span>
 <span class="card__name">How the Society works</span>
@@ -420,6 +425,62 @@ function supportPage(): Page {
 <p class="prose">The nightly cryptogram is free, for everyone, forever, and it is the same puzzle for every reader — a new one each day, worked out on your own phone, so it needs no connection and cannot be spoiled by being early or late to it. It also happens to be a second story, told a night at a time.</p>
 
 <p class="aside">See also: <a href="../privacy/index.html">Privacy</a>.</p>
+
+<a class="backlink" href="../society/index.html">← The Society</a>
+</main>`,
+  };
+}
+
+
+function signalPage(): Page {
+  return {
+    path: 'signal/index.html',
+    title: 'Tonight’s signal',
+    description:
+      'The Society on the nightly transmission: the weekly rhythm, and what to do on a night that does not look like the others.',
+    depth: 1,
+    body: `<main>
+<p class="label">The Listeners’ Society · on the nightly signal</p>
+<h1 class="title">She does not always send the same way</h1>
+<p class="subtitle">The weekly rhythm</p>
+<p class="standfirst prose">Most nights the station counts, and the figures stand for letters in the ordinary way. Some nights it does something else, and a member who does not know that writes to us convinced the set is faulty. It is not faulty.</p>
+
+<hr class="section-rule">
+
+<details class="step">
+<summary>One · Where to listen</summary>
+<div class="step__body">
+<p class="prose">The rhythm is WEEKLY and it does not wander. Whatever she does on a given night of the week, she will do again on that night next week, and every listener on earth receives it at the same time. If tonight looks wrong, the first thing to establish is not what the figures mean but what day it is.</p>
+<p class="prose">Three nights in seven are not ordinary. On one of them nothing about the figures has changed at all and only their appearance has. On another the whole line has been treated exactly as this station treats everything, and a member who has read the first broadcast already knows the rule and has simply not thought to apply it here. On the third the station has been unusually generous, and has printed something in its header that it does not normally print.</p>
+</div>
+</details>
+
+<details class="step">
+<summary>Two · What the older members say</summary>
+<div class="step__body">
+<p class="prose voice">“Sunday is the one that catches people, and it should not, because it is the first rule the family ever wrote down: her words arrive turned around. Solve the night exactly as you always would. When every figure has its letter and the line still reads as nonsense, do not assume you have erred. Read it from the far end.” — a member of thirty years</p>
+<p class="prose voice">“Monday she prints a word in the header that has no business being there. It is not decoration and it is not the transmission. Write it out, strike any letter that repeats, follow it with the rest of the alphabet in order, and number what you have from one. That is the whole key, handed to you, and it takes a half minute.” — the Chair, in correspondence</p>
+<p class="prose voice">“Thursday she keys her figures rather than printing them, which is what a real station does and what half of us learned as boys. Nothing else about the night has changed. Read the figures back and carry on as normal. She hands you an extra letter that night, which we take as an apology.” — our member at the coast</p>
+</div>
+</details>
+
+<details class="step step--transcript">
+<summary>Three · The transcript</summary>
+<div class="step__body">
+<p class="warning">This prints the rhythm plainly and, at the end, the operator’s alphabet. Members who have read step two usually find they did not need this page at all.</p>
+<details class="confirm">
+<summary>Print the transcript</summary>
+<div>
+<p class="answer">Sunday: the line is sent back to front. Letter frequencies and word shapes are untouched, so solve normally and read the finished line in reverse.</p>
+<p class="answer">Monday: the word in the header is the key. Drop repeated letters from it, append the remainder of A–Z in order, number the result one to twenty-six.</p>
+<p class="answer">Thursday: the figures are keyed in Morse. One group per digit. The night carries one extra revealed letter.</p>
+<p class="answer">0 ····· &nbsp; 1 ·−−−− &nbsp; 2 ··−−− &nbsp; 3 ···−− &nbsp; 4 ····− &nbsp; 5 ·····<br>
+6 −···· &nbsp; 7 −−··· &nbsp; 8 −−−·· &nbsp; 9 −−−−·</p>
+<p class="answer">The remaining four nights are ordinary, and the number of letters given away for nothing varies with the day: most generous at the start of the week, meanest on a Saturday.</p>
+</div>
+</details>
+</div>
+</details>
 
 <a class="backlink" href="../society/index.html">← The Society</a>
 </main>`,
@@ -553,6 +614,7 @@ function main(): void {
   const pages: Page[] = [
     gamePage(SECTIONS),
     societyPage(SECTIONS),
+    signalPage(),
     archiveIndexPage(SECTIONS),
     aboutPage(),
     pressPage(SECTIONS),

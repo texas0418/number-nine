@@ -43,8 +43,12 @@ identity, serial, streak, an App Store footer — was DESCOPED (Simon,
 - [x] Spoiler-safe result, so sharing is inviting rather than a spoiler.
 - [ ] The serialized prequel means streak-keepers are reading a second story —
       lean into "what did night 200 say?" intrigue in captions.
-- [ ] Captions carry the funnel that the card was going to carry visually: the
-      text share cannot brand itself, so the words have to.
+- [x] The share carries an ADDRESS. Until 2026-07-30 it did not: it emitted a
+      redacted transcript and a streak, and no way whatever for a reader to find
+      the app. `SITE_URL` in `src/society.ts` now closes it, pointing at the game
+      page so it works before launch. Swap it for the store URL on release day.
+- [ ] Captions carry the rest of the funnel: a text share cannot brand itself,
+      so the words around it have to.
 
 ## Channel 2 — sound-first mood trailers (NOT gameplay)
 
