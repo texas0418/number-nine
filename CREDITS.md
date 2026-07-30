@@ -6,11 +6,12 @@ everything else is synthesized by `scripts/gen-foley.py`,
 
 ## Recorded (sourced)
 
-- **title-theme.m4a** — "Ghost" by Tim Beek. LICENSED: Tim Beek Premium
-  License purchased 2026-07-28, licensee SimonBuilds — lifetime,
+- **title-theme.m4a** — "Ghost" by Tim Beek (timbeek.com). LICENSED: Tim Beek
+  Premium License purchased 2026-07-28, licensee SimonBuilds — lifetime,
   non-exclusive, commercial, worldwide; modification allowed; **no
-  attribution required** (a courtesy credit in settings/about is still
-  planned). Not allowed: redistributing the track itself as music/stock, or
+  attribution required**. The courtesy credit now SHIPS: `the set → credits`
+  (`src/screens/CreditsScreen.tsx`) names the track and links the artist's
+  site, which was verified live before it was printed into the app. Not allowed: redistributing the track itself as music/stock, or
   claiming ownership (Content ID). License document: Simon holds the PDF
   ("Ghost License.pdf") — do NOT commit it to this public repo. In-app asset
   re-encoded 2026-07-28 from the licensed 320k master (ghost.mp3).
