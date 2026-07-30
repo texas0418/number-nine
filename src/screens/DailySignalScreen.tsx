@@ -76,6 +76,18 @@ function boxSizes(maxWordLen: number) {
   };
 }
 
+/** Strips the auto-revealed pairings back out, leaving only what the reader
+ *  actually entered. The inverse of the seeding in `initialGuesses`. */
+function playerOnlyOf(
+  puzzle: DailyPuzzle,
+  guesses: Map<number, string>,
+): Map<number, string> {
+  const out = new Map<number, string>();
+  for (const [num, letter] of guesses)
+    if (!puzzle.revealedLetters.includes(puzzle.answerByNum.get(num) ?? '')) out.set(num, letter);
+  return out;
+}
+
 function initialGuesses(puzzle: DailyPuzzle, saved: string | null): Map<number, string> {
   const m = new Map<number, string>();
   for (const [num, letter] of puzzle.answerByNum)
@@ -152,7 +164,13 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     const next = new Map(guesses);
     next.set(selected, letter);
     setGuesses(next);
-    setKv(kvKey, JSON.stringify(Object.fromEntries(next)));
+    // Save only what the READER typed. The auto-revealed letters are derived
+    // from the day's rules, so storing them freezes yesterday's rules into the
+    // save: when the Morse night stopped granting a bonus letter, devices that
+    // had already opened that night went on showing it (device, 2026-07-30).
+    // Persisting player input alone lets every launch rebuild the reveals from
+    // whatever the current rules are, and heals itself with no migration.
+    setKv(kvKey, JSON.stringify(Object.fromEntries(playerOnly(next))));
     if (isSolved(puzzle, next)) {
       setSolved(true);
       setSelected(null);
@@ -189,6 +207,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
   // puzzle, same key, same plaintext — see src/daily/morse.ts.
   const morseNight = isMorseNight(puzzle.dayKey);
   const headerKeyNight = isHeaderKeyNight(puzzle.dayKey);
+  const playerOnly = (g: Map<number, string>) => playerOnlyOf(puzzle, g);
   const gifts = useMemo(() => (morseNight ? keyedGifts(puzzle) : []), [morseNight, puzzle]);
   const sizes = useMemo(
     () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length))),

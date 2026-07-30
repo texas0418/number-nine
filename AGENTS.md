@@ -18,12 +18,24 @@ load-bearing: everything must stay playable with sound failed open.
   puzzle. Never let a fixed key ship: that kills the game after day one.
 - THREE VARIANT NIGHTS ARE DELIBERATE, not bugs (2026-07-30). Sunday sends the
   line turned around; Monday derives the key from a word printed in the header;
-  Thursday keys the figures in Morse. Monday in particular looks like the
-  failure the line above forbids — `keyForDay` returns a non-random map — and it
-  is not: the key still changes every week and is still shared by every player.
-  Read `src/daily/headerkey.ts` before touching it. All three are proven in
-  `test-cipher.ts` to leave the plaintext, the key bijection and Broadcast
-  Four's crossover gate untouched, so those tests are the guard rail.
+  Thursday keys a GIFT above an ordinary grid — two letter-and-figure pairings
+  in Morse, which a reader must decode and enter for themselves.
+- THE RULE ALL THREE OBEY: a variant may only ever ADD. Monday and Thursday
+  reward a reader who recognises something and cost nothing to one who does not;
+  Sunday preserves letter frequencies and word shapes, so the solve is unchanged
+  and only the reading order turns. Thursday's FIRST design broke this rule — it
+  printed the ciphertext figures themselves as Morse, which made every reader
+  slower and no reader wiser, and it needed a compensating bonus letter to stay
+  bearable. If a variant needs compensating, it is a toll and it is wrong.
+- Monday in particular looks like the failure the line above forbids —
+  `keyForDay` returns a non-random map — and it is not: the key still changes
+  every week and is still shared by every player. Read `src/daily/headerkey.ts`
+  before touching it. All three are proven in `test-cipher.ts` to leave the
+  plaintext, the key bijection and Broadcast Four's crossover gate untouched, so
+  those tests are the guard rail.
+- The daily save holds READER INPUT ONLY, never the auto-revealed pairings.
+  Storing reveals freezes the day's rules into the save and leaves stale letters
+  behind when a rule changes.
 - Pure modules (models, dbCore, daily/*) take no expo imports so Node can
   test them (`npm test`).
 
