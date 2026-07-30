@@ -10,6 +10,7 @@ type TextWithDefaults = typeof Text & { defaultProps?: { maxFontSizeMultiplier?:
 const T = Text as TextWithDefaults;
 T.defaultProps = { ...T.defaultProps, maxFontSizeMultiplier: 1.6 };
 import TitleScreen from './src/screens/TitleScreen';
+import LicenceScreen from './src/screens/LicenceScreen';
 import StoryScreen from './src/screens/StoryScreen';
 import DailySignalScreen from './src/screens/DailySignalScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
@@ -21,9 +22,9 @@ import { initAudio, setStaticLevel, startMusic } from './src/audio';
 import { maybeAskForReview } from './src/review';
 import { BROADCAST_ONE } from './src/chapters/broadcast1';
 
-type Screen = 'title' | 'story' | 'daily' | 'settings' | 'gallery';
+type Screen = 'title' | 'story' | 'daily' | 'settings' | 'gallery' | 'licence';
 
-const SCREENS: Screen[] = ['title', 'story', 'daily', 'settings', 'gallery'];
+const SCREENS: Screen[] = ['title', 'story', 'daily', 'settings', 'gallery', 'licence'];
 
 function Root() {
   const [screen, setScreen] = useState<Screen>('title');
@@ -62,6 +63,8 @@ function Root() {
   if (screen === 'story') return <StoryScreen chapterId={chapterId} onBack={back} />;
   if (screen === 'daily') return <DailySignalScreen onBack={back} />;
   if (screen === 'settings') return <SettingsScreen onBack={back} />;
+  if (screen === 'licence')
+    return <LicenceScreen onBack={back} onRenewed={() => setScreen('title')} />;
 
   const todayKey = dayKeyFromMs(Date.now());
   const progress = getProgress(BROADCAST_ONE.id);
@@ -111,6 +114,7 @@ function Root() {
         setScreen('story');
       }}
       onDaily={() => setScreen('daily')}
+      onLicence={() => setScreen('licence')}
       onSettings={() => setScreen('settings')}
     />
   );
