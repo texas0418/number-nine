@@ -27,10 +27,30 @@ app actually does), [CREDITS.md](CREDITS.md) (content rights),
 | Appearance | Dark only | `userInterfaceStyle: "dark"` |
 
 **Category.** Primary **Games › Adventure**, secondary **Games › Puzzle**.
-Note the deliberate split: MARKETING.md forbids the phrase "puzzle game" in
-customer-facing copy, but the *category* is a discovery mechanism rather than
-a positioning statement, and Puzzle is where people looking for this actually
-browse. Books is wrong — this is not a reading app.
+
+Adventure is where narrative-led games sit, and it is the honest fit: the book is
+a story first and its gates serve the story. It is also a less brutal browse
+category than Puzzle, which is among the largest on the store.
+
+Games rather than Books, even though this is a novella. Books is for reading
+apps, and more practically the Apple editorial rubric MARKETING.md is aiming at
+(Channel 4: gameplay, art, sound, replayability, value) is the games rubric. A
+featuring nomination wants to be in front of that team.
+
+Note the deliberate split with the voice rules: MARKETING.md forbids the phrase
+"puzzle game" in customer-facing copy, but a category is a discovery mechanism
+rather than a positioning statement, and Puzzle is where people who want this
+actually browse.
+
+**The one real alternative** is `Games › Word` for the secondary slot instead of
+Puzzle. Word is far smaller, so charting in it is realistic in a way charting in
+Puzzle is not, and the nightly cryptogram genuinely is a word puzzle. Against it:
+the fifty gates in the book mostly are not word puzzles (a dial, a compass, a
+knocking wall, a clock), so a Word browser would arrive with the wrong
+expectation. Precision over chart position is the call taken here; the trade is
+recorded in case reach matters more later.
+
+None of this is baked into the binary, so it stays revisable after launch.
 
 ---
 
