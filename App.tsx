@@ -65,10 +65,19 @@ function Root() {
 
   const todayKey = dayKeyFromMs(Date.now());
   const progress = getProgress(BROADCAST_ONE.id);
+  // THE COUNT RUNS IN ORDER (Simon, playtest 2026-07-30). A broadcast opens
+  // only when the one before it has been received: the story is serial, the
+  // puzzles cite each other's rules, and B6's finale is unreadable without
+  // the five before it.
+  const receivedThrough = [1, 2, 3, 4, 5, 6].reduce(
+    (n, id) => (n === id - 1 && getProgress(id)?.completedMs != null ? id : n),
+    0,
+  );
   return (
     <TitleScreen
       chapterOneStarted={(progress?.blockIndex ?? 0) > 0}
       chapterOneDone={progress?.completedMs != null}
+      receivedThrough={receivedThrough}
       streak={currentStreak(listSolvedDays(), todayKey)}
       todaySolved={isDaySolved(todayKey)}
       onStory={() => {

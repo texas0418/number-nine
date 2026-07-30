@@ -197,7 +197,7 @@ export const BROADCAST_THREE: Chapter = {
       prompt: 'both hands flat on the cabinet · and wait',
       unlockedText: 'under both palms, a settling · like a dog deciding, at length, to trust',
     },
-    { kind: 'voice', text: 'YOU DO AS SHE ASKS. HALLORAN FOUGHT IT LONGER. SHE PREFERS YOU.', mirrored: false },
+    { kind: 'voice', text: 'YOU DO AS SHE ASKS. HALLORAN FOUGHT IT LONGER. SHE PREFERS YOU.', mirrored: false, cue: 'v-b3-1' },
 
     // --- The fork: what a man does with orders ----------------------------
     {
@@ -268,7 +268,7 @@ export const BROADCAST_THREE: Chapter = {
       ],
     },
     { kind: 'thought', text: 'Bring someone. Two words, and every face he knew walked through him, one after another, like names being read from a list.' },
-    { kind: 'voice', text: 'THANK YOU, EDWIN. SHE WILL LIKE WHOEVER YOU CHOOSE.', mirrored: true },
+    { kind: 'voice', text: 'THANK YOU, EDWIN. SHE WILL LIKE WHOEVER YOU CHOOSE.', mirrored: true, cue: 'v-b3-2' },
     {
       kind: 'prose',
       text: 'He walked home the long way, by the road, in the last of the light, and found that his mind — his tidy, clerkish, obedient mind — was already sorting the people he loved by how little he loved them. He stopped in the middle of the road and stood quite still for a long time. Being still, he had been taught only that morning, is a thing she trusts.',

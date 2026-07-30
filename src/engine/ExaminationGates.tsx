@@ -67,7 +67,7 @@ export function WhisperBlock({
   useEffect(() => {
     if (done) return;
     const s = state.current;
-    s.player = holdSfx('whisper', 0.85);
+    s.player = holdSfx('whisper-line', 0.9);
     const apply = () => {
       const on = s.near || s.held;
       s.player?.setPlaying(on && !doneRef.current);

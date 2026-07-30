@@ -168,7 +168,7 @@ export const BROADCAST_TWO: Chapter = {
       kind: 'prose',
       text: 'The recorded girl told him the time in her bright, buttoned voice, each stroke precisely where a stroke should be. He was already writing it down when, behind her — behind a recording, where there is no behind — something breathed in, the way a singer does before the verse.',
     },
-    { kind: 'voice', text: 'AT THE THIRD STROKE, EDWIN, IT WILL BE TOO LATE TO LEAVE.', mirrored: false },
+    { kind: 'voice', text: 'AT THE THIRD STROKE, EDWIN, IT WILL BE TOO LATE TO LEAVE.', mirrored: false, cue: 'v-b2-1' },
     {
       kind: 'thought',
       text: 'He put the receiver down as one puts down a sleeping animal. The pips went on a moment in the cloth of his sleeve.',
@@ -252,7 +252,7 @@ export const BROADCAST_TWO: Chapter = {
     },
     // No ident cue: it reveals INTO view at the solve, so its chime lands on
     // the lock anyway (QA). She arrives without her song tonight — worse.
-    { kind: 'voice', text: 'GOOD EVENING, LISTENER. YOU KEPT THE HOUR. SHE ALWAYS SAID YOU WOULD.', mirrored: false },
+    { kind: 'voice', text: 'GOOD EVENING, LISTENER. YOU KEPT THE HOUR. SHE ALWAYS SAID YOU WOULD.', mirrored: false, cue: 'v-b2-2' },
     {
       kind: 'prose',
       text: 'The counting began, and it was wrong in a way that took him a moment to name: short. Eight groups, spoken slowly, spaced like stones set down one by one on a table between two people, and then — nothing. Not the ident. Not static. The open channel breathed and waited and did not fill itself.',
@@ -304,7 +304,7 @@ export const BROADCAST_TWO: Chapter = {
       faded: true,
       cue: 'lamp-off',
     },
-    { kind: 'voice', text: 'THANK YOU, EDWIN. WE HAVE SO MUCH TO ASK YOU.', mirrored: true },
+    { kind: 'voice', text: 'THANK YOU, EDWIN. WE HAVE SO MUCH TO ASK YOU.', mirrored: true, cue: 'v-b2-3' },
     {
       kind: 'prose',
       text: 'He did not sleep that night either. But it was no longer the not-sleeping of a man who is afraid. It was the not-sleeping of a man who has joined a conversation nineteen years deep, and given his first answer, and knows — with a listener’s certainty, which is the only certainty this family ever owned — that the next question is already on its way up the band.',

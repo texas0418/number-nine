@@ -163,8 +163,11 @@ export function GainBlock({
     return () => {
       stopGain();
       clearInterval(tick);
+      // Give the reader their volume back — but never hand back silence. If
+      // the remembered level is implausibly low it was a bad first reading,
+      // not a choice, and restoring it leaves the phone mute.
       const orig = state.current.orig;
-      if (orig !== null) setGain(orig); // give the reader their volume back
+      setGain(orig !== null && orig >= 0.05 ? orig : 0.5);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);

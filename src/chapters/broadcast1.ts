@@ -165,7 +165,7 @@ export const BROADCAST_ONE: Chapter = {
     },
 
     // --- The broadcast, and the cipher (PUZZLE 3) --------------------------
-    { kind: 'voice', text: 'NINE. NINE. NINE. GOOD EVENING, LISTENER.', mirrored: false, cue: 'ident' },
+    { kind: 'voice', text: 'NINE. NINE. NINE. GOOD EVENING, LISTENER.', mirrored: false, cue: 'ident-then-voice' },
     {
       kind: 'prose',
       text: 'The voice was a woman’s, flat and clean as a pressed flower, with no room in it at all. She played the six notes first — a music box running down — then began to count, in groups of five, unhurried, as though she had every night in the world and meant to spend them one at a time.',
@@ -248,7 +248,7 @@ export const BROADCAST_ONE: Chapter = {
       right: 'He opened the drawer beneath the bench: ninety index cards, banded in string, each a night in Halloran’s neat columns. He thumbed to the last. It was dated tomorrow, and its columns were already full.',
       join: 'Either way the arithmetic was the same, and the arithmetic was the thing he could not put down. She had been counting toward something for nineteen years. It had a date, and by every reckoning in that cold room the date was nearly here.',
     },
-    { kind: 'voice', text: 'FIVE. NINE. TWO. EDWIN.', mirrored: true },
+    { kind: 'voice', text: 'FIVE. NINE. TWO. EDWIN.', mirrored: true, cue: 'v-b1-2' },
     { kind: 'thought', text: 'He had not told the radio his name. He had not spoken his name aloud in this house at all.' },
 
     // --- Ascent (stairs, climbing) and the telephone (PUZZLE 4) -----------
@@ -283,7 +283,7 @@ export const BROADCAST_ONE: Chapter = {
       unlockedText: 'the line clicks open · and somebody, close, is breathing',
       stopsCue: 'phone-ring',
     },
-    { kind: 'voice', text: 'YOU COUNTED WRONG, EDWIN. WE WILL BEGIN AGAIN.', mirrored: false },
+    { kind: 'voice', text: 'YOU COUNTED WRONG, EDWIN. WE WILL BEGIN AGAIN.', mirrored: false, cue: 'v-b1-3' },
 
     // --- The count (PUZZLE 5, deduction) and the cliffhanger --------------
     {

@@ -165,8 +165,10 @@ function RitualGain({
     return () => {
       stopGain();
       clearInterval(t);
+      // Never hand back silence (see ListenerGates): an implausibly low
+      // remembered level was a bad first reading, not the reader's choice.
       const orig = state.current.orig;
-      if (orig !== null) setGain(orig);
+      setGain(orig !== null && orig >= 0.05 ? orig : 0.5);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [armed]);

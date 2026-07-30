@@ -191,6 +191,29 @@ export const AUDIO_CUES = [
   'parish',
   'knock',
   'break-set',
+  // Her voice. One cue per line she speaks; the digits are not cues because
+  // they are sequenced programmatically (see speakNumbers in audio.ts).
+  'station-ident',
+  'ident-then-voice',
+  'v-b1-1',
+  'v-b1-2',
+  'v-b1-3',
+  'v-b2-1',
+  'v-b2-2',
+  'v-b2-3',
+  'v-b3-1',
+  'v-b3-2',
+  'v-b4-1',
+  'v-b4-2',
+  'v-b5-1',
+  'v-b5-2',
+  'v-b5-3',
+  'v-b6-1',
+  'v-b6-2',
+  'v-b6-3',
+  'v-b6-4',
+  'v-b6-5',
+  'whisper-line',
 ] as const;
 export type AudioCue = (typeof AUDIO_CUES)[number];
 
