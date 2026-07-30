@@ -17,6 +17,7 @@ import {
   Dimensions,
   PixelRatio,
   Pressable,
+  ScrollView,
   Share,
   StyleSheet,
   Text,
@@ -43,6 +44,9 @@ import { cardStatusLine, cardWords } from '../daily/card';
 import { CARD_H, CARD_SCALE, CARD_W, ShareCard } from '../engine/ShareCard';
 import { captureCard } from '../shareCard';
 import { SITE_URL } from '../society';
+import { isHeaderKeyNight, keywordForDay } from '../daily/headerkey';
+import { giftLine, keyedGifts } from '../daily/keyedGift';
+import { isMorseNight } from '../daily/morse';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -55,7 +59,11 @@ try {
 const LETTER_ROWS = ['ABCDEFGHI', 'JKLMNOPQR', 'STUVWXYZ'];
 const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-/** Dynamic Type-aware box sizing (see boxSizes rationale in git history). */
+/** Dynamic Type-aware box sizing (see boxSizes rationale in git history).
+ *  On a MORSE night the figure under each cell becomes one stacked group per
+ *  digit instead of one or two glyphs, so the cell grows taller and the figure
+ *  font shrinks. Width is untouched: the grid already only just fits the
+ *  longest word at the largest text size, and widening would overflow it. */
 function boxSizes(maxWordLen: number) {
   const scale = Math.min(PixelRatio.getFontScale(), 1.9);
   const win = Dimensions.get('window').width;
@@ -70,6 +78,18 @@ function boxSizes(maxWordLen: number) {
     keyH: Math.round(Math.max(40, 40 * Math.min(scale, 1.4))),
     keyFont: Math.round(Math.min(22, 15 * Math.min(scale, 1.5))),
   };
+}
+
+/** Strips the auto-revealed pairings back out, leaving only what the reader
+ *  actually entered. The inverse of the seeding in `initialGuesses`. */
+function playerOnlyOf(
+  puzzle: DailyPuzzle,
+  guesses: Map<number, string>,
+): Map<number, string> {
+  const out = new Map<number, string>();
+  for (const [num, letter] of guesses)
+    if (!puzzle.revealedLetters.includes(puzzle.answerByNum.get(num) ?? '')) out.set(num, letter);
+  return out;
 }
 
 function initialGuesses(puzzle: DailyPuzzle, saved: string | null): Map<number, string> {
@@ -148,7 +168,13 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     const next = new Map(guesses);
     next.set(selected, letter);
     setGuesses(next);
-    setKv(kvKey, JSON.stringify(Object.fromEntries(next)));
+    // Save only what the READER typed. The auto-revealed letters are derived
+    // from the day's rules, so storing them freezes yesterday's rules into the
+    // save: when the Morse night stopped granting a bonus letter, devices that
+    // had already opened that night went on showing it (device, 2026-07-30).
+    // Persisting player input alone lets every launch rebuild the reveals from
+    // whatever the current rules are, and heals itself with no migration.
+    setKv(kvKey, JSON.stringify(Object.fromEntries(playerOnly(next))));
     if (isSolved(puzzle, next)) {
       setSolved(true);
       setSelected(null);
@@ -198,6 +224,12 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       .map(([n]) => n),
   );
   const cardRef = useRef<View>(null);
+  // She keys her figures one night a week instead of counting them. Same
+  // puzzle, same key, same plaintext — see src/daily/morse.ts.
+  const morseNight = isMorseNight(puzzle.dayKey);
+  const headerKeyNight = isHeaderKeyNight(puzzle.dayKey);
+  const playerOnly = (g: Map<number, string>) => playerOnlyOf(puzzle, g);
+  const gifts = useMemo(() => (morseNight ? keyedGifts(puzzle) : []), [morseNight, puzzle]);
   const sizes = useMemo(
     () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length))),
     [puzzle],
@@ -205,6 +237,10 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <View style={styles.root}>
+      {/* The title gets the row to itself. It used to share it with listen and
+          share, which left it ~183pt for ~173pt of glyphs — so at any raised
+          text size it ellipsised into its neighbours. The actions moved down
+          instead of the title getting smaller. */}
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
           <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ set</Text>
@@ -212,22 +248,41 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
         <Text style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
           TONIGHT’S SIGNAL
         </Text>
-        <View style={styles.headRight}>
-          <Pressable onPress={listen} hitSlop={12}>
-            <Text style={[styles.back, isSpeaking && styles.backLive]} maxFontSizeMultiplier={1.3}>
-              {isSpeaking ? 'stop' : 'listen'}
-            </Text>
-          </Pressable>
-          <Pressable onPress={share} hitSlop={12}>
-            <Text style={styles.back} maxFontSizeMultiplier={1.3}>share</Text>
-          </Pressable>
-        </View>
+        {/* Balances the back link so the title sits optically centred on the
+            screen rather than centred in what is left of the row. */}
+        <View style={styles.headSpacer} />
       </View>
       <Text style={styles.meta} maxFontSizeMultiplier={1.3} numberOfLines={2}>
         intercepted · 4625 kHz · no. {serial} · {puzzle.revealedLetters.length} letters clear
+        {/* On a header-key night she prints a word in the header, unlabelled and
+            unexplained, and that word IS the key. Nothing here says so: a
+            listener who recognises it reads the night in seconds, and one who
+            does not has an ordinary cryptogram. */}
+        {headerKeyNight ? ` · ${keywordForDay(puzzle.dayKey)}` : ''}
       </Text>
 
-      <View style={styles.paper}>
+      <View style={styles.actions}>
+        <Pressable onPress={listen} hitSlop={12}>
+          <Text style={[styles.action, isSpeaking && styles.backLive]} maxFontSizeMultiplier={1.3}>
+            {isSpeaking ? 'stop' : 'listen'}
+          </Text>
+        </Pressable>
+        <Pressable onPress={share} hitSlop={12}>
+          <Text style={styles.action} maxFontSizeMultiplier={1.3}>share</Text>
+        </Pressable>
+      </View>
+
+      {/* A Morse night keys two pairings above the grid, unexplained. Read it
+          and you start ahead; do not and this is an ordinary Thursday. It is
+          deliberately NOT applied for you — a gift you did not have to read is
+          just a reveal with extra steps. */}
+      {morseNight && gifts.length > 0 && (
+        <Text style={styles.keyed} maxFontSizeMultiplier={1.2} numberOfLines={2}>
+          {giftLine(gifts)}
+        </Text>
+      )}
+
+      <ScrollView style={styles.paper} contentContainerStyle={styles.paperInner}>
         {puzzle.words.map((word, wi) => (
           <View key={wi} style={styles.word}>
             {word.map((sym, si) =>
@@ -249,7 +304,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
             )}
           </View>
         ))}
-      </View>
+      </ScrollView>
 
       {solved ? (
         <View style={styles.solvedWrap}>
@@ -393,11 +448,19 @@ function Cell({
 const styles = StyleSheet.create({
   // Off-screen, not invisible: a zero-opacity view captures blank.
   cardStage: { position: 'absolute', left: -10000, top: 0 },
+  keyed: {
+    fontFamily: fonts.mono,
+    fontSize: 11,
+    letterSpacing: 0,
+    color: colors.dialDim,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 2,
+  },
   root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62, paddingHorizontal: 22 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },
   backLive: { color: colors.dial, ...amberGlow },
-  headRight: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   title: {
     flex: 1,
     textAlign: 'center',
@@ -406,20 +469,36 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     color: colors.prose,
   },
+  headSpacer: { width: 44 },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 26,
+    marginTop: 12,
+  },
+  action: { fontFamily: fonts.mono, fontSize: 13, color: colors.muted, letterSpacing: 1 },
   meta: {
     fontFamily: fonts.mono,
     fontSize: 10,
     letterSpacing: 1,
     color: colors.faint,
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 18,
     marginBottom: 18,
   },
+  // The grid SCROLLS and the keypad stays pinned. Before this the paper had no
+  // height constraint while `keys` used marginTop:'auto', so a tall grid simply
+  // shoved the keypad off the bottom — which a Morse night does at once, and a
+  // long line at large Dynamic Type would do eventually (device, 2026-07-30:
+  // only the A-I row was reachable).
   paper: {
+    flexShrink: 1,
     backgroundColor: colors.panel,
     borderColor: colors.panelBorder,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
+  },
+  paperInner: {
     padding: 14,
     flexDirection: 'row',
     flexWrap: 'wrap',

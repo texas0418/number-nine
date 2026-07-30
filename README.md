@@ -53,7 +53,13 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       full year of Halloran's log ending where Broadcast One begins. Constraints
       (charset, two eligible words, word width, cryptogram length) are enforced
       in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
-- [ ] Cipher variant nights (header-key days, Morse days, transposition days)
+- [x] **Cipher variant nights.** All three, on fixed weekdays so a listener
+      learns the rhythm rather than meeting a puzzle that looks broken: Sunday
+      turned around (the station's own rule from Broadcast One), Monday
+      header-key (the word printed in the header IS the key), Thursday Morse
+      (figures keyed rather than printed). Every one is proven in
+      `test-cipher.ts` to leave the plaintext, the key bijection and Broadcast
+      Four's crossover gate untouched.
 - [x] **Her voice, and the digits.** One recording per line she speaks,
       `v-b1-1` through `v-b6-5`, all tracked. The digits `num-0`…`num-9` plus
       `num-9-name` are Simon's recordings, sequenced by `speakNumbers` and
@@ -66,8 +72,7 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       for all six broadcasts. Two variants are cut but neither committed nor
       wired (`nn-ident-broadcast-one.wav`, `nn-ident-broadcast-six.wav`, sitting
       untracked in `assets/audio/`).
-- [ ] Morse night — no Morse mode exists in `src/daily/`; it belongs with the
-      cipher-variant-nights item above rather than as a separate audio task.
+- [x] Morse night — shipped as one of the cipher variant nights above.
 
 ### Build — craft
 
