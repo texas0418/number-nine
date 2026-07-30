@@ -347,9 +347,11 @@ shown to customers.
 Recommendations given, none of them load-bearing enough for me to have guessed
 in the copy itself:
 
-1. **Support email + publisher name** — `SUPPORT_EMAIL` and `PUBLISHER` in
-   `site/build.ts`, currently `support@simonbuilds.app` and `Simon Shih`. Now
-   merged to `dev`, so whatever builds the site next publishes them.
+1. **Publisher name** — `PUBLISHER` in `site/build.ts`, currently `Simon Shih`,
+   the name the app is signed with. It is the line that says who the privacy
+   promises are from, and it should match the ASC copyright field.
+   (`SUPPORT_EMAIL` is settled: `support@simonbuilds.app`, confirmed
+   2026-07-30. The mailbox has to exist — ASC takes it as the support contact.)
 2. **Primary language: English (U.K.)** — the prose is British throughout and
    the site is `lang="en-GB"`. U.S. English would be the larger market's default
    but would sit oddly against "aeroplane" and "kilocycle".

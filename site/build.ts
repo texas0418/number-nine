@@ -46,12 +46,12 @@ const OUT = join(HERE, 'dist');
 // 1963 listeners'-circle voice. The About page already sets the precedent
 // with its colophon.
 //
-// CONFIRM BEFORE DEPLOY — both of these are published, and only Simon can
-// decide them:
-//   · SUPPORT_EMAIL is the address printed on the Support page and the one
-//     App Store Connect will want as the support contact.
-//   · PUBLISHER is the name a privacy notice needs in order to say WHO is
-//     making the promises. It is set to the name the app is signed with.
+// Both of these are PUBLISHED on the privacy and support pages.
+//   · SUPPORT_EMAIL — CONFIRMED by Simon 2026-07-30. Also the address App Store
+//     Connect takes as the support contact, so the mailbox must exist.
+//   · PUBLISHER — not yet confirmed. It is the name a privacy notice needs in
+//     order to say WHO is making the promises, and it is currently set to the
+//     name the app is signed with. Check it before the next site upload.
 const SUPPORT_EMAIL = 'support@simonbuilds.app';
 const PUBLISHER = 'Simon Shih';
 // Bumped by hand when either page changes in substance. Never generated from
