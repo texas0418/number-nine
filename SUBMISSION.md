@@ -36,6 +36,24 @@ browse. Books is wrong — this is not a reading app.
 
 ## Store copy
 
+### Two rules that govern every word below
+
+**1. Nothing that tips a puzzle.** Not a method, not a hint, not an answer. An
+earlier draft of the description had a section naming what the gates ask for
+(dim the lamp, turn the page over, knock back) and it was a hint sheet in a
+permanent public listing. Sell the fact that the house asks things of you.
+Never say what it asks. Her hour, every frequency and every answer stay out
+too. (Simon, 2026-07-30.)
+
+**2. No AI tells.** This copy must not read as machine-written. In practice:
+no em dashes (there are zero in the fields below, deliberately); no "it is not
+X, it is Y" antithesis; no "as it turns out" or similar hedged flourishes; no
+symmetrical triads used as a closer. Where a line can be Simon's own, use his:
+the opening, "no ads, no tracking", and the closing "Headphones on. Lights off.
+One broadcast a night." are lifted from `SettingsScreen`; "the prose is the map"
+is the README's; the counting-voice sentence is the book's own prose. Borrowed
+voice cannot sound synthetic.
+
 Never in any of these fields: DEVICE 6, Simogo, "puzzle game", "AI",
 "hyper-casual" (MARKETING.md trademark guardrails and voice rules). Also not
 in these fields: any claim about accessibility beyond text size. VoiceOver was
@@ -49,10 +67,10 @@ honest answer if it is ever asked directly.
 A shortwave horror novella
 ```
 
-**Promotional text** (170 max, 159 used — editable without a new build)
+**Promotional text** (170 max, 133 used — editable without a new build)
 
 ```
-Broadcast One is free. Tonight's signal is free forever: a new cryptogram every night, the same one for every listener on earth, and it is telling you a story.
+Broadcast One is free. Tonight's signal is free forever: a new cryptogram every night, and every listener on earth gets the same one.
 ```
 
 **Keywords** (100 max, 97 used — comma-separated, no spaces, never repeat the app name)
@@ -61,41 +79,37 @@ Broadcast One is free. Tonight's signal is free forever: a new cryptogram every 
 numbers station,shortwave,cryptogram,interactive fiction,novella,decode,typography,offline,no ads
 ```
 
-**Description** (4000 max, 3160 used)
+**Description** (4000 max, 2373 used)
 
 ```
 A story you receive, not read.
 
 Your estranged brother is dead. He has left you a house where the land gives up and becomes marsh, a war-surplus shortwave receiver, and nineteen years of listening logs kept in a hand that never once wavered. On the fourteenth of June his entries stop mid-sentence. Every night after it is blank.
 
-Tune the set. There is a station where none should be: six notes like a music box running down, and then a woman counting in groups of five — unhurried, as though she had every night in the world and meant to spend them one at a time. She has been counting for nineteen years.
+Tune the set. There is a station where none should be: a music box running down, and then a woman counting in groups of five, unhurried, as though she had every night in the world and meant to spend them one at a time. She has been counting for nineteen years.
 
 Tonight she says your name.
 
 SIX BROADCASTS
-One a night, which is how they were meant to arrive. The text is the architecture: it turns, it mirrors, it goes down staircases and climbs back up them, and you turn the phone in your hands to follow it — because the room turned, not the typeface. Fifty puzzles stand between the first page and the last, and not one of them is a quiz. Each is the story declining to continue until you have understood something.
+One a night. The prose is the map. It turns, it mirrors, it goes down the cellar stairs and climbs back up them, and you turn the phone in your hands to follow it, because the room turned and not the typeface.
 
-THE PHONE IS THE INSTRUMENT
-The house asks things of you, and it asks fairly. A wall knocks in the dark and waits to be answered. An aerial has come off its bearing and must be brought round until the wire will sing. Ink too shy for a bright lamp surfaces when you take the light down. Something is written on the back of a page — and a page has a back. Numbers arrive in your hand as knocks you can feel and never hear.
+Fifty locks stand between the first page and the last. None of them is a quiz, and none is answered by choosing the right option from a list. The house asks things of you and it asks fairly. Nothing it asks for is missing from the book.
 
-Every puzzle that asks you to move the phone can also be solved by touch.
+WHAT IT ASKS
+Patience, and something to write with. Some of these will hold you up for an evening. By the sixth broadcast you will be going back through notes you made in the first. Nothing is timed and nothing can be lost, so an evening spent stuck is an evening spent in the house.
 
 HER VOICE
-Her counting is a recorded voice, not a synthetic one, coming up out of shortwave static with a telephone ringing somewhere above you until it is answered. Headphones, lights off, is the way. But sound here is atmosphere and never information — everything in the book is solvable in silence.
+Recorded, not synthesised. A woman reading numbers in the register of a speaking clock, coming up out of shortwave static. Sound is atmosphere here and never information, so a reader in silence loses nothing but the dread.
 
 BROADCAST ONE IS FREE
-The whole first chapter, beginning to end. No account, no trial clock, no card. The remaining five unlock with a single purchase: paid once, never a subscription, and no second charge of any kind.
+The whole first chapter, start to finish. No account, no trial clock. The other five unlock with one purchase, paid once, never a subscription.
 
-TONIGHT'S SIGNAL — FREE FOREVER
-Every night the station transmits a new cryptogram, and every listener on earth receives the same one. A few minutes to break. Behind it lies a year of a dead man's log — 365 nights, in order, a night at a time: the year before Broadcast One, and how a patient man came to be sitting in that cellar at all. Keep a streak and you are reading a second story for nothing. You never have to buy anything to receive it.
+TONIGHT'S SIGNAL, FREE FOREVER
+Every night the station sends a new cryptogram, and every listener on earth gets the same one. A few minutes to break. Behind a year of them lies a dead man's log, 365 nights of it, in order and a night at a time: the year before Broadcast One, and how a patient man came to be sitting in that cellar. Keep a streak and you are reading a second story for nothing.
 
-WHAT IT ASKS OF YOU
-Patience, and something to write with. A few of these will take an evening, and one or two are meant to take longer than that. By the last broadcast you will be reaching for notes you made in the first. The difficulty is not an obstacle in front of the story. It is the story.
+No ads. No tracking. No account. No timers, no energy, no notifications. It honours the text size you have set, and it works with the aeroplane switch on.
 
-WHAT IT DOES NOT DO
-No advertising. No tracking. No account. No timers, no energy, no daily nagging, no notifications begging you to come back. It honours the text size you have set. It works with the aeroplane switch on — and that, as it turns out, is the best way to read it.
-
-A dark room. Headphones. One broadcast a night.
+Headphones on. Lights off. One broadcast a night.
 ```
 
 **What's New** (1.0)
