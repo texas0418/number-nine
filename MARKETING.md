@@ -148,13 +148,47 @@ this and very few games can say it.
   trailer; the nomination is read by people, and one of them will play it.
 - **Any claim about the ident degrading per broadcast.** Not built.
 
-### Practical
+### How to file it
 
-Read the form's own field limits off the page rather than assuming them; that
-assumption already cost a redo on screenshots. Supporting material that exists
-today: nine screenshots at 1242 × 2688, the press kit at
-`numbernine.simonbuilds.app/press/`, and the Society archive as evidence of the
-craft around the product.
+Apple's own steps (App Store Connect Help, *Nominate your app for featuring*).
+Requires Account Holder, Admin, App Manager or Marketing.
+
+**Apps → Number Nine → sidebar, under Featuring → Nominations → + → Create
+Nomination.**
+
+| Screen | What to put |
+|---|---|
+| Nomination name | Internal only. `Number Nine — launch`. |
+| Type | **App Launch.** Not App Enhancements, not New Content. |
+| Description | The main field. The one-paragraph pitch above, then the platform table, then the privacy line. Apple asks for purpose, priority and specifics, so say plainly that this is the 1.0 launch and the priority. |
+| Publish date | Day or Range. Use **Range** until the launch window is fixed. |
+| Platforms | iPhone only (`supportsTablet: false`). |
+| Countries | All, matching the IAP's 175. |
+| Localizations | English only. |
+| Supplemental materials | Up to **five URLs** — see below. |
+| Helpful details | Accessibility and "unique aspects of the team or app". See below. |
+
+**Submitting sets a floor under the launch date.** The minimum lead time is
+three weeks, so the earliest sensible publish date is three weeks after the day
+you submit. Save as Draft now and submit once the window firms up; a draft costs
+nothing and the form can be edited after submission anyway (everything except
+the type and the related apps).
+
+**The five supplemental URLs are an advantage most nominations cannot use.**
+Ours already exist: the press kit at `/press/`, the Society archive as evidence
+of the craft around the product, the privacy page as proof of the one-line
+label, and the game page. Apple explicitly accepts a **TestFlight link** here,
+which is the strongest of the five — editorial can play the thing. A build made
+while `IOS_KEY` is still a placeholder unlocks all six broadcasts, which is
+ideal for an evaluator and costs nothing.
+
+**"Helpful details" asks about accessibility directly.** Do not dodge it and do
+not inflate it. The honest answer is the one recorded above: Dynamic Type is
+audited to the largest accessibility size, every hardware puzzle has a touch
+alternative, and screen-reader support is not there.
+
+Read any field limits off the form rather than assuming them; assuming the
+general case instead of reading the page already cost a redo on screenshots.
 
 ## Channel 5 — press ladder (timed beats, daily puzzle already live)
 
