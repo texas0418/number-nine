@@ -17,6 +17,7 @@ import {
   Dimensions,
   PixelRatio,
   Pressable,
+  ScrollView,
   Share,
   StyleSheet,
   Text,
@@ -61,11 +62,13 @@ const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 function boxSizes(maxWordLen: number, morse = false) {
   const scale = Math.min(PixelRatio.getFontScale(), 1.9);
   const win = Dimensions.get('window').width;
-  const cellW = Math.max(22, Math.min(26 * scale, (win - 74) / maxWordLen));
+  // Morse cells carry two stacked groups, so their width is capped tighter:
+  // letting Dynamic Type inflate the width inflates the HEIGHT twice as fast.
+  const cellW = Math.max(22, Math.min((morse ? 23 : 26) * scale, (win - 74) / maxWordLen));
   const keyW = Math.min(44, Math.max(30, (win - 44 - 8 * 6) / 9));
   return {
     cellW,
-    cellH: Math.round(cellW * (morse ? 2.15 : 1.55)),
+    cellH: Math.round(cellW * (morse ? 1.9 : 1.55)),
     cellFont: Math.round(cellW * 0.58),
     numFont: Math.max(9, Math.round(cellW * 0.35)),
     morseFont: Math.max(7, Math.round(cellW * 0.28)),
@@ -222,7 +225,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
         {headerKeyNight ? ` · ${keywordForDay(puzzle.dayKey)}` : ''}
       </Text>
 
-      <View style={styles.paper}>
+      <ScrollView style={styles.paper} contentContainerStyle={styles.paperInner}>
         {puzzle.words.map((word, wi) => (
           <View key={wi} style={styles.word}>
             {word.map((sym, si) =>
@@ -245,7 +248,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
             )}
           </View>
         ))}
-      </View>
+      </ScrollView>
 
       {solved ? (
         <View style={styles.solvedWrap}>
@@ -427,11 +430,19 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 18,
   },
+  // The grid SCROLLS and the keypad stays pinned. Before this the paper had no
+  // height constraint while `keys` used marginTop:'auto', so a tall grid simply
+  // shoved the keypad off the bottom — which a Morse night does at once, and a
+  // long line at large Dynamic Type would do eventually (device, 2026-07-30:
+  // only the A-I row was reachable).
   paper: {
+    flexShrink: 1,
     backgroundColor: colors.panel,
     borderColor: colors.panelBorder,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
+  },
+  paperInner: {
     padding: 14,
     flexDirection: 'row',
     flexWrap: 'wrap',
