@@ -53,7 +53,13 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       full year of Halloran's log ending where Broadcast One begins. Constraints
       (charset, two eligible words, word width, cryptogram length) are enforced
       in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
-- [ ] Cipher variant nights (header-key days, Morse days, transposition days)
+- [x] **Cipher variant nights.** All three, on fixed weekdays so a listener
+      learns the rhythm rather than meeting a puzzle that looks broken: Sunday
+      turned around (the station's own rule from Broadcast One), Monday
+      header-key (the word printed in the header IS the key), Thursday Morse
+      (figures keyed rather than printed). Every one is proven in
+      `test-cipher.ts` to leave the plaintext, the key bijection and Broadcast
+      Four's crossover gate untouched.
 - [x] **Her voice, and the digits.** One recording per line she speaks,
       `v-b1-1` through `v-b6-5`, all tracked. The digits `num-0`…`num-9` plus
       `num-9-name` are Simon's recordings, sequenced by `speakNumbers` and
@@ -66,16 +72,21 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       for all six broadcasts. Two variants are cut but neither committed nor
       wired (`nn-ident-broadcast-one.wav`, `nn-ident-broadcast-six.wav`, sitting
       untracked in `assets/audio/`).
-- [ ] Morse night — no Morse mode exists in `src/daily/`; it belongs with the
-      cipher-variant-nights item above rather than as a separate audio task.
+- [x] Morse night — shipped as one of the cipher variant nights above.
 
 ### Build — craft
 
-- DESCOPED (Simon, 2026-07-30): **share card as a rendered image** and the
-  **VoiceOver pass**. The nightly share ships as text (`Share.share`, spoiler-
-  safety in `redactedTranscript`) and that is the shipping form; Dynamic Type
-  stays audited to the largest accessibility size, and no accessibility props
-  are going into the engine. Do not re-add either as outstanding work.
+- [x] **Share card as a rendered IMAGE.** Descoped on 2026-07-30 and REINSTATED
+      the same day once the schedule allowed it (Simon: "we have three weeks
+      before launch, let's give people something great"). Black bars over
+      unsolved letters, amber-on-black identity, serial and streak, the site
+      address in the footer. Image first, the text share kept as the floor so a
+      missing native module costs a picture and never a share. Content rules
+      (never print an unsolved or WRONG letter) are tested in `test-cipher.ts`.
+- DESCOPED and staying so (Simon, 2026-07-30): the **VoiceOver pass**. Dynamic
+  Type stays audited to the largest accessibility size and every hardware puzzle
+  keeps a touch alternative, but no accessibility props are going into the
+  engine. Do not re-add it as outstanding work.
 - [x] **Icon and splash: the generated phosphor "9" is the icon** (Simon,
       2026-07-30). Not a placeholder, not awaiting a polish pass. It is
       regenerable from `scripts/gen-icon.py` if a size is ever needed.

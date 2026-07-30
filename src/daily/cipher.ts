@@ -6,6 +6,10 @@
 // that transfers is deduction (frequency, word shapes), never memory.
 // Tested in Node by test-cipher.ts.
 
+import { headerKeyMap, isHeaderKeyNight } from './headerkey';
+import { isTurnedAroundNight, turnAround } from './transposition';
+import { weekdayOf } from './morse';
+
 export const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 /** FNV-1a — stable string hash for seeding. */
@@ -39,8 +43,12 @@ function shuffled<T>(items: T[], rand: () => number): T[] {
   return a;
 }
 
-/** letter -> number (1..26), a fresh permutation per day key. */
+/** letter -> number (1..26), a fresh permutation per day key.
+ *  On a HEADER-KEY night the permutation is not random: it is the keyed
+ *  alphabet built from the word the station prints in its header, which a
+ *  listener who recognises it can write out in full. See ./headerkey.ts. */
 export function keyForDay(dayKey: string): Map<string, number> {
+  if (isHeaderKeyNight(dayKey)) return headerKeyMap(dayKey);
   const rand = mulberry32(hashSeed(`number-nine:${dayKey}`));
   const numbers = shuffled(
     Array.from({ length: 26 }, (_, i) => i + 1),
@@ -79,14 +87,20 @@ export function lettersByFrequency(plaintext: string): string[] {
 export const REVEALS_BY_WEEKDAY = [3, 4, 3, 3, 3, 2, 1] as const;
 
 export function revealCount(dayKey: string): number {
-  const [y, m, d] = dayKey.split('-').map(Number);
-  return REVEALS_BY_WEEKDAY[new Date(y, m - 1, d, 12).getDay()];
+  // A Morse night gets no bonus: its grid is ordinary and what it adds is a
+  // keyed GIFT above the grid, which must be read to be claimed. See
+  // ./keyedGift.ts.
+  return REVEALS_BY_WEEKDAY[weekdayOf(dayKey)];
 }
 
 export function buildPuzzle(dayKey: string, plaintext: string): DailyPuzzle {
+  // On a turned-around night the line is sent back to front, which is the
+  // station's own rule rather than a new one. Letter frequencies and word
+  // shapes survive it intact, so the solve is unchanged. See ./transposition.ts.
+  const line = isTurnedAroundNight(dayKey) ? turnAround(plaintext) : plaintext;
   const key = keyForDay(dayKey);
   const answerByNum = new Map<number, string>();
-  const words: CipherSymbol[][] = plaintext
+  const words: CipherSymbol[][] = line
     .toUpperCase()
     .split(/\s+/)
     .filter(Boolean)
@@ -98,7 +112,7 @@ export function buildPuzzle(dayKey: string, plaintext: string): DailyPuzzle {
         return [{ num }];
       }),
     );
-  const revealed = lettersByFrequency(plaintext).slice(0, revealCount(dayKey));
+  const revealed = lettersByFrequency(line).slice(0, revealCount(dayKey));
   return { dayKey, words, answerByNum, revealedLetters: revealed };
 }
 

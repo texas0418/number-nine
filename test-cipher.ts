@@ -1,14 +1,12 @@
 // test-cipher.ts — the daily transmission math, run in Node: npx tsx test-cipher.ts
 
-import {
-  ALPHABET,
-  buildPuzzle,
-  isSolved,
-  keyForDay,
-  lettersByFrequency,
-  redactedTranscript,
-  revealCount,
-} from './src/daily/cipher';
+import { ALPHABET, REVEALS_BY_WEEKDAY, buildPuzzle, isSolved, keyForDay, lettersByFrequency, redactedTranscript, revealCount } from './src/daily/cipher';
+import { isMorseNight, MORSE_DIGITS, MORSE_WEEKDAY, morseForLetter, morseForNumber } from './src/daily/morse';
+import { giftToMorse, keyedGifts } from './src/daily/keyedGift';
+import { HEADER_KEYWORDS, HEADER_KEY_WEEKDAY, isHeaderKeyNight, keyedAlphabet, keywordForDay } from './src/daily/headerkey';
+import { TRANSPOSITION_WEEKDAY, isTurnedAroundNight, turnAround } from './src/daily/transposition';
+import { nightWordChoices } from './src/daily/crossover';
+import { cardStatusLine, cardWords, solvedFraction } from './src/daily/card';
 import { TRANSMISSIONS, daysSinceEpoch, transmissionForDay } from './src/daily/schedule';
 
 let failures = 0;
@@ -145,9 +143,205 @@ for (let d = 0; d < 365; d++) {
   const { plaintext } = transmissionForDay(day);
   const puz = buildPuzzle(day, plaintext);
   const full = new Map([...puz.answerByNum]);
-  if (redactedTranscript(puz, full) !== plaintext.toUpperCase()) roundTripFails++;
+  // A turned-around night round-trips to the line AS SENT, back to front. The
+  // guard is that a fully-solved puzzle reproduces what she transmitted, not
+  // that she always transmits forwards.
+  const asSent = (isTurnedAroundNight(day) ? turnAround(plaintext) : plaintext).toUpperCase();
+  if (redactedTranscript(puz, full) !== asSent) roundTripFails++;
 }
 ok('365 nightly puzzles round-trip', roundTripFails === 0);
+
+// --- Morse nights ----------------------------------------------------------
+// A PRESENTATION variant: the ciphertext number is keyed as figures instead of
+// printed as digits. Everything the puzzle and the B4 crossover depend on must
+// be provably unchanged, which is what these assert.
+{
+  const morseThu = '2026-08-06'; // a Thursday
+  const plainWed = '2026-08-05';
+  ok('morse night lands on Thursday', isMorseNight(morseThu));
+  ok('other nights are not morse', !isMorseNight(plainWed));
+  ok('every digit has a five-symbol code',
+    MORSE_DIGITS.length === 10 && MORSE_DIGITS.every((c) => c.length === 5));
+  ok('all digit codes are distinct', new Set(MORSE_DIGITS).size === 10);
+  ok('a number keys as one group per digit', morseForNumber(18) === '.---- ---..');
+  ok('single digits key as one group', morseForNumber(7) === '--...');
+  ok('no zero padding', morseForNumber(1) === '.----');
+
+  // The whole claim of this variant is that the puzzle is untouched. Build the
+  // same plaintext on a Morse night and a plain night and compare everything
+  // the solver, the share card and the B4 crossover actually read.
+  const line = TRANSMISSIONS[0];
+  const a = buildPuzzle(morseThu, line);
+  const b = buildPuzzle(plainWed, line);
+  const shape = (p: typeof a) => p.words.map((w) => w.length).join(',');
+  ok('morse night has the same word shape', shape(a) === shape(b));
+  ok('morse night resolves the same plaintext',
+    [...a.answerByNum.values()].sort().join('') ===
+      [...b.answerByNum.values()].sort().join(''));
+  const solve = (p: typeof a) => new Map([...p.answerByNum]);
+  ok('a morse night still solves', isSolved(a, solve(a)));
+  ok('a morse night gets NO bonus reveal — the gift is the reward now',
+    revealCount(morseThu) === REVEALS_BY_WEEKDAY[4]);
+  ok('a plain night is unchanged',
+    revealCount(plainWed) === REVEALS_BY_WEEKDAY[3]);
+
+  // THE GIFT. It must be strictly additive: never a letter the grid already
+  // gave away, and always a real pairing from tonight's key.
+  const gifts = keyedGifts(a);
+  ok('a morse night keys two pairings', gifts.length === 2);
+  ok('gifts are never already-revealed letters',
+    gifts.every((g) => !a.revealedLetters.includes(g.letter)));
+  ok('every gift is a true pairing',
+    gifts.every((g) => a.answerByNum.get(g.num) === g.letter));
+  ok('gifts are distinct', new Set(gifts.map((g) => g.letter)).size === gifts.length);
+  ok('the keyed line carries both letter and figure',
+    giftToMorse(gifts[0]) === `${morseForLetter(gifts[0].letter)}  =  ${morseForNumber(gifts[0].num)}`);
+  ok('a plain night keys nothing', !isMorseNight(plainWed));
+}
+
+// --- Header-key nights -----------------------------------------------------
+// STRICTLY ADDITIVE: a listener who recognises the header word writes the key
+// out in seconds; one who does not sees an ordinary cryptogram. These assert
+// that it can never become an obstacle, and that it cannot leak the crossover.
+{
+  const mon = '2026-08-03'; // a Monday
+  const tue = '2026-08-04';
+  ok('header-key night lands on Monday', isHeaderKeyNight(mon));
+  ok('other nights are not header-key', !isHeaderKeyNight(tue));
+  ok('header-key and morse never collide',
+    HEADER_KEY_WEEKDAY !== MORSE_WEEKDAY);
+
+  // RULE 1, and the important one: no header word may appear in any of the 365
+  // transmissions. b4-night asks "WHAT DID I SAY TONIGHT" and re-deals a true
+  // word each time; a header word that was also a real word would hand it over.
+  const allWords = new Set(TRANSMISSIONS.flatMap((t) => t.toUpperCase().split(/[^A-Z]+/)));
+  const leaked = HEADER_KEYWORDS.filter((w) => allWords.has(w));
+  ok('no header keyword appears in any transmission', leaked.length === 0, leaked.join(','));
+
+  // RULE 2: enough distinct letters that the keyed alphabet really moves.
+  const thin = HEADER_KEYWORDS.filter((w) => new Set(w).size < 4);
+  ok('every header keyword has 4+ distinct letters', thin.length === 0, thin.join(','));
+
+  // The keyed alphabet must still be a permutation, or the cipher is broken.
+  for (const w of HEADER_KEYWORDS) {
+    const a = keyedAlphabet(w);
+    if (a.length !== 26 || new Set(a).size !== 26) {
+      ok(`keyed alphabet for ${w} is a permutation`, false);
+      break;
+    }
+  }
+  ok('keyed alphabets are all permutations', true);
+
+  const map = keyForDay(mon);
+  ok('header-key map is a bijection onto 1..26',
+    new Set(map.values()).size === 26 &&
+      [...map.values()].every((n) => n >= 1 && n <= 26));
+  ok('header-key night is deterministic',
+    JSON.stringify([...keyForDay(mon)]) === JSON.stringify([...keyForDay(mon)]));
+
+  // The whole point: knowing the word reproduces the key exactly.
+  const derived = new Map(
+    [...keyedAlphabet(keywordForDay(mon))].map((ch, i) => [ch, i + 1] as const),
+  );
+  ok('the header word derives the whole key',
+    [...derived].every(([ch, n]) => map.get(ch) === n));
+
+  // And the crossover stays safe: same plaintext resolved, same word shape.
+  const line = TRANSMISSIONS[3];
+  const hk = buildPuzzle(mon, line);
+  const plain = buildPuzzle(tue, line);
+  ok('header-key night has the same word shape',
+    hk.words.map((w) => w.length).join(',') === plain.words.map((w) => w.length).join(','));
+  ok('header-key night resolves the same plaintext',
+    [...hk.answerByNum.values()].sort().join('') ===
+      [...plain.answerByNum.values()].sort().join(''));
+  ok('a header-key night still solves', isSolved(hk, new Map([...hk.answerByNum])));
+}
+
+// --- Turned-around nights --------------------------------------------------
+// The station's own rule, one night a week. These assert that a reversal costs
+// the solver nothing they actually use, and reaches nothing it must not.
+{
+  const sun = '2026-08-02';
+  const mon = '2026-08-03';
+  ok('turned-around night lands on Sunday', isTurnedAroundNight(sun));
+  ok('other nights are not turned around', !isTurnedAroundNight(mon));
+  ok('the three variants never collide',
+    new Set([TRANSPOSITION_WEEKDAY, HEADER_KEY_WEEKDAY, MORSE_WEEKDAY]).size === 3);
+  ok('turning around twice is the identity',
+    turnAround(turnAround('THE MARSH GIVES NOTHING BACK')) === 'THE MARSH GIVES NOTHING BACK');
+
+  const line = TRANSMISSIONS[0];
+  const turned = buildPuzzle(sun, line);
+  const plain = buildPuzzle(mon, line);
+  const sortLetters = (t: string) => [...t.replace(/[^A-Z]/g, '')].sort().join('');
+
+  // Frequency analysis must be untouched: same letters, same counts.
+  ok('a reversal preserves the letter multiset',
+    sortLetters(line.toUpperCase()) === sortLetters(turnAround(line).toUpperCase()));
+  ok('turned-around night resolves the same letters',
+    [...turned.answerByNum.values()].sort().join('') ===
+      [...plain.answerByNum.values()].sort().join(''));
+
+  // Word shapes must survive, merely mirrored: same lengths, reversed order.
+  const lens = (p: typeof turned) => p.words.map((w) => w.length);
+  ok('word lengths are the same set, reversed',
+    lens(turned).join(',') === [...lens(plain)].reverse().join(','));
+
+  ok('a turned-around night still solves',
+    isSolved(turned, new Map([...turned.answerByNum])));
+
+  // THE CROSSOVER. b4-night deals from the FORWARD line, so its answer is a
+  // real forward word however the night was displayed.
+  const card = nightWordChoices(sun, 4, 0);
+  const forward = transmissionForDay(sun).plaintext.toUpperCase();
+  ok('the crossover answer is a forward word from the real line',
+    forward.includes(card.words[card.answerIndex]));
+}
+
+// --- The share card --------------------------------------------------------
+// It is posted publicly to an audience who mostly have not solved tonight, so
+// the leak test is the one that matters.
+{
+  const day = '2026-08-05';
+  const line = transmissionForDay(day).plaintext;
+  const puz = buildPuzzle(day, line);
+  const truth = new Map([...puz.answerByNum]);
+
+  const full = cardWords(puz, truth);
+  ok('a solved card reproduces the line as sent',
+    full.map((w) => w.map((c) => c.letter).join('')).join(' ') ===
+      redactedTranscript(puz, truth));
+
+  const none = cardWords(puz, new Map());
+  ok('an unsolved card bars every enciphered cell',
+    none.every((w) => w.every((c) => c.literal || c.letter === null)));
+
+  // The leak: a WRONG guess must bar, not print. Printing it would be both a
+  // lie and, for anyone reading the post, a false clue.
+  const wrong = new Map<number, string>();
+  for (const [num, letter] of puz.answerByNum)
+    wrong.set(num, letter === 'A' ? 'B' : 'A');
+  const wrongCard = cardWords(puz, wrong);
+  const leaked = wrongCard.flat().filter(
+    (c) => !c.literal && c.letter !== null,
+  );
+  ok('a wrong guess is barred, never printed', leaked.length === 0);
+
+  ok('the card grid matches the puzzle shape',
+    full.map((w) => w.length).join(',') === puz.words.map((w) => w.length).join(','));
+
+  const half = new Map([...puz.answerByNum].slice(0, Math.ceil(puz.answerByNum.size / 2)));
+  const f = solvedFraction(puz, half);
+  ok('solved fraction is between 0 and 1', f > 0 && f < 1);
+  ok('an empty board is zero', solvedFraction(puz, new Map()) === 0);
+  ok('a full board is one', solvedFraction(puz, truth) === 1);
+
+  ok('status speaks in nights, never a score',
+    cardStatusLine(12, true) === 'RECEIVED · 12 NIGHTS LISTENING' &&
+      cardStatusLine(1, true) === 'RECEIVED · FIRST NIGHT' &&
+      cardStatusLine(9, false) === 'STILL DECODING');
+}
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);
