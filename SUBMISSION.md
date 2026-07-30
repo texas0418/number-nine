@@ -61,27 +61,41 @@ Broadcast One is free. Tonight's signal is free forever: a new cryptogram every 
 numbers station,shortwave,cryptogram,interactive fiction,novella,decode,typography,offline,no ads
 ```
 
-**Description** (4000 max, 1832 used)
+**Description** (4000 max, 3160 used)
 
 ```
 A story you receive, not read.
 
-Your estranged brother is dead. He has left you a house where the land gives up and becomes marsh, a war-surplus shortwave receiver, and nineteen years of listening logs. On the fourteenth of June his entries stop mid-sentence, and every night after it is blank.
+Your estranged brother is dead. He has left you a house where the land gives up and becomes marsh, a war-surplus shortwave receiver, and nineteen years of listening logs kept in a hand that never once wavered. On the fourteenth of June his entries stop mid-sentence. Every night after it is blank.
 
-Tune the set. There is a station where none should be: six notes like a music box running down, and then a woman counting in groups of five. She has been counting for nineteen years. Tonight she says your name.
+Tune the set. There is a station where none should be: six notes like a music box running down, and then a woman counting in groups of five — unhurried, as though she had every night in the world and meant to spend them one at a time. She has been counting for nineteen years.
 
-NUMBER NINE is a typographic horror novella in six broadcasts. The text is the architecture — it turns, mirrors, goes down staircases and climbs back up them, and you turn the phone in your hands to follow it. The house asks things of you and it asks fairly: a wall that knocks and waits to be answered, an aerial that must be brought round in the dark until the wire will sing, ink too shy to surface under a bright lamp. Nothing here is a quiz. It is the story insisting that you take part in it.
+Tonight she says your name.
 
-BROADCAST ONE IS FREE — the whole first chapter, start to end.
-The remaining five unlock with one purchase. Paid once. Never a subscription.
+SIX BROADCASTS
+One a night, which is how they were meant to arrive. The text is the architecture: it turns, it mirrors, it goes down staircases and climbs back up them, and you turn the phone in your hands to follow it — because the room turned, not the typeface. Fifty puzzles stand between the first page and the last, and not one of them is a quiz. Each is the story declining to continue until you have understood something.
 
-TONIGHT'S SIGNAL — free forever
-Every night the station transmits a new cryptogram, the same one for every listener in the world, and every night it is one more page of a dead man's log: the year before Broadcast One, told a night at a time. A few minutes to solve. Keep a streak and you are reading a second story, in order, as it airs. You never have to buy anything to receive it.
+THE PHONE IS THE INSTRUMENT
+The house asks things of you, and it asks fairly. A wall knocks in the dark and waits to be answered. An aerial has come off its bearing and must be brought round until the wire will sing. Ink too shy for a bright lamp surfaces when you take the light down. Something is written on the back of a page — and a page has a back. Numbers arrive in your hand as knocks you can feel and never hear.
+
+Every puzzle that asks you to move the phone can also be solved by touch.
+
+HER VOICE
+Her counting is a recorded voice, not a synthetic one, coming up out of shortwave static with a telephone ringing somewhere above you until it is answered. Headphones, lights off, is the way. But sound here is atmosphere and never information — everything in the book is solvable in silence.
+
+BROADCAST ONE IS FREE
+The whole first chapter, beginning to end. No account, no trial clock, no card. The remaining five unlock with a single purchase: paid once, never a subscription, and no second charge of any kind.
+
+TONIGHT'S SIGNAL — FREE FOREVER
+Every night the station transmits a new cryptogram, and every listener on earth receives the same one. A few minutes to break. Behind it lies a year of a dead man's log — 365 nights, in order, a night at a time: the year before Broadcast One, and how a patient man came to be sitting in that cellar at all. Keep a streak and you are reading a second story for nothing. You never have to buy anything to receive it.
+
+WHAT IT ASKS OF YOU
+Patience, and something to write with. A few of these will take an evening, and one or two are meant to take longer than that. By the last broadcast you will be reaching for notes you made in the first. The difficulty is not an obstacle in front of the story. It is the story.
 
 WHAT IT DOES NOT DO
-No advertising. No tracking. No account. No timers, no energy, no nagging. It works with the aeroplane switch on — dark room, headphones, one broadcast a night, which is how it was built to be read.
+No advertising. No tracking. No account. No timers, no energy, no daily nagging, no notifications begging you to come back. It honours the text size you have set. It works with the aeroplane switch on — and that, as it turns out, is the best way to read it.
 
-Sound is atmosphere and never information. Everything is solvable in silence.
+A dark room. Headphones. One broadcast a night.
 ```
 
 **What's New** (1.0)
@@ -95,7 +109,7 @@ First transmission.
 ```
 © 2026 Simon Shih
 ```
-Confirm the name — this and `PUBLISHER` in `site/build.ts` should match.
+Confirmed 2026-07-30, and it matches `PUBLISHER` in `site/build.ts`.
 
 **URLs** — all three on the Society site (upload in progress via the
 SimonBuilds session):
@@ -347,20 +361,21 @@ shown to customers.
 Recommendations given, none of them load-bearing enough for me to have guessed
 in the copy itself:
 
-1. **Publisher name** — `PUBLISHER` in `site/build.ts`, currently `Simon Shih`,
-   the name the app is signed with. It is the line that says who the privacy
-   promises are from, and it should match the ASC copyright field.
-   (`SUPPORT_EMAIL` is settled: `support@simonbuilds.app`, confirmed
-   2026-07-30. The mailbox has to exist — ASC takes it as the support contact.)
-2. **Primary language: English (U.K.)** — the prose is British throughout and
+Both published constants in `site/build.ts` are now settled (Simon, 2026-07-30):
+`SUPPORT_EMAIL` is `support@simonbuilds.app` — the mailbox has to exist, because
+ASC takes it as the app's support contact — and `PUBLISHER` is `Simon Shih`, the
+name the app is signed with and the name in the copyright field. The privacy and
+support pages need no further edits before they go up.
+
+1. **Primary language: English (U.K.)** — the prose is British throughout and
    the site is `lang="en-GB"`. U.S. English would be the larger market's default
    but would sit oddly against "aeroplane" and "kilocycle".
-3. **Category: Games › Adventure, secondary Games › Puzzle** — see the note in
+2. **Category: Games › Adventure, secondary Games › Puzzle** — see the note in
    the app-record section on why Puzzle is acceptable as a category while banned
    as a phrase.
-4. **Price tier: $5.99 base US**, per the README. Confirm the tier in ASC; the
+3. **Price tier: $5.99 base US**, per the README. Confirm the tier in ASC; the
    product itself is already created and localised.
-5. **Age rating tier** — ASC computes it from the answers above. Confirm what it
+4. **Age rating tier** — ASC computes it from the answers above. Confirm what it
    produces rather than choosing it.
 
 ## Everything else, in order
