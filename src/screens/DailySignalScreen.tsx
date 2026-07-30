@@ -39,6 +39,7 @@ import {
   setKv,
 } from '../db';
 import { playIdent, setStaticLevel, speakNumbers } from '../audio';
+import { isHeaderKeyNight, keywordForDay } from '../daily/headerkey';
 import { isMorseNight, morseForNumber } from '../daily/morse';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
@@ -186,6 +187,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
   // She keys her figures one night a week instead of counting them. Same
   // puzzle, same key, same plaintext — see src/daily/morse.ts.
   const morseNight = isMorseNight(puzzle.dayKey);
+  const headerKeyNight = isHeaderKeyNight(puzzle.dayKey);
   const sizes = useMemo(
     () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length)), morseNight),
     [puzzle, morseNight],
@@ -213,6 +215,11 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       </View>
       <Text style={styles.meta} maxFontSizeMultiplier={1.3} numberOfLines={2}>
         intercepted · 4625 kHz · no. {serial} · {puzzle.revealedLetters.length} letters clear
+        {/* On a header-key night she prints a word in the header, unlabelled and
+            unexplained, and that word IS the key. Nothing here says so: a
+            listener who recognises it reads the night in seconds, and one who
+            does not has an ordinary cryptogram. */}
+        {headerKeyNight ? ` · ${keywordForDay(puzzle.dayKey)}` : ''}
       </Text>
 
       <View style={styles.paper}>

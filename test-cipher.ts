@@ -1,7 +1,8 @@
 // test-cipher.ts — the daily transmission math, run in Node: npx tsx test-cipher.ts
 
 import { ALPHABET, REVEALS_BY_WEEKDAY, buildPuzzle, isSolved, keyForDay, lettersByFrequency, redactedTranscript, revealCount } from './src/daily/cipher';
-import { isMorseNight, MORSE_DIGITS, morseForNumber } from './src/daily/morse';
+import { isMorseNight, MORSE_DIGITS, MORSE_WEEKDAY, morseForNumber } from './src/daily/morse';
+import { HEADER_KEYWORDS, HEADER_KEY_WEEKDAY, isHeaderKeyNight, keyedAlphabet, keywordForDay } from './src/daily/headerkey';
 import { TRANSMISSIONS, daysSinceEpoch, transmissionForDay } from './src/daily/schedule';
 
 let failures = 0;
@@ -175,6 +176,65 @@ ok('365 nightly puzzles round-trip', roundTripFails === 0);
     revealCount(morseThu) === REVEALS_BY_WEEKDAY[4] + 1);
   ok('a plain night is unchanged',
     revealCount(plainWed) === REVEALS_BY_WEEKDAY[3]);
+}
+
+// --- Header-key nights -----------------------------------------------------
+// STRICTLY ADDITIVE: a listener who recognises the header word writes the key
+// out in seconds; one who does not sees an ordinary cryptogram. These assert
+// that it can never become an obstacle, and that it cannot leak the crossover.
+{
+  const mon = '2026-08-03'; // a Monday
+  const tue = '2026-08-04';
+  ok('header-key night lands on Monday', isHeaderKeyNight(mon));
+  ok('other nights are not header-key', !isHeaderKeyNight(tue));
+  ok('header-key and morse never collide',
+    HEADER_KEY_WEEKDAY !== MORSE_WEEKDAY);
+
+  // RULE 1, and the important one: no header word may appear in any of the 365
+  // transmissions. b4-night asks "WHAT DID I SAY TONIGHT" and re-deals a true
+  // word each time; a header word that was also a real word would hand it over.
+  const allWords = new Set(TRANSMISSIONS.flatMap((t) => t.toUpperCase().split(/[^A-Z]+/)));
+  const leaked = HEADER_KEYWORDS.filter((w) => allWords.has(w));
+  ok('no header keyword appears in any transmission', leaked.length === 0, leaked.join(','));
+
+  // RULE 2: enough distinct letters that the keyed alphabet really moves.
+  const thin = HEADER_KEYWORDS.filter((w) => new Set(w).size < 4);
+  ok('every header keyword has 4+ distinct letters', thin.length === 0, thin.join(','));
+
+  // The keyed alphabet must still be a permutation, or the cipher is broken.
+  for (const w of HEADER_KEYWORDS) {
+    const a = keyedAlphabet(w);
+    if (a.length !== 26 || new Set(a).size !== 26) {
+      ok(`keyed alphabet for ${w} is a permutation`, false);
+      break;
+    }
+  }
+  ok('keyed alphabets are all permutations', true);
+
+  const map = keyForDay(mon);
+  ok('header-key map is a bijection onto 1..26',
+    new Set(map.values()).size === 26 &&
+      [...map.values()].every((n) => n >= 1 && n <= 26));
+  ok('header-key night is deterministic',
+    JSON.stringify([...keyForDay(mon)]) === JSON.stringify([...keyForDay(mon)]));
+
+  // The whole point: knowing the word reproduces the key exactly.
+  const derived = new Map(
+    [...keyedAlphabet(keywordForDay(mon))].map((ch, i) => [ch, i + 1] as const),
+  );
+  ok('the header word derives the whole key',
+    [...derived].every(([ch, n]) => map.get(ch) === n));
+
+  // And the crossover stays safe: same plaintext resolved, same word shape.
+  const line = TRANSMISSIONS[3];
+  const hk = buildPuzzle(mon, line);
+  const plain = buildPuzzle(tue, line);
+  ok('header-key night has the same word shape',
+    hk.words.map((w) => w.length).join(',') === plain.words.map((w) => w.length).join(','));
+  ok('header-key night resolves the same plaintext',
+    [...hk.answerByNum.values()].sort().join('') ===
+      [...plain.answerByNum.values()].sort().join(''));
+  ok('a header-key night still solves', isSolved(hk, new Map([...hk.answerByNum])));
 }
 
 if (failures) {

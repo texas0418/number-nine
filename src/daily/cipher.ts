@@ -6,6 +6,7 @@
 // that transfers is deduction (frequency, word shapes), never memory.
 // Tested in Node by test-cipher.ts.
 
+import { headerKeyMap, isHeaderKeyNight } from './headerkey';
 import { isMorseNight, MORSE_NIGHT_BONUS_REVEALS, weekdayOf } from './morse';
 
 export const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -41,8 +42,12 @@ function shuffled<T>(items: T[], rand: () => number): T[] {
   return a;
 }
 
-/** letter -> number (1..26), a fresh permutation per day key. */
+/** letter -> number (1..26), a fresh permutation per day key.
+ *  On a HEADER-KEY night the permutation is not random: it is the keyed
+ *  alphabet built from the word the station prints in its header, which a
+ *  listener who recognises it can write out in full. See ./headerkey.ts. */
 export function keyForDay(dayKey: string): Map<string, number> {
+  if (isHeaderKeyNight(dayKey)) return headerKeyMap(dayKey);
   const rand = mulberry32(hashSeed(`number-nine:${dayKey}`));
   const numbers = shuffled(
     Array.from({ length: 26 }, (_, i) => i + 1),

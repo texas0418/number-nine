@@ -33,7 +33,7 @@ export const MORSE_DIGITS: readonly string[] = [
  *  unpredictably reads as a broken puzzle, while a variant that lands on a known
  *  night becomes something a listener comes back for. Same weekday for every
  *  listener on earth, like everything else about the nightly signal. */
-export const MORSE_WEEKDAY = 4;
+export const MORSE_WEEKDAY: number = 4;
 
 /** Weekday of a day key, using local noon so daylight saving cannot shift it. */
 export function weekdayOf(dayKey: string): number {
