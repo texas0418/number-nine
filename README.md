@@ -54,19 +54,28 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       (charset, two eligible words, word width, cryptogram length) are enforced
       in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
 - [ ] Cipher variant nights (header-key days, Morse days, transposition days)
-- [ ] Real audio: voice reading digits, degraded ident variants per chapter, Morse night, haptic knock passages
+- [x] **Her voice, and the digits.** One recording per line she speaks,
+      `v-b1-1` through `v-b6-5`, all tracked. The digits `num-0`…`num-9` plus
+      `num-9-name` are Simon's recordings, sequenced by `speakNumbers` and
+      wired into Tonight's Signal ([DailySignalScreen.tsx:116](src/screens/DailySignalScreen.tsx:116)).
+- [x] **Haptic knock passages.** The `knock` gate is haptic-first, with an
+      `onBeat` that fires even when audio has failed; the B3 poor-box delivers
+      its digits ONLY as felt knock-groups (`feltGroups`); B6's séance is the
+      longest felt message in the book.
+- [ ] Degraded ident variants per chapter — `playIdent` plays one fixed ident
+      for all six broadcasts. Two variants are cut but neither committed nor
+      wired (`nn-ident-broadcast-one.wav`, `nn-ident-broadcast-six.wav`, sitting
+      untracked in `assets/audio/`).
+- [ ] Morse night — no Morse mode exists in `src/daily/`; it belongs with the
+      cipher-variant-nights item above rather than as a separate audio task.
 
 ### Build — craft
 
-- [ ] **Share card as a rendered IMAGE, not text** — black bars over unsolved
-      letters, amber-on-black identity, serial + streak, "receive tonight's
-      signal → App Store" footer, deep link. This is Channel 1 in
-      [MARKETING.md](MARKETING.md): the card is the always-on ad, so it's a
-      launch dependency, not a nicety. (Spoiler-safety already holds in
-      `redactedTranscript`.)
-- [ ] **VoiceOver pass** — a text game can be the most accessible game on the
-      store; it's both the right thing and a graded Apple-featuring criterion
-      (Channel 4). Dynamic Type is already audited to the largest accessibility size.
+- DESCOPED (Simon, 2026-07-30): **share card as a rendered image** and the
+  **VoiceOver pass**. The nightly share ships as text (`Share.share`, spoiler-
+  safety in `redactedTranscript`) and that is the shipping form; Dynamic Type
+  stays audited to the largest accessibility size, and no accessibility props
+  are going into the engine. Do not re-add either as outstanding work.
 - [ ] Polish icon/splash (current: generated glowing "9" — good, not final)
 
 ### Launch — store + marketing (see [MARKETING.md](MARKETING.md))
@@ -77,4 +86,7 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
 - [ ] Store page: preview video, haunted-hardcover screenshots, voice-consistent copy
 - [ ] ASO long-tail: "numbers station," "shortwave horror," "no ads horror story," "interactive novella"
 - [ ] Pre-launch ARG teaser account (numbers-station intercepts; the campaign is the ad)
-- [ ] Privacy + support pages (house pattern: `number-nine-privacy`, `number-nine-support` repos)
+- [ ] Privacy + support pages — written, at `site/privacy/` and `site/support/`
+      on the Society site (which absorbs the old `number-nine-privacy` /
+      `number-nine-support` repo pattern, per issue #8). Outstanding: confirm
+      the support address and publisher name in `site/build.ts`, then deploy.

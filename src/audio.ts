@@ -3,9 +3,14 @@
 // if expo-audio is missing from the build or anything throws, every function
 // silently no-ops and the game stays fully playable (house fail-open rule).
 //
-// Two layers for the slice: a seamless shortwave static bed whose volume the
-// story and tuner modulate, and the six-note station ident. The full palette
-// (voice, Morse, haptic knocks) is a pre-ship task.
+// Two layers underneath everything: a seamless shortwave static bed whose
+// volume the story and tuner modulate, and the six-note station ident. On top
+// of those, her voice — one recording per line she speaks (`v-b1-1` through
+// `v-b6-5`) plus the digits `num-0`…`num-9`, which are NOT cues because
+// `speakNumbers` sequences them itself.
+//
+// Still outstanding: a degraded ident per broadcast (`playIdent` plays one
+// fixed ident for all six), and a Morse night in the daily signal.
 
 import { AppState } from 'react-native';
 

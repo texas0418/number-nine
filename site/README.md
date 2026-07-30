@@ -11,9 +11,17 @@ behind its own disclosure, and the third sits behind a second confirm:
 2. *What the older members say* — the real nudge, in a member's voice.
 3. *The transcript* — the answer, plainly.
 
-The site is the SECOND line of help. The first is the in-app pressure valve
-(`Chapter.hints`), which surfaces a margin note after a reader has been stuck
-at a gate for a long while.
+The site is the ONLY line of help (Simon, 2026-07-30). The book itself never
+prompts, hints, or eases up — a reader in difficulty has to choose to leave the
+story and come here. Broadcasts One and Two carry no in-app notes and are not
+to be given any.
+
+It also carries the two plain-English pages App Review and readers need —
+**Privacy** (`privacy/`) and **Support** (`support/`) — which deliberately drop
+the 1963 voice. Two constants at the top of `build.ts` are published on those
+pages: `SUPPORT_EMAIL` is confirmed (`support@simonbuilds.app`, Simon
+2026-07-30, and the mailbox must exist because ASC uses it as the support
+contact); `PUBLISHER` is not yet confirmed — check it before uploading.
 
 ## Build
 

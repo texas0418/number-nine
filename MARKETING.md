@@ -20,27 +20,31 @@ be the funnel.
   midnight — and one night it reads your name. (Numbers stations are an
   evergreen creepy-content genre on TikTok/YouTube; we ride that current
   instead of buying UA.)
-- **What we are, in Apple's language:** premium, tasteful, audio-rich,
-  accessible, zero ads, zero tracking, fully offline. This IS the featuring
-  pitch — see below.
+- **What we are, in Apple's language:** premium, tasteful, audio-rich, zero
+  ads, zero tracking, no dark patterns, fully offline, respects the system text
+  size. This IS the featuring pitch — see below. Note what is deliberately
+  absent: we do not call the app *accessible*. VoiceOver was descoped
+  (Simon, 2026-07-30) and Dynamic Type alone does not earn the word.
 - **What we never say:** "puzzle game," "AI," "hyper-casual." We say novella,
   transmission, listener.
 
 ## Channel 1 — the daily signal IS the trailer (evergreen, free, always-on)
 
 The single most important channel and the one Simogo lacked. The nightly
-cryptogram ships free forever and produces a **redacted-transcript share
-card** ("I decoded tonight's transmission · 12 nights listening"). That card
-is the ad. Requirements for the card to actually spread (pre-ship):
+cryptogram ships free forever and produces a **redacted-transcript share**
+("I decoded tonight's transmission · 12 nights listening"). That share is the ad.
 
-- [ ] Share card as a rendered IMAGE, not text — black bars over unsolved
-      letters, the amber-on-black identity, serial number, streak, and a
-      one-line "receive tonight's signal → App Store" footer.
-- [ ] Result is spoiler-safe (never leaks unsolved letters — already true in
-      `redactedTranscript`) so sharing is safe and inviting, not a spoiler.
-- [ ] Deep link on the card opens the app / App Store page directly.
+What actually ships: **text**, via the system share sheet
+(`DailySignalScreen`), spoiler-safe because `redactedTranscript` never leaks an
+unsolved letter. The rendered-image version — black bars, amber-on-black
+identity, serial, streak, an App Store footer — was DESCOPED (Simon,
+2026-07-30). Plan the channel around a text share and do not re-open this.
+
+- [x] Spoiler-safe result, so sharing is inviting rather than a spoiler.
 - [ ] The serialized prequel means streak-keepers are reading a second story —
       lean into "what did night 200 say?" intrigue in captions.
+- [ ] Captions carry the funnel that the card was going to carry visually: the
+      text share cannot brand itself, so the words have to.
 
 ## Channel 2 — sound-first mood trailers (NOT gameplay)
 
@@ -74,17 +78,25 @@ Pure Simogo: cryptic teaser, explain nothing, reward the sleuths at launch.
 
 ## Channel 4 — Apple featuring (the marquee beat)
 
-Apple 2025–26 rewards exactly our profile (Balatro, Thronefall, Art of Fauna:
+Apple 2025–26 rewards most of our profile (Balatro, Thronefall, Art of Fauna:
 premium, tasteful, accessible, no dark patterns). Editorial scores UX, UI,
-innovation, uniqueness, **accessibility**, localization, product-page quality;
+innovation, uniqueness, accessibility, localization, product-page quality;
 games also on gameplay/art/sound/replayability/value.
+
+**Accessibility is a criterion we are choosing to score badly on.** VoiceOver
+was descoped (Simon, 2026-07-30) and there are no accessibility props anywhere
+in the engine, so the honest position is that we lead on the criteria we do meet
+and say nothing about the one we don't. Do not write "accessible" into a
+nomination, a press pitch, or store copy. If it is ever asked directly, the true
+answer is: Dynamic Type is audited to the largest accessibility size, every
+hardware puzzle has a touch alternative, and screen-reader support is not there.
 
 - [ ] Submit a **Featuring Nomination** in App Store Connect **≥3 weeks**
       before launch (also on the pre-ship checklist).
-- [ ] Lead the pitch with what Apple grades: a premium narrative novella,
-      no ads/no tracking, full **VoiceOver** support (a text game can be the
-      most accessible game on the store — an unusually strong, honest angle),
-      Dynamic Type audited to the largest accessibility size.
+- [ ] Lead the pitch with the criteria we actually meet: a premium narrative
+      novella, no ads and no tracking, no dark patterns, one honest purchase
+      and no subscription, fully playable offline, an original typographic
+      craft angle, and a free daily puzzle that runs on its own.
 - [ ] Polished product page: the mood trailer as preview, screenshots that
       look like a haunted book (not UI), tight copy in our voice.
 
@@ -108,9 +120,13 @@ Mirror DEVICE 6's cadence so each beat is its own story:
       "shortwave horror," "no ads horror story," "cryptogram story,"
       "interactive novella." (65–70% of indie installs are store search;
       these are winnable keywords, unlike "puzzle" or "horror" alone.)
-- [ ] Product-page copy in the app's voice (listener, transmission, received)
-- [ ] Privacy + support pages live (house pattern: `number-nine-privacy`,
-      `number-nine-support` repos)
+- [x] Product-page copy in the app's voice (listener, transmission, received)
+      — written and measured against the field limits in
+      [SUBMISSION.md](SUBMISSION.md).
+- [x] Privacy + support pages written, generated by `site/build.ts` onto the
+      Society site at `/privacy/` and `/support/` (they absorb the abandoned
+      `number-nine-privacy` / `number-nine-support` repo pattern). Confirm
+      `SUPPORT_EMAIL` and `PUBLISHER` in that file before they go live.
 
 ## Trademark guardrails (DEVICE 6 / Simogo)
 

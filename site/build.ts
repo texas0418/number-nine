@@ -40,6 +40,25 @@ const SITE_NAME = 'The Listeners’ Society';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, 'dist');
 
+// ---------------------------------------------------- the plain-English pages
+// Privacy and Support drop the fiction entirely. App Review reads these, and
+// so does a reader whose purchase did not restore; neither is served by a
+// 1963 listeners'-circle voice. The About page already sets the precedent
+// with its colophon.
+//
+// Both of these are PUBLISHED on the privacy and support pages.
+//   · SUPPORT_EMAIL — CONFIRMED by Simon 2026-07-30. Also the address App Store
+//     Connect takes as the support contact, so the mailbox must exist.
+//   · PUBLISHER — not yet confirmed. It is the name a privacy notice needs in
+//     order to say WHO is making the promises, and it is currently set to the
+//     name the app is signed with. Check it before the next site upload.
+const SUPPORT_EMAIL = 'support@simonbuilds.app';
+const PUBLISHER = 'Simon Shih';
+// Bumped by hand when either page changes in substance. Never generated from
+// the clock: a date that moves on every build makes a diff out of nothing and
+// tells a reader the policy changed when it did not.
+const POLICY_DATE = '30 July 2026';
+
 // ------------------------------------------------------------------ helpers
 
 const esc = (s: string): string =>
@@ -94,6 +113,7 @@ function layout(page: Page): string {
 ${page.body}
 <footer class="colophon">
 <p><a href="${base}index.html">The Society</a> · <a href="${base}archive/index.html">The archive</a> · <a href="${base}about/index.html">About these notes</a></p>
+<p><a href="${base}support/index.html">Support</a> · <a href="${base}privacy/index.html">Privacy</a></p>
 <p>Number Nine is a work of fiction. So is the Society.</p>
 </footer>
 </div>
@@ -280,6 +300,98 @@ function aboutPage(): Page {
   };
 }
 
+function privacyPage(): Page {
+  return {
+    path: 'privacy/index.html',
+    title: 'Privacy',
+    description:
+      'Number Nine has no accounts, no advertising and no analytics. Your reading stays on your phone. The full detail, in plain English.',
+    depth: 1,
+    body: `<main>
+<h1 class="title">Privacy</h1>
+<p class="subtitle">Number Nine · updated ${esc(POLICY_DATE)}</p>
+
+<p class="prose">Number Nine collects nothing about you. There is no account to make, no sign-in, no advertising, no analytics, and no third party watching you read. Everything you do in the book stays on your phone. The one exception is buying or restoring the in-app purchase, which goes through Apple, and that exception is described in full below.</p>
+
+<p class="aside">The app is built to work with the aeroplane switch on. That is not a limitation. It is the intended way to read it.</p>
+
+<hr class="section-rule">
+
+<h2 class="label">What stays on your phone</h2>
+<p class="prose">Where you are in each broadcast, which gates you have solved, your nightly-signal streak and the log of signals you have already worked out, and a few one-off flags — whether you have been asked for an App Store review, for instance. All of it lives in a database on the device itself. None of it is uploaded anywhere, because there is nowhere for it to go: the app has no server.</p>
+<p class="prose">If you back your iPhone up, that database is included in your backup, in exactly the way every other app's local data is, under Apple's terms rather than ours. Deleting Number Nine deletes it. There is also a “reset story progress” control inside the app, under <em>the set</em>, which erases your broadcast progress on the spot and keeps your nightly-signal log.</p>
+
+<h2 class="label">What leaves your phone, and when</h2>
+<p class="prose">Two things, both of which you start deliberately.</p>
+<p class="prose"><strong>Buying or restoring the story.</strong> The one purchase — Broadcasts Two to Six, paid once, never a subscription — is handled by Apple's own payment sheet. We never see your card, your name, your address or your Apple Account email; Apple does not hand those to developers. To know whether you are entitled to the paid broadcasts, the app uses RevenueCat, a purchase-management service, which validates the App Store receipt and records that a purchase happened. It does not receive an email address or any name, because the app never asks you for one and never gives RevenueCat a user identifier of its own — the purchase is filed against a randomly generated anonymous ID. RevenueCat states that it does not store IP addresses and collects no personally identifying information by default.</p>
+<p class="prose"><strong>Opening the Society archive.</strong> The clue archive is this website, and it is outside the app. Tapping through hands you to your browser, and from that point it is an ordinary website visit that the app plays no part in. This site sets no cookies and runs no JavaScript at all.</p>
+
+<h2 class="label">What the App Store label says, and why</h2>
+<p class="prose">Number Nine's App Privacy entry declares one thing: <em>Purchases</em> — purchase history — used for app functionality and analytics, not linked to your identity, and not used to track you. That single disclosure exists because of the receipt validation described above. Nothing else is declared, because nothing else is collected.</p>
+
+<h2 class="label">What the phone's sensors are doing</h2>
+<p class="prose">Several puzzles use the hardware: the compass to face an aerial, the motion sensors to hold the phone still or turn it over, the screen's brightness, the volume buttons, the battery, the haptic engine. Those readings are used in the moment, to decide whether a gate opens, and then they are gone. Nothing is recorded and nothing is transmitted.</p>
+<p class="prose">The app asks for no permissions at all. It has no access to your microphone, camera, location, photographs, contacts or calendar, and it sends no notifications.</p>
+
+<h2 class="label">Children</h2>
+<p class="prose">Number Nine is a horror story written for adults and is not directed at children. It collects no personal information from anyone, of any age.</p>
+
+<h2 class="label">Changes, and how to reach a person</h2>
+<p class="prose">If this notice changes in substance, the date at the top changes with it. Questions about your data, or a request to have a purchase record removed, go to <a href="mailto:${esc(SUPPORT_EMAIL)}">${esc(SUPPORT_EMAIL)}</a>. Number Nine is published by ${esc(PUBLISHER)}.</p>
+
+<p class="aside">Refunds are Apple's to give, not ours — see <a href="../support/index.html">Support</a>.</p>
+
+<a class="backlink" href="../index.html">← The Society</a>
+</main>`,
+  };
+}
+
+function supportPage(): Page {
+  return {
+    path: 'support/index.html',
+    title: 'Support',
+    description:
+      'Help with Number Nine: restoring a purchase, sound, hardware puzzles, text size, lost progress, and where to write.',
+    depth: 1,
+    body: `<main>
+<h1 class="title">Support</h1>
+<p class="subtitle">Number Nine · a real person reads this</p>
+
+<p class="prose">Write to <a href="mailto:${esc(SUPPORT_EMAIL)}">${esc(SUPPORT_EMAIL)}</a>. It helps enormously if you say which iPhone you have, which version of iOS, which broadcast you were in, and what you expected to happen instead. Below are the things that turn out to be the problem most often.</p>
+
+<hr class="section-rule">
+
+<h2 class="label">I am stuck on a puzzle</h2>
+<p class="prose">That is what the <a href="../archive/index.html">archive</a> is for, and it is the only place help lives. The book itself will not prompt you, hint at you, or grow easier if you fail — that is deliberate, and it is the whole reason the puzzles are worth solving. The archive's notes open in three stages so you can take the smallest amount of help that gets you moving, and most readers never need the third.</p>
+
+<h2 class="label">I paid, and the story is still locked</h2>
+<p class="prose">Open <em>the set</em> from the title screen and tap <em>restore purchases</em>. That asks Apple for your purchase history and unlocks the paid broadcasts again — it is the right move after a new phone, a reinstall, or a restore from backup, and it never charges you twice. If it reports that nothing was found and you are certain you bought it, send us the App Store receipt from your emailed invoice and we will sort it out.</p>
+
+<h2 class="label">I want a refund</h2>
+<p class="prose">Refunds go through Apple rather than us; developers cannot issue them. Use <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a> with the Apple Account that made the purchase. If the reason is something broken in the app, please also tell us, so we can fix it for the next reader.</p>
+
+<h2 class="label">There is no sound</h2>
+<p class="prose">Check the silent switch and the volume, but also know this: sound in Number Nine is atmosphere and never information. Nothing is unsolvable in silence, and no gate requires you to hear anything. If the audio fails, the book carries on deliberately rather than stopping to complain — so silence is not a sign that something has gone wrong.</p>
+
+<h2 class="label">A puzzle wants me to move the phone, and I cannot</h2>
+<p class="prose">Every gate that asks for the hardware has a way through by touch instead. If the compass will not answer, the brass ring can be dragged round by hand. If turning the phone over is awkward, the page can be dragged over by its corner. If a dial resists, it can be swept with a finger. No puzzle in the book is passable only by moving the device, and if you find one that seems to be, that is a bug and we want to hear about it.</p>
+
+<h2 class="label">The type is too small</h2>
+<p class="prose">Number Nine follows the text size set in iOS, under Settings → Display &amp; Brightness → Text Size, and the whole book re-typesets to match. The app is dark-only and portrait-only by design: text in it rotates and mirrors as part of the story, so letting the screen rotate would fight the book rather than help it.</p>
+
+<h2 class="label">My progress has gone</h2>
+<p class="prose">Progress is kept on the phone and is not synced between devices, so a new phone starts a fresh reading unless it came from a backup of the old one. Your purchase is separate and always restorable — see above. There is also a reset control inside <em>the set</em>, behind a confirmation, in case a deliberate fresh start is what you are after.</p>
+
+<h2 class="label">About tonight's signal</h2>
+<p class="prose">The nightly cryptogram is free, for everyone, forever, and it is the same puzzle for every reader — a new one each day, worked out on your own phone, so it needs no connection and cannot be spoiled by being early or late to it. It also happens to be a second story, told a night at a time.</p>
+
+<p class="aside">See also: <a href="../privacy/index.html">Privacy</a>.</p>
+
+<a class="backlink" href="../index.html">← The Society</a>
+</main>`,
+  };
+}
+
 // -------------------------------------------------------------------- build
 
 function main(): void {
@@ -291,7 +403,13 @@ function main(): void {
     process.exit(1);
   }
 
-  const pages: Page[] = [frontPage(SECTIONS), archiveIndexPage(SECTIONS), aboutPage()];
+  const pages: Page[] = [
+    frontPage(SECTIONS),
+    archiveIndexPage(SECTIONS),
+    aboutPage(),
+    privacyPage(),
+    supportPage(),
+  ];
   for (const section of SECTIONS) {
     pages.push(sectionPage(section));
     section.intercepts.forEach((intercept, n) =>

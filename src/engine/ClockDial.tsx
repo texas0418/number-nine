@@ -183,14 +183,16 @@ export function ClockDial({
           pointerEvents="none"
         />
         <View style={styles.hubDot} pointerEvents="none" />
-        <Text
-          style={[styles.readout, done && { color: colors.lockGlow }]}
-          allowFontScaling={false}
-          pointerEvents="none"
-        >
-          {pad(hour)}:{pad(minute)}
-        </Text>
       </View>
+      {/* In FLOW, below the face — never absolutely positioned. See the
+          readout style for what that cost us twice. */}
+      <Text
+        style={[styles.readout, done && { color: colors.lockGlow }]}
+        allowFontScaling={false}
+        pointerEvents="none"
+      >
+        {pad(hour)}:{pad(minute)}
+      </Text>
       <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
         {done ? unlockedText : prompt}
       </Text>
@@ -253,12 +255,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.dialDim,
   },
   readout: {
-    position: 'absolute',
-    // BELOW the face, not inside it. Inside, every radius is either swept by
-    // a hand or occupied by a numeral: at bottom 34 it sat on the 12, and at
-    // 58 it sat in the hour hand's path and stole its touches. Out here it
-    // competes with nothing (Simon, playtest 2026-07-30).
-    bottom: -26,
+    // Twice-burned, and the second burn is why this is a flow child rather
+    // than an absolutely positioned one.
+    //
+    // INSIDE the face it competed with the dial: at bottom 34 it sat on the
+    // 12, and at 58 it sat in the hour hand's path and stole its touches.
+    // So it moved below the face — but as `position: absolute; bottom: -26`,
+    // which takes it OUT of the flow, so the caption below laid out as though
+    // the readout were not there and rendered straight through it. On a solved
+    // B2 clock, "20:14" landed on top of "the escapement takes up its count"
+    // (Simon, playtest 2026-07-30).
+    //
+    // In flow it cannot collide with anything at any text size. Keep it here.
+    marginTop: 10,
     fontFamily: fonts.mono,
     fontSize: 14,
     letterSpacing: 3,
@@ -269,7 +278,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 1,
     color: colors.muted,
-    marginTop: 12,
+    marginTop: 10,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
