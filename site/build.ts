@@ -59,6 +59,26 @@ const PUBLISHER = 'Simon Shih';
 // tells a reader the policy changed when it did not.
 const POLICY_DATE = '30 July 2026';
 
+// Search policy, and the one thing about it that is easy to get backwards.
+//
+// The Society's pages are graded hint material. A clue quoted in a search result
+// is spent for every reader who sees it, so those pages carry `noindex` (see
+// `layout`, which keys off the same `frame` that chooses the masthead — a new
+// Society page is covered the day it is written, with no path list to forget).
+//
+// Nothing is disallowed below, deliberately. A crawler blocked by robots.txt
+// never fetches the page, so it never reads the noindex — and a blocked URL that
+// is linked from elsewhere (simonbuilds.app links straight to /society/) can
+// still be listed bare. Disallow and noindex do not stack; asking for both gets
+// you the weaker one. Do not "harden" this file by adding Disallow lines.
+const ROBOTS = `# The Society's pages carry noindex in their markup. That is what keeps graded
+# clue text out of search results, and it only works if crawlers may fetch them.
+# Adding Disallow lines here would hide the noindex and weaken this, not
+# strengthen it. See the comment above ROBOTS in site/build.ts.
+User-agent: *
+Allow: /
+`;
+
 // The game itself. Issue #8 is explicit that this domain IS the official game
 // page and the Society archive is a section of it, so the root is the game page
 // and the Society's own front sits at /society/.
@@ -124,7 +144,7 @@ function layout(page: Page): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(page.description)}">
-<meta name="theme-color" content="#0b0e0c">
+${plain ? '' : '<meta name="robots" content="noindex">\n'}<meta name="theme-color" content="#0b0e0c">
 <meta property="og:title" content="${esc(page.title)}">
 <meta property="og:description" content="${esc(page.description)}">
 <meta property="og:type" content="website">
@@ -634,8 +654,14 @@ function main(): void {
     writeFileSync(full, layout(page), 'utf8');
   }
   copyFileSync(join(HERE, 'style.css'), join(OUT, 'style.css'));
+  // Shipped by the build so it survives a deploy that mirrors dist/ exactly.
+  // Kept out of the tree by hand, it goes missing on the first `rsync --delete`.
+  writeFileSync(join(OUT, 'robots.txt'), ROBOTS, 'utf8');
 
-  console.log(`${pages.length} pages · ${intercepts} intercepts · ${OUT}`);
+  const hidden = pages.filter((page) => page.frame !== 'plain').length;
+  console.log(
+    `${pages.length} pages · ${intercepts} intercepts · ${hidden} noindex · ${OUT}`,
+  );
 }
 
 main();
