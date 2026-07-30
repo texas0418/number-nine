@@ -79,9 +79,13 @@ Scene art is Gemini-generated from Simon's prompts (B1 set 2026-07-27; B2
 set and B3 set — churchyard, obj-valve, obj-grave, wall-crack, wall-burst —
 2026-07-28), processed per the ART.md pipeline. The B4 séance pair and the
 B4 foley (whisper/murmur/spark) are script-synthesized placeholders
-(`scripts/gen-b4-scenes.py`, `scripts/gen-b4-foley.py`). Placeholder-grade
-by policy: real 1963-style photography is a pre-ship task. The phosphor "9"
-icon/splash is synthesized by `scripts/gen-icon.py`.
+(`scripts/gen-b4-scenes.py`, `scripts/gen-b4-foley.py`).
+
+The Gemini scene art SHIPS (Simon, 2026-07-30). It is not placeholder-grade
+pending photography: the Gemini terms were checked and permit commercial use,
+and the prompts were audited clean. Real 1963-style photography is no longer a
+pre-ship task. The phosphor "9" icon and splash, synthesized by
+`scripts/gen-icon.py`, is likewise the final icon rather than a stand-in.
 
 ## Synthesized (no license needed)
 
