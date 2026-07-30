@@ -18,8 +18,10 @@ to be given any.
 
 It also carries the two plain-English pages App Review and readers need —
 **Privacy** (`privacy/`) and **Support** (`support/`) — which deliberately drop
-the 1963 voice. `SUPPORT_EMAIL` and `PUBLISHER` at the top of `build.ts` are
-published on those pages: confirm both before deploying.
+the 1963 voice. Two constants at the top of `build.ts` are published on those
+pages: `SUPPORT_EMAIL` is confirmed (`support@simonbuilds.app`, Simon
+2026-07-30, and the mailbox must exist because ASC uses it as the support
+contact); `PUBLISHER` is not yet confirmed — check it before uploading.
 
 ## Build
 

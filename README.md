@@ -54,7 +54,20 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       (charset, two eligible words, word width, cryptogram length) are enforced
       in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
 - [ ] Cipher variant nights (header-key days, Morse days, transposition days)
-- [ ] Real audio: voice reading digits, degraded ident variants per chapter, Morse night, haptic knock passages
+- [x] **Her voice, and the digits.** One recording per line she speaks,
+      `v-b1-1` through `v-b6-5`, all tracked. The digits `num-0`…`num-9` plus
+      `num-9-name` are Simon's recordings, sequenced by `speakNumbers` and
+      wired into Tonight's Signal ([DailySignalScreen.tsx:116](src/screens/DailySignalScreen.tsx:116)).
+- [x] **Haptic knock passages.** The `knock` gate is haptic-first, with an
+      `onBeat` that fires even when audio has failed; the B3 poor-box delivers
+      its digits ONLY as felt knock-groups (`feltGroups`); B6's séance is the
+      longest felt message in the book.
+- [ ] Degraded ident variants per chapter — `playIdent` plays one fixed ident
+      for all six broadcasts. Two variants are cut but neither committed nor
+      wired (`nn-ident-broadcast-one.wav`, `nn-ident-broadcast-six.wav`, sitting
+      untracked in `assets/audio/`).
+- [ ] Morse night — no Morse mode exists in `src/daily/`; it belongs with the
+      cipher-variant-nights item above rather than as a separate audio task.
 
 ### Build — craft
 

@@ -61,9 +61,17 @@ everything else is synthesized by `scripts/gen-foley.py`,
   quality paper manual page rustle sound effect") — all stated royalty-free,
   raw files in ~/Downloads.
 
-PRE-SHIP: confirm the exact source page + license for each of the
-downloads-folder SFX above (B1 singles, B2 set, B3 set — the filenames are
-the only provenance recorded). Replace any that cannot be verified.
+LICENCE STATUS (Simon, 2026-07-30): every sourced clip above was checked for
+commercial-use permission before it went into the build, and nothing banned
+from commercial use was used. Simon did the checking and is the one attesting
+to content rights in App Store Connect. Treat this as settled — it is not an
+open pre-ship item.
+
+Worth doing, but not a blocker: keep the source page URL and the licence
+wording next to each raw file in `~/Downloads/Sounds`. In the repo the
+filenames are currently the only provenance, and a saved URL is the difference
+between answering a rights query in an afternoon and reconstructing a
+year-old download from memory.
 
 ## Art
 
