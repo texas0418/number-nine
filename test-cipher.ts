@@ -1,14 +1,7 @@
 // test-cipher.ts — the daily transmission math, run in Node: npx tsx test-cipher.ts
 
-import {
-  ALPHABET,
-  buildPuzzle,
-  isSolved,
-  keyForDay,
-  lettersByFrequency,
-  redactedTranscript,
-  revealCount,
-} from './src/daily/cipher';
+import { ALPHABET, REVEALS_BY_WEEKDAY, buildPuzzle, isSolved, keyForDay, lettersByFrequency, redactedTranscript, revealCount } from './src/daily/cipher';
+import { isMorseNight, MORSE_DIGITS, morseForNumber } from './src/daily/morse';
 import { TRANSMISSIONS, daysSinceEpoch, transmissionForDay } from './src/daily/schedule';
 
 let failures = 0;
@@ -148,6 +141,41 @@ for (let d = 0; d < 365; d++) {
   if (redactedTranscript(puz, full) !== plaintext.toUpperCase()) roundTripFails++;
 }
 ok('365 nightly puzzles round-trip', roundTripFails === 0);
+
+// --- Morse nights ----------------------------------------------------------
+// A PRESENTATION variant: the ciphertext number is keyed as figures instead of
+// printed as digits. Everything the puzzle and the B4 crossover depend on must
+// be provably unchanged, which is what these assert.
+{
+  const morseThu = '2026-08-06'; // a Thursday
+  const plainWed = '2026-08-05';
+  ok('morse night lands on Thursday', isMorseNight(morseThu));
+  ok('other nights are not morse', !isMorseNight(plainWed));
+  ok('every digit has a five-symbol code',
+    MORSE_DIGITS.length === 10 && MORSE_DIGITS.every((c) => c.length === 5));
+  ok('all digit codes are distinct', new Set(MORSE_DIGITS).size === 10);
+  ok('a number keys as one group per digit', morseForNumber(18) === '.---- ---..');
+  ok('single digits key as one group', morseForNumber(7) === '--...');
+  ok('no zero padding', morseForNumber(1) === '.----');
+
+  // The whole claim of this variant is that the puzzle is untouched. Build the
+  // same plaintext on a Morse night and a plain night and compare everything
+  // the solver, the share card and the B4 crossover actually read.
+  const line = TRANSMISSIONS[0];
+  const a = buildPuzzle(morseThu, line);
+  const b = buildPuzzle(plainWed, line);
+  const shape = (p: typeof a) => p.words.map((w) => w.length).join(',');
+  ok('morse night has the same word shape', shape(a) === shape(b));
+  ok('morse night resolves the same plaintext',
+    [...a.answerByNum.values()].sort().join('') ===
+      [...b.answerByNum.values()].sort().join(''));
+  const solve = (p: typeof a) => new Map([...p.answerByNum]);
+  ok('a morse night still solves', isSolved(a, solve(a)));
+  ok('morse night hands back one extra letter',
+    revealCount(morseThu) === REVEALS_BY_WEEKDAY[4] + 1);
+  ok('a plain night is unchanged',
+    revealCount(plainWed) === REVEALS_BY_WEEKDAY[3]);
+}
 
 if (failures) {
   console.log(`\n${failures} failure(s)`);

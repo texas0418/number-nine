@@ -39,6 +39,7 @@ import {
   setKv,
 } from '../db';
 import { playIdent, setStaticLevel, speakNumbers } from '../audio';
+import { isMorseNight, morseForNumber } from '../daily/morse';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
 
 let Haptics: any | null = null;
@@ -51,17 +52,22 @@ try {
 const LETTER_ROWS = ['ABCDEFGHI', 'JKLMNOPQR', 'STUVWXYZ'];
 const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-/** Dynamic Type-aware box sizing (see boxSizes rationale in git history). */
-function boxSizes(maxWordLen: number) {
+/** Dynamic Type-aware box sizing (see boxSizes rationale in git history).
+ *  On a MORSE night the figure under each cell becomes one stacked group per
+ *  digit instead of one or two glyphs, so the cell grows taller and the figure
+ *  font shrinks. Width is untouched: the grid already only just fits the
+ *  longest word at the largest text size, and widening would overflow it. */
+function boxSizes(maxWordLen: number, morse = false) {
   const scale = Math.min(PixelRatio.getFontScale(), 1.9);
   const win = Dimensions.get('window').width;
   const cellW = Math.max(22, Math.min(26 * scale, (win - 74) / maxWordLen));
   const keyW = Math.min(44, Math.max(30, (win - 44 - 8 * 6) / 9));
   return {
     cellW,
-    cellH: Math.round(cellW * 1.55),
+    cellH: Math.round(cellW * (morse ? 2.15 : 1.55)),
     cellFont: Math.round(cellW * 0.58),
     numFont: Math.max(9, Math.round(cellW * 0.35)),
+    morseFont: Math.max(7, Math.round(cellW * 0.28)),
     keyW,
     keyH: Math.round(Math.max(40, 40 * Math.min(scale, 1.4))),
     keyFont: Math.round(Math.min(22, 15 * Math.min(scale, 1.5))),
@@ -177,9 +183,12 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       .filter(([, l]) => puzzle.revealedLetters.includes(l))
       .map(([n]) => n),
   );
+  // She keys her figures one night a week instead of counting them. Same
+  // puzzle, same key, same plaintext — see src/daily/morse.ts.
+  const morseNight = isMorseNight(puzzle.dayKey);
   const sizes = useMemo(
-    () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length))),
-    [puzzle],
+    () => boxSizes(Math.max(4, ...puzzle.words.map((w) => w.length)), morseNight),
+    [puzzle, morseNight],
   );
 
   return (
@@ -221,6 +230,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
                   guess={guesses.get(sym.num)}
                   selected={selected === sym.num}
                   revealed={revealedSet.has(sym.num)}
+                  morse={morseNight}
                   sizes={sizes}
                   onPress={() => !solved && setSelected(sym.num)}
                 />
@@ -291,6 +301,7 @@ function Cell({
   guess,
   selected,
   revealed,
+  morse,
   sizes,
   onPress,
 }: {
@@ -298,6 +309,7 @@ function Cell({
   guess: string | undefined;
   selected: boolean;
   revealed: boolean;
+  morse: boolean;
   sizes: ReturnType<typeof boxSizes>;
   onPress: () => void;
 }) {
@@ -346,17 +358,46 @@ function Cell({
       >
         {spin ?? guess ?? ' '}
       </Text>
-      <Text
-        style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial, ...amberGlow }]}
-        allowFontScaling={false}
-      >
-        {num}
-      </Text>
+      {morse ? (
+        // One group per digit, stacked, because a keyed two-figure number is
+        // eleven glyphs wide and the cell is not.
+        <View style={styles.morseStack} pointerEvents="none">
+          {morseForNumber(num)
+            .split(' ')
+            .map((group, gi) => (
+              <Text
+                key={gi}
+                style={[
+                  styles.cellMorse,
+                  { fontSize: sizes.morseFont },
+                  selected && { color: colors.dial, ...amberGlow },
+                ]}
+                allowFontScaling={false}
+              >
+                {group}
+              </Text>
+            ))}
+        </View>
+      ) : (
+        <Text
+          style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial, ...amberGlow }]}
+          allowFontScaling={false}
+        >
+          {num}
+        </Text>
+      )}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  morseStack: { alignItems: 'center', justifyContent: 'center' },
+  cellMorse: {
+    fontFamily: fonts.mono,
+    color: colors.faint,
+    letterSpacing: 0,
+    lineHeight: 9,
+  },
   root: { flex: 1, backgroundColor: colors.bg, paddingTop: 62, paddingHorizontal: 22 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },

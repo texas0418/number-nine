@@ -6,6 +6,8 @@
 // that transfers is deduction (frequency, word shapes), never memory.
 // Tested in Node by test-cipher.ts.
 
+import { isMorseNight, MORSE_NIGHT_BONUS_REVEALS, weekdayOf } from './morse';
+
 export const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 /** FNV-1a — stable string hash for seeding. */
@@ -79,8 +81,10 @@ export function lettersByFrequency(plaintext: string): string[] {
 export const REVEALS_BY_WEEKDAY = [3, 4, 3, 3, 3, 2, 1] as const;
 
 export function revealCount(dayKey: string): number {
-  const [y, m, d] = dayKey.split('-').map(Number);
-  return REVEALS_BY_WEEKDAY[new Date(y, m - 1, d, 12).getDay()];
+  const base = REVEALS_BY_WEEKDAY[weekdayOf(dayKey)];
+  // A Morse night is the same puzzle behind a slower read, so it hands back one
+  // more letter. See src/daily/morse.ts.
+  return base + (isMorseNight(dayKey) ? MORSE_NIGHT_BONUS_REVEALS : 0);
 }
 
 export function buildPuzzle(dayKey: string, plaintext: string): DailyPuzzle {
