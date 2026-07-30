@@ -133,6 +133,23 @@ reporter and no ad SDK in `package.json`, and not a single `fetch` or
 Identifiers are *not* declared: no custom user ID, no IDFA, no attribution
 integration.
 
+**The click path**, because this section of ASC is easy to over-answer:
+
+1. App Privacy → *Get Started*.
+2. "Do you or your third-party partners collect data from this app?" → **Yes**.
+   (Yes, despite collecting nothing about the person — the receipt is data.)
+3. Data types → **Purchases** only. Within it, **Purchase History**.
+4. Purposes for Purchase History → tick **App Functionality** *and*
+   **Analytics**. Both, not one.
+5. "Is this data linked to the user's identity?" → **No**.
+6. "Do you use this data for tracking purposes?" → **No**.
+7. Leave every other category untouched — do not tick Identifiers, Usage Data,
+   or Diagnostics. None of them apply.
+8. Privacy policy URL → the `/privacy/` page.
+
+If a future build adds analytics, a crash reporter, or `Purchases.logIn`, this
+answer stops being true. Nothing else in the app can change it.
+
 ---
 
 ## Age rating
@@ -234,6 +251,27 @@ already.
 Content per MARKETING.md: read as a haunted hardcover, not an app. No
 gameplay-video framing.
 
+**Two hard rules.** No burned-in marketing copy on the first two shots — the
+typography *is* the pitch, and a caption over it says "app" where we want
+"book". And **no shot may contain a gate's answer**: not a solved decode slate,
+not a tuned dial reading, not a filled card. Screenshots are as public and as
+permanent as the store copy, and the same reason we withhold her hour applies.
+
+Shot order, strongest first, because most people see two:
+
+| # | What's on screen | Why it earns the slot |
+|---|---|---|
+| 1 | The cellar staircase block — the eleven steps typeset as descending stairs | The whole thesis in one image: prose as architecture. Nothing else in the store looks like it. |
+| 2 | The mirrored voice line, set reversed on the page | It makes the viewer tilt their head in the store listing. That instinct is the game. |
+| 3 | The radio gate, mid-drag, static thinning — **untuned** | Shows the phone behaving as an instrument without giving the frequency. |
+| 4 | A listening-log page with the margin notes in the second hand | Proves the artefact texture, and the two rules are legible as *rules* without being answers. |
+| 5 | Tonight's Signal, part-solved, with a streak showing | The free hook, and the one thing a browser can act on tonight. |
+| 6 | The title screen with the broadcast list | Last, not first. Orientation for anyone still reading. |
+
+Take them on a device at the default text size — the largest Dynamic Type
+setting is honest but reads as fewer words per screen than the book usually
+gives you.
+
 ---
 
 ## Content rights
@@ -260,6 +298,44 @@ paid broadcasts are FREE. Shipping this build sells nothing. The purchase flow
 itself is also still unmerged ([PR #31](https://github.com/texas0418/number-nine/pull/31)).
 
 ---
+
+## The yes/no fields, answered
+
+| Field | Answer | Why |
+|---|---|---|
+| App price | **Free** | The app is free; the money is the one IAP |
+| Sign-in required | **No** | There is no account anywhere in the app |
+| Demo account needed | **No** | Nothing is behind a login |
+| Advertising Identifier (IDFA) | **No** | No ad SDK, no attribution integration |
+| Content rights: third-party content | **Yes**, rights held | Licensed audio; see Content rights above |
+| Export compliance / encryption | **No** | `ITSAppUsesNonExemptEncryption: false` |
+| Unrestricted web access | **No** | One confirmed link out, not a browser |
+| Availability | All territories | Matches the IAP's 175 |
+| Version release | **Manually release** | Launch day has to line up with the marketing beats and the Featuring nomination — do not let review approval publish it for you |
+| Attachment for review | None | The review notes carry everything |
+
+Contact information for App Review wants a real name, phone and email that
+Apple can actually reach during review. That is Simon's to fill in; it is not
+shown to customers.
+
+## Decisions still yours
+
+Recommendations given, none of them load-bearing enough for me to have guessed
+in the copy itself:
+
+1. **Support email + publisher name** — `SUPPORT_EMAIL` and `PUBLISHER` in
+   `site/build.ts`, currently `support@simonbuilds.app` and `Simon Shih`. Now
+   merged to `dev`, so whatever builds the site next publishes them.
+2. **Primary language: English (U.K.)** — the prose is British throughout and
+   the site is `lang="en-GB"`. U.S. English would be the larger market's default
+   but would sit oddly against "aeroplane" and "kilocycle".
+3. **Category: Games › Adventure, secondary Games › Puzzle** — see the note in
+   the app-record section on why Puzzle is acceptable as a category while banned
+   as a phrase.
+4. **Price tier: $5.99 base US**, per the README. Confirm the tier in ASC; the
+   product itself is already created and localised.
+5. **Age rating tier** — ASC computes it from the answers above. Confirm what it
+   produces rather than choosing it.
 
 ## Everything else, in order
 
