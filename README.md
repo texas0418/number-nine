@@ -53,28 +53,58 @@ items ([MARKETING.md](MARKETING.md)) live together so nothing falls between
       full year of Halloran's log ending where Broadcast One begins. Constraints
       (charset, two eligible words, word width, cryptogram length) are enforced
       in `test-cipher.ts`, so new lines cannot quietly break the B4 crossover.
-- [ ] Cipher variant nights (header-key days, Morse days, transposition days)
-- [ ] Real audio: voice reading digits, degraded ident variants per chapter, Morse night, haptic knock passages
+- [x] **Cipher variant nights.** All three, on fixed weekdays so a listener
+      learns the rhythm rather than meeting a puzzle that looks broken: Sunday
+      turned around (the station's own rule from Broadcast One), Monday
+      header-key (the word printed in the header IS the key), Thursday Morse
+      (figures keyed rather than printed). Every one is proven in
+      `test-cipher.ts` to leave the plaintext, the key bijection and Broadcast
+      Four's crossover gate untouched.
+- [x] **Her voice, and the digits.** One recording per line she speaks,
+      `v-b1-1` through `v-b6-5`, all tracked. The digits `num-0`…`num-9` plus
+      `num-9-name` are Simon's recordings, sequenced by `speakNumbers` and
+      wired into Tonight's Signal ([DailySignalScreen.tsx:116](src/screens/DailySignalScreen.tsx:116)).
+- [x] **Haptic knock passages.** The `knock` gate is haptic-first, with an
+      `onBeat` that fires even when audio has failed; the B3 poor-box delivers
+      its digits ONLY as felt knock-groups (`feltGroups`); B6's séance is the
+      longest felt message in the book.
+- [ ] Degraded ident variants per chapter — `playIdent` plays one fixed ident
+      for all six broadcasts. Two variants are cut but neither committed nor
+      wired (`nn-ident-broadcast-one.wav`, `nn-ident-broadcast-six.wav`, sitting
+      untracked in `assets/audio/`).
+- [x] Morse night — shipped as one of the cipher variant nights above.
 
 ### Build — craft
 
-- [ ] **Share card as a rendered IMAGE, not text** — black bars over unsolved
-      letters, amber-on-black identity, serial + streak, "receive tonight's
-      signal → App Store" footer, deep link. This is Channel 1 in
-      [MARKETING.md](MARKETING.md): the card is the always-on ad, so it's a
-      launch dependency, not a nicety. (Spoiler-safety already holds in
-      `redactedTranscript`.)
-- [ ] **VoiceOver pass** — a text game can be the most accessible game on the
-      store; it's both the right thing and a graded Apple-featuring criterion
-      (Channel 4). Dynamic Type is already audited to the largest accessibility size.
-- [ ] Polish icon/splash (current: generated glowing "9" — good, not final)
+- [x] **Share card as a rendered IMAGE.** Descoped on 2026-07-30 and REINSTATED
+      the same day once the schedule allowed it (Simon: "we have three weeks
+      before launch, let's give people something great"). Black bars over
+      unsolved letters, amber-on-black identity, serial and streak, the site
+      address in the footer. Image first, the text share kept as the floor so a
+      missing native module costs a picture and never a share. Content rules
+      (never print an unsolved or WRONG letter) are tested in `test-cipher.ts`.
+- DESCOPED and staying so (Simon, 2026-07-30): the **VoiceOver pass**. Dynamic
+  Type stays audited to the largest accessibility size and every hardware puzzle
+  keeps a touch alternative, but no accessibility props are going into the
+  engine. Do not re-add it as outstanding work.
+- [x] **Icon and splash: the generated phosphor "9" is the icon** (Simon,
+      2026-07-30). Not a placeholder, not awaiting a polish pass. It is
+      regenerable from `scripts/gen-icon.py` if a size is ever needed.
 
 ### Launch — store + marketing (see [MARKETING.md](MARKETING.md))
 
-- [ ] App Store Connect record, RevenueCat project + real keys, $5.99 `nn_story_unlock`
+- [ ] **RevenueCat real key** — the one remaining blocker. The ASC record, the
+      IAP, the metadata, the screenshots and the App Privacy answers are all
+      done (Simon, 2026-07-30); the store page cannot ship a build until
+      `IOS_KEY` is real and PR #31 is merged.
 - [ ] **Featuring Nomination** in App Store Connect **≥3 weeks** before launch
 - [ ] Mood trailers (15s teaser + 40s launch), vertical-first — sound-led, NOT gameplay
 - [ ] Store page: preview video, haunted-hardcover screenshots, voice-consistent copy
-- [ ] ASO long-tail: "numbers station," "shortwave horror," "no ads horror story," "interactive novella"
+- [x] **ASO long-tail** — carried by the subtitle and keyword field, which are
+      deliberately split so no term is paid for twice. See SUBMISSION.md.
 - [ ] Pre-launch ARG teaser account (numbers-station intercepts; the campaign is the ad)
-- [ ] Privacy + support pages (house pattern: `number-nine-privacy`, `number-nine-support` repos)
+- [x] **Privacy + support pages LIVE** on the Society site at `/privacy/` and
+      `/support/`, generated by `site/build.ts` (which absorbed the old
+      `number-nine-privacy` / `number-nine-support` repo pattern). Both
+      published constants are confirmed: `support@simonbuilds.app` and
+      `Simon Shih`.

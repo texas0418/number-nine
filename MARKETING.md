@@ -20,27 +20,38 @@ be the funnel.
   midnight — and one night it reads your name. (Numbers stations are an
   evergreen creepy-content genre on TikTok/YouTube; we ride that current
   instead of buying UA.)
-- **What we are, in Apple's language:** premium, tasteful, audio-rich,
-  accessible, zero ads, zero tracking, fully offline. This IS the featuring
-  pitch — see below.
+- **What we are, in Apple's language:** premium, tasteful, audio-rich, zero
+  ads, zero tracking, no dark patterns, fully offline, respects the system text
+  size. This IS the featuring pitch — see below. Note what is deliberately
+  absent: we do not call the app *accessible*. VoiceOver was descoped
+  (Simon, 2026-07-30) and Dynamic Type alone does not earn the word.
 - **What we never say:** "puzzle game," "AI," "hyper-casual." We say novella,
   transmission, listener.
 
 ## Channel 1 — the daily signal IS the trailer (evergreen, free, always-on)
 
 The single most important channel and the one Simogo lacked. The nightly
-cryptogram ships free forever and produces a **redacted-transcript share
-card** ("I decoded tonight's transmission · 12 nights listening"). That card
-is the ad. Requirements for the card to actually spread (pre-ship):
+cryptogram ships free forever and produces a **redacted-transcript share**
+("I decoded tonight's transmission · 12 nights listening"). That share is the ad.
 
-- [ ] Share card as a rendered IMAGE, not text — black bars over unsolved
-      letters, the amber-on-black identity, serial number, streak, and a
-      one-line "receive tonight's signal → App Store" footer.
-- [ ] Result is spoiler-safe (never leaks unsolved letters — already true in
-      `redactedTranscript`) so sharing is safe and inviting, not a spoiler.
-- [ ] Deep link on the card opens the app / App Store page directly.
+What ships: **an image**, captured from a real view so it looks like a page of
+the book rather than an app export. Black bars over unsolved letters, amber on
+near-black, serial and streak, the site address in the footer. Reinstated on
+2026-07-30 after a same-day descope, once the schedule allowed it.
+
+The text share remains underneath as the floor: if the capture is unavailable
+the share still goes, carrying the redacted transcript and the address. Nothing
+about this channel is load-bearing.
+
+- [x] Spoiler-safe result, so sharing is inviting rather than a spoiler.
 - [ ] The serialized prequel means streak-keepers are reading a second story —
       lean into "what did night 200 say?" intrigue in captions.
+- [x] The share carries an ADDRESS. Until 2026-07-30 it did not: it emitted a
+      redacted transcript and a streak, and no way whatever for a reader to find
+      the app. `SITE_URL` in `src/society.ts` now closes it, pointing at the game
+      page so it works before launch. Swap it for the store URL on release day.
+- [ ] Captions carry the rest of the funnel: a text share cannot brand itself,
+      so the words around it have to.
 
 ## Channel 2 — sound-first mood trailers (NOT gameplay)
 
@@ -74,19 +85,117 @@ Pure Simogo: cryptic teaser, explain nothing, reward the sleuths at launch.
 
 ## Channel 4 — Apple featuring (the marquee beat)
 
-Apple 2025–26 rewards exactly our profile (Balatro, Thronefall, Art of Fauna:
+Apple 2025–26 rewards most of our profile (Balatro, Thronefall, Art of Fauna:
 premium, tasteful, accessible, no dark patterns). Editorial scores UX, UI,
-innovation, uniqueness, **accessibility**, localization, product-page quality;
+innovation, uniqueness, accessibility, localization, product-page quality;
 games also on gameplay/art/sound/replayability/value.
 
-- [ ] Submit a **Featuring Nomination** in App Store Connect **≥3 weeks**
-      before launch (also on the pre-ship checklist).
-- [ ] Lead the pitch with what Apple grades: a premium narrative novella,
-      no ads/no tracking, full **VoiceOver** support (a text game can be the
-      most accessible game on the store — an unusually strong, honest angle),
-      Dynamic Type audited to the largest accessibility size.
-- [ ] Polished product page: the mood trailer as preview, screenshots that
-      look like a haunted book (not UI), tight copy in our voice.
+**Accessibility is a criterion we are choosing to score badly on.** VoiceOver
+was descoped (Simon, 2026-07-30) and there are no accessibility props anywhere
+in the engine, so the honest position is that we lead on the criteria we do meet
+and say nothing about the one we don't. Do not write "accessible" into a
+nomination, a press pitch, or store copy. If it is ever asked directly, the true
+answer is: Dynamic Type is audited to the largest accessibility size, every
+hardware puzzle has a touch alternative, and screen-reader support is not there.
+
+- [ ] Submit the nomination **≥3 weeks before launch**. It is a nomination, not
+      a dependency: submit it before the app is approved rather than after.
+      Nominate again for any major update.
+- [ ] Polished product page: screenshots that look like a haunted book rather
+      than a UI, tight copy in our voice. Both done — see `SUBMISSION.md`.
+
+### The angle: this game could not exist anywhere but a phone
+
+Lead with the platform, not the prose. Editorial rewards apps that could only be
+built for the device, and this one has an unusually literal claim to it — the
+puzzles are not *about* a phone, they are *performed on* one. Verified against
+the code, the book uses:
+
+| Capability | What the story does with it |
+|---|---|
+| Core Haptics | Digits delivered ONLY as felt knock-groups. A number you cannot see or hear, and must count with your hands. |
+| Core Motion | Hold the device perfectly still while she measures you. Shake a seized valve loose. Turn the page over by turning the phone over. |
+| Magnetometer | Bring a fallen aerial round to a true bearing and hold it there. |
+| Screen brightness | Ink too shy for a bright lamp, which surfaces only when the reader takes the light down. |
+| Volume buttons | A gain knob where the thumb already rests. |
+| Battery state | A set that hungers, and is fed from the mains. |
+| The real calendar | The station keeps real nights. Two gates wait for tomorrow to actually arrive. |
+| StoreKit 2 | One non-consumable. No subscription, no consumables, no second charge. |
+
+Every one of those also has a touch path, so none of it is a gimmick that locks
+a reader out.
+
+### The one-paragraph pitch
+
+> Number Nine is a horror novella in six broadcasts where the typography is the
+> architecture: the prose turns, mirrors and descends, and the reader turns the
+> phone to follow it, because the room turned and not the typeface. Fifty
+> puzzles stand between the first page and the last and none of them is a quiz —
+> they are performed on the device itself, with the compass, the haptics, the
+> brightness and the real calendar. Broadcast One is free in full; the rest is
+> one payment that is never a subscription. A nightly cryptogram, free forever
+> and identical for every listener on earth, serialises a second story a night
+> at a time. No advertising, no tracking, no account, and it plays with the
+> aeroplane switch on.
+
+### The privacy card, which is worth playing
+
+The App Privacy label is a single line: Purchases, not linked to identity, not
+used for tracking. No analytics SDK, no crash reporter, no ad SDK, and not one
+network call in the app's own source. Apple has spent years promoting exactly
+this and very few games can say it.
+
+### What NOT to write in the nomination
+
+- **"Accessible", or anything near it.** See above.
+- **DEVICE 6 or Simogo**, in any field. The trademark guardrail below applies to
+  the nomination exactly as it applies to store metadata.
+- **"Puzzle game", "AI", "hyper-casual".** House voice rules.
+- **Any gate answer, frequency, or her hour.** Same rule as store copy and the
+  trailer; the nomination is read by people, and one of them will play it.
+- **Any claim about the ident degrading per broadcast.** Not built.
+
+### How to file it
+
+Apple's own steps (App Store Connect Help, *Nominate your app for featuring*).
+Requires Account Holder, Admin, App Manager or Marketing.
+
+**Apps → Number Nine → sidebar, under Featuring → Nominations → + → Create
+Nomination.**
+
+| Screen | What to put |
+|---|---|
+| Nomination name | Internal only. `Number Nine — launch`. |
+| Type | **App Launch.** Not App Enhancements, not New Content. |
+| Description | The main field. The one-paragraph pitch above, then the platform table, then the privacy line. Apple asks for purpose, priority and specifics, so say plainly that this is the 1.0 launch and the priority. |
+| Publish date | Day or Range. Use **Range** until the launch window is fixed. |
+| Platforms | iPhone only (`supportsTablet: false`). |
+| Countries | All, matching the IAP's 175. |
+| Localizations | English only. |
+| Supplemental materials | Up to **five URLs** — see below. |
+| Helpful details | Accessibility and "unique aspects of the team or app". See below. |
+
+**Submitting sets a floor under the launch date.** The minimum lead time is
+three weeks, so the earliest sensible publish date is three weeks after the day
+you submit. Save as Draft now and submit once the window firms up; a draft costs
+nothing and the form can be edited after submission anyway (everything except
+the type and the related apps).
+
+**The five supplemental URLs are an advantage most nominations cannot use.**
+Ours already exist: the press kit at `/press/`, the Society archive as evidence
+of the craft around the product, the privacy page as proof of the one-line
+label, and the game page. Apple explicitly accepts a **TestFlight link** here,
+which is the strongest of the five — editorial can play the thing. A build made
+while `IOS_KEY` is still a placeholder unlocks all six broadcasts, which is
+ideal for an evaluator and costs nothing.
+
+**"Helpful details" asks about accessibility directly.** Do not dodge it and do
+not inflate it. The honest answer is the one recorded above: Dynamic Type is
+audited to the largest accessibility size, every hardware puzzle has a touch
+alternative, and screen-reader support is not there.
+
+Read any field limits off the form rather than assuming them; assuming the
+general case instead of reading the page already cost a redo on screenshots.
 
 ## Channel 5 — press ladder (timed beats, daily puzzle already live)
 
@@ -108,9 +217,13 @@ Mirror DEVICE 6's cadence so each beat is its own story:
       "shortwave horror," "no ads horror story," "cryptogram story,"
       "interactive novella." (65–70% of indie installs are store search;
       these are winnable keywords, unlike "puzzle" or "horror" alone.)
-- [ ] Product-page copy in the app's voice (listener, transmission, received)
-- [ ] Privacy + support pages live (house pattern: `number-nine-privacy`,
-      `number-nine-support` repos)
+- [x] Product-page copy in the app's voice (listener, transmission, received)
+      — written and measured against the field limits in
+      [SUBMISSION.md](SUBMISSION.md).
+- [x] Privacy + support pages written, generated by `site/build.ts` onto the
+      Society site at `/privacy/` and `/support/` (they absorb the abandoned
+      `number-nine-privacy` / `number-nine-support` repo pattern). Confirm
+      `SUPPORT_EMAIL` and `PUBLISHER` in that file before they go live.
 
 ## Trademark guardrails (DEVICE 6 / Simogo)
 
