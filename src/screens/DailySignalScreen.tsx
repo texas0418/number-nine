@@ -40,6 +40,10 @@ import {
   setKv,
 } from '../db';
 import { playIdent, setStaticLevel, speakNumbers } from '../audio';
+import { cardStatusLine, cardWords } from '../daily/card';
+import { CARD_H, CARD_SCALE, CARD_W, ShareCard } from '../engine/ShareCard';
+import { captureCard } from '../shareCard';
+import { SITE_URL } from '../society';
 import { isHeaderKeyNight, keywordForDay } from '../daily/headerkey';
 import { giftLine, keyedGifts } from '../daily/keyedGift';
 import { isMorseNight } from '../daily/morse';
@@ -189,12 +193,28 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const share = () =>
+  // Image first, text if the capture is unavailable for any reason. The text
+  // share is what has always worked and stays the floor: nothing here is
+  // load-bearing (house rule), so a missing native module costs a picture and
+  // never a share.
+  const share = async () => {
+    const uri = await captureCard(cardRef, CARD_W, CARD_H, CARD_SCALE);
+    if (uri) {
+      const ok = await Share.share({ url: uri, message: SITE_URL })
+        .then(() => true)
+        .catch(() => false);
+      if (ok) return;
+    }
+    return shareText();
+  };
+
+  const shareText = () =>
     Share.share({
       message: [
         `NUMBER NINE · signal no. ${serial}`,
         redactedTranscript(puzzle, guesses),
         solved ? `received · ${streak} nights listening` : 'still decoding',
+        SITE_URL,
       ].join('\n'),
     }).catch(() => {});
 
@@ -203,6 +223,7 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
       .filter(([, l]) => puzzle.revealedLetters.includes(l))
       .map(([n]) => n),
   );
+  const cardRef = useRef<View>(null);
   // She keys her figures one night a week instead of counting them. Same
   // puzzle, same key, same plaintext — see src/daily/morse.ts.
   const morseNight = isMorseNight(puzzle.dayKey);
@@ -334,6 +355,19 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
           </Text>
         </View>
       )}
+      {/* Rendered off-screen so it can be captured. Positioned far outside
+          the viewport rather than hidden with opacity, because a view with zero
+          opacity captures as a blank image. */}
+      <View style={styles.cardStage} pointerEvents="none">
+        <View ref={cardRef} collapsable={false}>
+          <ShareCard
+            words={cardWords(puzzle, guesses)}
+            serial={serial}
+            status={cardStatusLine(streak, solved)}
+            url={SITE_URL.replace(/^https?:\/\//, '')}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -412,6 +446,8 @@ function Cell({
 }
 
 const styles = StyleSheet.create({
+  // Off-screen, not invisible: a zero-opacity view captures blank.
+  cardStage: { position: 'absolute', left: -10000, top: 0 },
   keyed: {
     fontFamily: fonts.mono,
     fontSize: 11,

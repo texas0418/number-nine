@@ -8,7 +8,13 @@ import { restorePurchases, useStoryUnlocked } from '../proAccess';
 import { openSociety } from '../society';
 import { colors, fonts } from '../theme';
 
-export default function SettingsScreen({ onBack }: { onBack: () => void }) {
+export default function SettingsScreen({
+  onBack,
+  onCredits,
+}: {
+  onBack: () => void;
+  onCredits: () => void;
+}) {
   const unlocked = useStoryUnlocked();
 
   const confirmReset = () =>
@@ -48,6 +54,7 @@ export default function SettingsScreen({ onBack }: { onBack: () => void }) {
       <View style={styles.rows}>
         <Row label={unlocked ? 'story unlocked' : 'restore purchases'} onPress={restore} />
         <Row label="the listeners’ society" onPress={society} />
+        <Row label="credits" onPress={onCredits} />
         <Row label="reset story progress" onPress={confirmReset} danger />
       </View>
 

@@ -15,6 +15,13 @@ import { Linking } from 'react-native';
 
 export const SOCIETY_URL = 'https://numbernine.simonbuilds.app/archive/';
 
+/** Where a shared signal points. Channel 1 in MARKETING.md calls the nightly
+ *  share the always-on ad, and an ad with no address is a postcard: until this
+ *  line existed the share carried a redacted transcript and no way at all for a
+ *  reader to find the app. Points at the game page rather than the App Store so
+ *  it works before launch; swap it for the store URL on release day. */
+export const SITE_URL = 'https://numbernine.simonbuilds.app';
+
 /** Open the archive. Fails silently: the app is fully playable offline, and
  *  a reader with no signal should get nothing rather than an error card. */
 export async function openSociety(): Promise<boolean> {
