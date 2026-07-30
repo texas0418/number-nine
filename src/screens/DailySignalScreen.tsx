@@ -197,34 +197,20 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <View style={styles.root}>
+      {/* The title gets the row to itself. It used to share it with listen and
+          share, which left it ~183pt for ~173pt of glyphs — so at any raised
+          text size it ellipsised into its neighbours. The actions moved down
+          instead of the title getting smaller. */}
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
           <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ set</Text>
         </Pressable>
-        {/* Shrinks rather than truncating. The row holds three competing
-            elements on a narrow screen, and the buttons scale faster than the
-            title does (1.3 against 1.15), so at a large text size the title was
-            squeezed until it ellipsised into its neighbours (device,
-            2026-07-30: "TONIGHT'S S… listen share"). */}
-        <Text
-          style={styles.title}
-          maxFontSizeMultiplier={1.15}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-          minimumFontScale={0.7}
-        >
+        <Text style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
           TONIGHT’S SIGNAL
         </Text>
-        <View style={styles.headRight}>
-          <Pressable onPress={listen} hitSlop={12}>
-            <Text style={[styles.back, isSpeaking && styles.backLive]} maxFontSizeMultiplier={1.3}>
-              {isSpeaking ? 'stop' : 'listen'}
-            </Text>
-          </Pressable>
-          <Pressable onPress={share} hitSlop={12}>
-            <Text style={styles.back} maxFontSizeMultiplier={1.3}>share</Text>
-          </Pressable>
-        </View>
+        {/* Balances the back link so the title sits optically centred on the
+            screen rather than centred in what is left of the row. */}
+        <View style={styles.headSpacer} />
       </View>
       <Text style={styles.meta} maxFontSizeMultiplier={1.3} numberOfLines={2}>
         intercepted · 4625 kHz · no. {serial} · {puzzle.revealedLetters.length} letters clear
@@ -234,6 +220,17 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
             does not has an ordinary cryptogram. */}
         {headerKeyNight ? ` · ${keywordForDay(puzzle.dayKey)}` : ''}
       </Text>
+
+      <View style={styles.actions}>
+        <Pressable onPress={listen} hitSlop={12}>
+          <Text style={[styles.action, isSpeaking && styles.backLive]} maxFontSizeMultiplier={1.3}>
+            {isSpeaking ? 'stop' : 'listen'}
+          </Text>
+        </Pressable>
+        <Pressable onPress={share} hitSlop={12}>
+          <Text style={styles.action} maxFontSizeMultiplier={1.3}>share</Text>
+        </Pressable>
+      </View>
 
       {/* A Morse night keys two pairings above the grid, unexplained. Read it
           and you start ahead; do not and this is an ordinary Thursday. It is
@@ -409,27 +406,29 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   back: { fontFamily: fonts.mono, fontSize: 12, color: colors.muted },
   backLive: { color: colors.dial, ...amberGlow },
-  headRight: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   title: {
     flex: 1,
-    flexShrink: 1,
     textAlign: 'center',
     fontFamily: fonts.mono,
     fontSize: 13,
-    // Was 3. Mono already spaces generously, and three points across sixteen
-    // glyphs cost ~48pt of a ~183pt slot — the single largest reason the title
-    // did not fit.
-    letterSpacing: 1.5,
-    marginHorizontal: 4,
+    letterSpacing: 3,
     color: colors.prose,
   },
+  headSpacer: { width: 44 },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 26,
+    marginTop: 12,
+  },
+  action: { fontFamily: fonts.mono, fontSize: 13, color: colors.muted, letterSpacing: 1 },
   meta: {
     fontFamily: fonts.mono,
     fontSize: 10,
     letterSpacing: 1,
     color: colors.faint,
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 18,
     marginBottom: 18,
   },
   // The grid SCROLLS and the keypad stays pinned. Before this the paper had no
