@@ -50,6 +50,44 @@ that shipped in the app, so the trailer matches the book.
    checked for the art, and keep the prompts in this file. That audit trail is
    what let the art be declared shipping rather than placeholder.
 
+## Tooling
+
+Recorded 2026-07-30. This field moves monthly, so treat the ranking as reasoning
+rather than fact and re-check commercial-use terms before committing.
+
+**Start with Google Veo, through Flow.** The deciding factor is not this month's
+benchmark: it is that the Gemini commercial-use terms have already been audited
+for this project (ART.md), and the stills were generated there, so the model has
+the best chance of extending the look rather than reinterpreting it. Its native
+audio is the feature everyone talks about and is worthless here — output gets
+muted and her recordings go on in the edit.
+
+**Add Runway if the motion fights back.** Camera Controls and Motion Brush map
+directly onto the requirement: a slow dolly-in becomes a value rather than a
+wish, and motion can be brushed onto the dial lamp alone while the rest of the
+frame is masked static. Steeper, still a web UI, no node graphs.
+
+**Luma for two specific shots.** Start-and-end keyframes are the clean way to
+make *one distant amber light comes on halfway through* actually happen: feed a
+dark frame and a lit frame and let it interpolate. Same trick for the study
+window dimming.
+
+**Kling is the value pick** — historically strong at photoreal restrained
+motion, which is exactly this register.
+
+**Skip local pipelines** (Wan, LTX, ComfyUI). Free and excellent, and a
+node-graph hobby that eight three-second clips do not justify.
+
+Three workflow notes that matter more than the tool:
+
+- **Budget for a high reject rate.** Three or four takes per shot, and keep the
+  LEAST animated one. The goal is stillness, which is the opposite of what these
+  models want to give, so most takes will be too lively.
+- **Do not upscale or sharpen.** It fights the grain and breaks the match with
+  the Gemini stills. Generate, downscale if anything, grain once at the end.
+- **Assemble in DaVinci Resolve.** Free, and it does the three things needed:
+  film grain, a halftone print look, and frame-accurate audio sync.
+
 ## Audio: ours only
 
 Her voice, the static bed and the foley are the most distinctive assets in the
