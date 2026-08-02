@@ -10,7 +10,8 @@
 // sheet is turned, not pressed), so a stray thumb cannot trip it.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchInversion } from '../device';
 import { cue } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
@@ -105,36 +106,36 @@ export function InvertBlock({
         {lines.map((line, i) => {
           if (!showingOther || !line.includes(targetWord))
             return (
-              <Text key={i} style={[styles.line, showingOther && styles.lineOther]} maxFontSizeMultiplier={1.3}>
+              <MechText key={i} style={[styles.line, showingOther && styles.lineOther]}>
                 {line}
-              </Text>
+              </MechText>
             );
           const [before, after] = line.split(targetWord);
           return (
-            <Text key={i} style={[styles.line, styles.lineOther]} maxFontSizeMultiplier={1.3}>
+            <MechText key={i} style={[styles.line, styles.lineOther]}>
               {before}
-              <Text
+              <MechText
                 style={done ? styles.wordFound : styles.lineOther}
                 onPress={touchWord}
                 suppressHighlighting
               >
                 {targetWord}
-              </Text>
+              </MechText>
               {after}
-            </Text>
+            </MechText>
           );
         })}
         {!done && hintShown && (
           <View style={styles.turnGlyph} {...turnPan.panHandlers}>
-            <Text style={styles.turnText} allowFontScaling={false} pointerEvents="none">
+            <MechText style={styles.turnText} allowFontScaling={false} pointerEvents="none">
               ⟲
-            </Text>
+            </MechText>
           </View>
         )}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

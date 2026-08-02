@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Linking, Text } from 'react-native';
+import { Linking } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-// Global safety ceiling: honor the reader's Dynamic Type setting (this is a
-// reading app for older eyes) but never let text scale so far that fixed
-// layouts collapse. Reading prose opts into a higher cap locally; chrome
-// (menus, headers, labels) caps tighter at its own call sites.
-type TextWithDefaults = typeof Text & { defaultProps?: { maxFontSizeMultiplier?: number } };
-const T = Text as TextWithDefaults;
-T.defaultProps = { ...T.defaultProps, maxFontSizeMultiplier: 1.6 };
+// Dynamic Type ceilings live in src/theme.ts (TYPE_CAPS) and are applied as
+// explicit maxFontSizeMultiplier props per surface via src/engine/ui.tsx
+// (ChromeText/BodyText/MechText/FixedText) — Text.defaultProps is silently
+// DEAD under React 19 (caught in the 2026-08-02 max-type sweep: the "global
+// cap" that used to sit here did nothing and AX sizes scaled unbounded).
+
 import TitleScreen from './src/screens/TitleScreen';
 import LicenceScreen from './src/screens/LicenceScreen';
 import StoryScreen from './src/screens/StoryScreen';

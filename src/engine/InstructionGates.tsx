@@ -4,7 +4,8 @@
 // Every sensor path has a touch path; everything fails open (device.ts).
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue as playCue, setStaticLevel } from '../audio';
 import { watchMains, watchShake, watchStillness } from '../device';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
@@ -98,9 +99,9 @@ export function StillnessBlock({
       onPressIn={done ? undefined : pressIn}
       onPressOut={done ? undefined : pressOut}
     >
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.meterTrack}>
           <View style={[styles.meterFill, { width: `${Math.round(progress * 100)}%` }]} />
@@ -155,9 +156,9 @@ export function ShakeBlock({
 
   return (
     <Pressable style={styles.body} onPress={done ? undefined : () => strain(0.09)}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.meterTrack}>
           <View style={[styles.meterFill, { width: `${Math.round(grip * 100)}%` }]} />
@@ -207,14 +208,14 @@ export function MainsBlock({
 
   return (
     <View style={styles.body}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <Pressable onPressIn={pressIn} onPressOut={pressOut} style={styles.plugWell}>
-          <Text style={[styles.plugGlyph, holding && { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
+          <MechText style={[styles.plugGlyph, holding && { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
             ⎓
-          </Text>
+          </MechText>
         </Pressable>
       )}
     </View>
@@ -266,9 +267,9 @@ export function ChordBlock({
       onTouchEnd={(e) => onTouches(e.nativeEvent.touches.length)}
       onTouchCancel={() => onTouches(0)}
     >
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.handRow} pointerEvents="none">
           {[0, 1].map((i) => (

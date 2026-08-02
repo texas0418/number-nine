@@ -12,10 +12,10 @@ import {
   Animated,
   LayoutChangeEvent,
   StyleSheet,
-  Text,
   TextLayoutLine,
 } from 'react-native';
-import { colors, fonts } from '../theme';
+import { colors, fonts, TYPE_CAPS } from '../theme';
+import { BodyText } from './ui';
 
 export function ProseReveal({
   text,
@@ -43,7 +43,10 @@ export function ProseReveal({
         onMeasure(y);
       }}
     >
-      <Text
+      {/* The measure pass and the visible per-line Animated.Texts must share
+          ONE cap (TYPE_CAPS.body), or the measured wrap points drift from the
+          rendered lines at large Dynamic Type. */}
+      <BodyText
         style={[styles.line, styles.measure]}
         onTextLayout={(e) =>
           setLines(
@@ -55,7 +58,7 @@ export function ProseReveal({
         }
       >
         {text}
-      </Text>
+      </BodyText>
 
       {measured ? (
         measured.lines.map((ln, i) => {
@@ -70,6 +73,7 @@ export function ProseReveal({
           return (
             <Animated.Text
               key={i}
+              maxFontSizeMultiplier={TYPE_CAPS.body}
               style={[styles.line, faded && { color: colors.proseFaded }, { opacity }]}
             >
               {ln.text.replace(/\n$/, '') || ' '}
@@ -77,7 +81,7 @@ export function ProseReveal({
           );
         })
       ) : (
-        <Text style={[styles.line, styles.hidden]}>{text}</Text>
+        <BodyText style={[styles.line, styles.hidden]}>{text}</BodyText>
       )}
     </Animated.View>
   );

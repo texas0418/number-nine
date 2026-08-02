@@ -8,7 +8,8 @@
 // hardware — the hardware just makes it honest.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchHeading } from '../device';
 import { cue } from '../audio';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
@@ -137,7 +138,7 @@ export function CompassBlock({
             const a = (p.deg * Math.PI) / 180;
             const r = SIZE / 2 - 30;
             return (
-              <Text
+              <MechText
                 key={p.label}
                 allowFontScaling={false}
                 style={[
@@ -150,16 +151,16 @@ export function CompassBlock({
                 ]}
               >
                 {p.label}
-              </Text>
+              </MechText>
             );
           })}
           <View style={styles.needleN} />
           <View style={styles.needleS} />
         </View>
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

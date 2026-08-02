@@ -8,7 +8,8 @@
 // beat of stillness become groups. Only YOUR knocks make a sound.
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, setStaticLevel } from '../audio';
 import { amberViewGlow, colors, fonts } from '../theme';
 
@@ -149,9 +150,9 @@ export function KnockBlock({
   return (
     <Pressable style={styles.body} onPress={tapBack} disabled={done || playing}>
       <View style={[styles.plaster, pulse && styles.plasterPulse]} pointerEvents="none" />
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.groupRow} pointerEvents="none">
           {groups.map((_, i) => (

@@ -2,7 +2,8 @@
 // "The set": about, restore purchases, and the one destructive control
 // (reset story progress) behind a confirm.
 
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { ChromeText } from '../engine/ui';
 import { resetProgress } from '../db';
 import { restorePurchases, useStoryUnlocked } from '../proAccess';
 import { openSociety } from '../society';
@@ -45,9 +46,9 @@ export default function SettingsScreen({
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
+          <ChromeText style={styles.back}>‹ the set</ChromeText>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>THE SET</Text>
+        <ChromeText style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>THE SET</ChromeText>
         <View style={{ width: 44 }} />
       </View>
 
@@ -58,11 +59,11 @@ export default function SettingsScreen({
         <Row label="reset story progress" onPress={confirmReset} danger />
       </View>
 
-      <Text style={styles.about}>
+      <ChromeText style={styles.about}>
         Number Nine is a story you receive, not read.{'\n'}
         Headphones on. Lights off. One broadcast a night.{'\n\n'}
         No ads. No tracking. The nightly signal is free forever.
-      </Text>
+      </ChromeText>
     </View>
   );
 }
@@ -70,7 +71,7 @@ export default function SettingsScreen({
 function Row({ label, onPress, danger }: { label: string; onPress: () => void; danger?: boolean }) {
   return (
     <Pressable style={styles.row} onPress={onPress}>
-      <Text style={[styles.rowText, danger && { color: colors.danger }]}>{label}</Text>
+      <ChromeText style={[styles.rowText, danger && { color: colors.danger }]}>{label}</ChromeText>
     </Pressable>
   );
 }

@@ -9,7 +9,8 @@
 // starts over; sent letters stand. The act is touch-first by nature.
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, setLoopVolume, setStaticLevel, startSfxLoop, stopSfx, warmLoop } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
 
@@ -151,9 +152,9 @@ export function MorseSend({
             <View key={i} style={[styles.letterDot, i < sent && styles.letterSent]} />
           ))}
         </View>
-        <Text style={styles.fist} allowFontScaling={false} pointerEvents="none">
+        <MechText style={styles.fist} allowFontScaling={false} pointerEvents="none">
           {symbols.length > 0 ? symbols.split('').join(' ') : ' '}
-        </Text>
+        </MechText>
         <Pressable
           onPressIn={pressIn}
           onPressOut={pressOut}
@@ -163,9 +164,9 @@ export function MorseSend({
           <View style={[styles.keyCap, keyDown && styles.keyCapDown]} />
         </Pressable>
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

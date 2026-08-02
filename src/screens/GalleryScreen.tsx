@@ -6,7 +6,8 @@
 // through the chapter.
 
 import { useEffect, useRef } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { ChromeText } from '../engine/ui';
 import {
   ChapterCardBlock,
   ChapterEndBlock,
@@ -40,9 +41,9 @@ export default function GalleryScreen({ onBack }: { onBack: () => void }) {
   }, []);
   return (
     <ScrollView ref={scroll} style={styles.root} contentContainerStyle={styles.content}>
-      <Text style={styles.header} onPress={onBack}>
+      <ChromeText style={styles.header} onPress={onBack}>
         ‹ gallery (dev) · every block kind
-      </Text>
+      </ChromeText>
       <Label text="chapter card" />
       <ChapterCardBlock number="BROADCAST ONE" title="The Licence" />
       <Label text="room label" />
@@ -151,7 +152,7 @@ export default function GalleryScreen({ onBack }: { onBack: () => void }) {
 function Label({ text }: { text: string }) {
   return (
     <View style={styles.labelWrap}>
-      <Text style={styles.label}>{text}</Text>
+      <ChromeText style={styles.label}>{text}</ChromeText>
     </View>
   );
 }

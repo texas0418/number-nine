@@ -13,7 +13,8 @@
 // hub trigger holes); travel is tracked in a ref and read on release.
 
 import { useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, playSfx, setStaticLevel } from '../audio';
 import { amberViewGlow, colors, fonts } from '../theme';
 
@@ -180,13 +181,13 @@ export function RotaryDial({
             const y = SIZE / 2 - HOLE_R * Math.cos(a) - HOLE_W / 2;
             return (
               <View key={d} style={[styles.hole, { left: x, top: y }]}>
-                <Text style={styles.holeDigit} allowFontScaling={false}>
+                <MechText style={styles.holeDigit} allowFontScaling={false}>
                   {d}
-                </Text>
+                </MechText>
                 {LETTERS[d] ? (
-                  <Text style={styles.holeLetters} allowFontScaling={false}>
+                  <MechText style={styles.holeLetters} allowFontScaling={false}>
                     {LETTERS[d]}
-                  </Text>
+                  </MechText>
                 ) : null}
               </View>
             );
@@ -201,9 +202,9 @@ export function RotaryDial({
           </View>
         </View>
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

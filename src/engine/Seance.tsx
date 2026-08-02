@@ -9,7 +9,8 @@
 // the knocks are haptic-first and always repeatable.
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { KnockBlock } from './KnockBlock';
 import { watchFacing, watchLamp, watchSeverance } from '../device';
 import { colors, fonts } from '../theme';
@@ -159,9 +160,9 @@ export function Seance({
   if (phase === 'done') {
     return (
       <View style={styles.wrap}>
-        <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+        <MechText style={styles.caption}>
           {unlockedText}
-        </Text>
+        </MechText>
       </View>
     );
   }
@@ -186,9 +187,9 @@ export function Seance({
     return (
       <View style={styles.wrap}>
         <View style={styles.panel}>
-          <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+          <MechText style={styles.caption}>
             {messageText}
-          </Text>
+          </MechText>
           <Pressable
             onPress={() => {
               if (state.current.playedOnce) {
@@ -198,9 +199,9 @@ export function Seance({
             }}
             hitSlop={8}
           >
-            <Text style={styles.liftHint} allowFontScaling={false}>
+            <MechText style={styles.liftHint} allowFontScaling={false}>
               · lift ·
-            </Text>
+            </MechText>
           </Pressable>
         </View>
       </View>
@@ -210,9 +211,9 @@ export function Seance({
   return (
     <View style={styles.wrap}>
       <View style={styles.panel}>
-        <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+        <MechText style={styles.caption}>
           {prompt}
-        </Text>
+        </MechText>
         <View style={styles.lampRow}>
           {(
             [
@@ -228,9 +229,9 @@ export function Seance({
               style={styles.condWell}
             >
               <View style={[styles.condLamp, conds[key] && styles.condMet]} />
-              <Text style={styles.condLabel} allowFontScaling={false}>
+              <MechText style={styles.condLabel} allowFontScaling={false}>
                 {label}
-              </Text>
+              </MechText>
             </Pressable>
           ))}
         </View>

@@ -4,7 +4,8 @@
 // the paper rips, the caption turns over, and the page continues below.
 
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
 import { cue } from '../audio';
@@ -47,9 +48,9 @@ export function SealPlate({
       <Pressable onPress={tear} style={styles.frame} disabled={torn}>
         <Image source={SCENES[image]} resizeMode="cover" style={[styles.img, !torn && styles.imgSealed]} />
       </Pressable>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {torn ? tornCaption : caption}
-      </Text>
+      </MechText>
     </View>
   );
 }

@@ -11,7 +11,8 @@
 // which is usually the reader's own.
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, playSfx, setStaticLevel } from '../audio';
 import { machineName } from '../device';
 import { amberGlow, colors, fonts } from '../theme';
@@ -113,17 +114,17 @@ export function Register({
   return (
     <View style={styles.wrap}>
       <View style={styles.page}>
-        <Text style={styles.ledgerHead} allowFontScaling={false}>
+        <MechText style={styles.ledgerHead} allowFontScaling={false}>
           THE LISTENERS’ REGISTER
-        </Text>
+        </MechText>
         {Array.from({ length: WELLS }, (_, i) => {
           const isTrue = i === trueWell;
           if (done && !isTrue) return <View key={i} style={styles.ruleLine} />;
           if (done && isTrue)
             return (
-              <Text key={i} style={[styles.entry, amberGlow]} allowFontScaling={false}>
+              <MechText key={i} style={[styles.entry, amberGlow]} allowFontScaling={false}>
                 {entry}
-              </Text>
+              </MechText>
             );
           return (
             <View key={i} style={styles.lineRow}>
@@ -151,9 +152,9 @@ export function Register({
           );
         })}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText.replace('{NAME}', entry) : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }
