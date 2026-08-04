@@ -7,7 +7,8 @@ Sources of truth: `app.json` (version, bundle, permissions), `src/` (what the
 app actually does), [CREDITS.md](CREDITS.md) (content rights),
 [MARKETING.md](MARKETING.md) (positioning, ASO, the trademark line).
 
-**Read the two blockers at the bottom before attesting to anything.**
+**Status: 1.0.0 (1) was submitted on 2026-08-04 and is Waiting for Review.**
+See the submission section near the bottom before changing anything here.
 
 ---
 
@@ -440,19 +441,33 @@ excavation.
 
 ---
 
-## ⛔ One blocker before submission
+## ✅ Submitted — 2026-08-04
 
-**Sandbox verification is not done.** The real `appl_` public SDK key landed in
-`src/revenuecat.ts` on 2026-07-30, so the paywall is real from that commit on.
-Still to prove on device with the sandbox account: a real localised price shows;
-purchase unlocks Broadcast Two and survives relaunch; delete/reinstall + Restore
-unlocks again; cancelling charges nothing and says nothing.
+**1.0.0 (1) is Waiting for Review.** Submission ID
+`c4dc992e-ddc5-4bd7-990b-4c87dcf2351d`, two items, both required to travel
+together because it is the first non-consumable:
 
-Known wait: RevenueCat's status page (2026-07-29, "Identified") reports Apple's
-App Store Server API returning 401s for Bundle IDs registered on or after
-July 24, which shows in the dashboard as "Credentials need attention" on the
-In-App Purchase key. Purchases cannot grant the entitlement until Apple fixes
-it. The price display is on-device StoreKit and testable meanwhile.
+| Item | Type |
+|---|---|
+| iOS App 1.0 — 1.0.0 (1) | App Version |
+| The Licence | In-App Purchase |
+
+**The trap, for next time.** Pressing "Add for Review" on the version page and
+then again on the IAP page creates TWO separate draft submissions, not one
+combined. The IAP has to be added to the submission the version already
+started. Check the submission shows **2 items** before submitting; an app
+approved without its purchase ships a paywall that cannot be paid.
+
+Release is **manual**, so approval will not publish. Nothing auto-launches.
+
+Sandbox verification passed on device beforehand (Release build, sandbox
+tester): real localised price, purchase unlocks Broadcast Two and survives
+relaunch, delete/reinstall + restore unlocks again, cancelling charges and
+says nothing.
+
+The RevenueCat "Credentials need attention" warning that blocked purchases was
+Apple's incident of 2026-07-29 (401s for Bundle IDs registered on or after
+July 24), not a bad key. It cleared with no change to the uploaded `.p8`.
 
 ---
 
@@ -499,7 +514,8 @@ support pages need no further edits before they go up.
 
 ## Everything else, in order
 
-1. Sandbox verification of the four purchase cases (see the blocker above).
+1. ~~Sandbox verification of the four purchase cases~~ — done 2026-08-03, all
+   four passed; 1.0.0 (1) submitted 2026-08-04.
 2. `PUBLISHER` / `SUPPORT_EMAIL` confirmed in `site/build.ts`; privacy and
    support pages live at the URLs above.
 3. Screenshots and preview video.
