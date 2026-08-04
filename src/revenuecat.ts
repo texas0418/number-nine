@@ -44,7 +44,7 @@ import { Platform } from 'react-native';
 export const ENTITLEMENT_ID = 'story';
 export const PRODUCT_ID = 'nn_story_unlock';
 
-const IOS_KEY = 'REVENUECAT_IOS_KEY_PLACEHOLDER';
+const IOS_KEY = 'appl_AIRpeyCjFESLdxpceHHyeXRUlfH';
 const ANDROID_KEY = 'REVENUECAT_ANDROID_KEY_PLACEHOLDER';
 
 export const keyForPlatform = (): string =>

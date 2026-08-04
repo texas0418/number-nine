@@ -21,7 +21,7 @@ app actually does), [CREDITS.md](CREDITS.md) (content rights),
 | Team | 75ULC33H2C | existing app record |
 | Version | 1.0.0 | `app.json` |
 | Build | 1 | `app.json` — bump per upload |
-| Primary language | English (U.K.) | the prose is British, `lang="en-GB"` on the site |
+| Primary language | English (U.S.) in ASC today | recommendation was U.K. (British prose, `lang="en-GB"` site) — open decision, see the ASC-state note at the bottom |
 | Devices | iPhone only | `supportsTablet: false` |
 | Orientation | Portrait only | deliberate: text rotates, the OS never does |
 | Appearance | Dark only | `userInterfaceStyle: "dark"` |
@@ -115,7 +115,7 @@ Deliberately absent: `puzzle` and `horror` alone, which MARKETING.md rules out
 as unwinnable against the whole store; `typography`, which nobody searches for
 in games; and the app's own name, which the title already indexes.
 
-**Description** (4000 max, 2373 used)
+**Description** (4000 max, 2415 used)
 
 ```
 A story you receive, not read.
@@ -141,7 +141,7 @@ BROADCAST ONE IS FREE
 The whole first chapter, start to finish. No account, no trial clock. The other five unlock with one purchase, paid once, never a subscription.
 
 TONIGHT'S SIGNAL, FREE FOREVER
-Every night the station sends a new cryptogram, and every listener on earth gets the same one. A few minutes to break. Behind a year of them lies a dead man's log, 365 nights of it, in order and a night at a time: the year before Broadcast One, and how a patient man came to be sitting in that cellar. Keep a streak and you are reading a second story for nothing.
+Every night the station sends a new cryptogram, and every listener on earth gets the same one. She does not always send it the same way. A few minutes to break. Behind a year of them lies a dead man's log, 365 nights of it, in order and a night at a time: the year before Broadcast One, and how a patient man came to be sitting in that cellar. Keep a streak and you are reading a second story for nothing.
 
 No ads. No tracking. No account. No timers, no energy, no notifications. It honours the text size you have set, and it works with the aeroplane switch on.
 
@@ -442,10 +442,17 @@ excavation.
 
 ## ⛔ One blocker before submission
 
-**RevenueCat is not live.** The build still carries
-`REVENUECAT_IOS_KEY_PLACEHOLDER`, which means `proAccess.ts` fails open and the
-paid broadcasts are FREE. Shipping this build sells nothing. The purchase flow
-itself is also still unmerged ([PR #31](https://github.com/texas0418/number-nine/pull/31)).
+**Sandbox verification is not done.** The real `appl_` public SDK key landed in
+`src/revenuecat.ts` on 2026-07-30, so the paywall is real from that commit on.
+Still to prove on device with the sandbox account: a real localised price shows;
+purchase unlocks Broadcast Two and survives relaunch; delete/reinstall + Restore
+unlocks again; cancelling charges nothing and says nothing.
+
+Known wait: RevenueCat's status page (2026-07-29, "Identified") reports Apple's
+App Store Server API returning 401s for Bundle IDs registered on or after
+July 24, which shows in the dashboard as "Credentials need attention" on the
+In-App Purchase key. Purchases cannot grant the entitlement until Apple fixes
+it. The price display is on-device StoreKit and testable meanwhile.
 
 ---
 
@@ -492,9 +499,19 @@ support pages need no further edits before they go up.
 
 ## Everything else, in order
 
-1. RevenueCat: the real key, and [PR #31](https://github.com/texas0418/number-nine/pull/31) merged.
+1. Sandbox verification of the four purchase cases (see the blocker above).
 2. `PUBLISHER` / `SUPPORT_EMAIL` confirmed in `site/build.ts`; privacy and
    support pages live at the URLs above.
 3. Screenshots and preview video.
 4. **Featuring Nomination — at least three weeks before launch.** The only
    hard deadline in the project.
+
+ASC state, verified and corrected in the dashboard 2026-07-30: price set to
+Free (base US, 175 territories), availability set to all 175, category fixed
+to Games › Adventure + Puzzle (was Entertainment), content rights fixed to
+"Yes, rights held" (was No), copyright fixed to `© 2026 Simon Shih` (was
+SimonBuilds), marketing URL filled in. Paid Apps agreement Active; two sandbox
+testers exist. Two open dashboard decisions, Simon's to make: primary language
+is still English (U.S.) in ASC (this doc had recommended U.K.), and Mac App
+Store availability is still on (the ASC default; a portrait iPhone book would
+also be installable on Apple silicon Macs).
