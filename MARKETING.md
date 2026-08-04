@@ -185,9 +185,17 @@ the type and the related apps).
 Ours already exist: the press kit at `/press/`, the Society archive as evidence
 of the craft around the product, the privacy page as proof of the one-line
 label, and the game page. Apple explicitly accepts a **TestFlight link** here,
-which is the strongest of the five — editorial can play the thing. A build made
-while `IOS_KEY` is still a placeholder unlocks all six broadcasts, which is
-ideal for an evaluator and costs nothing.
+which is the strongest of the five — editorial can play the thing.
+
+Pair the TestFlight link with a code that opens the paid broadcasts, or the
+evaluator meets the licence screen at the end of Broadcast One. Either the
+**Promo Codes** section in App Store Connect or an **offer code** on the
+`nn_story_unlock` product page does it, both free to issue. Do NOT reach for
+the old trick of building with a placeholder `IOS_KEY`: that worked only while
+the key was fake, and since 2026-08-03 the real `appl_` key is in
+`src/revenuecat.ts`, so a build from `main` gates the paid chapters exactly as
+a customer's would. Sending editorial a deliberately crippled paywall build is
+also the wrong artefact — a code gives them the shipping app.
 
 **"Helpful details" asks about accessibility directly.** Do not dodge it and do
 not inflate it. The honest answer is the one recorded above: Dynamic Type is
