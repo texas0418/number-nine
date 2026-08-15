@@ -1,0 +1,60 @@
+NUMBER NINE — GOOGLE PLAY STORE LISTING (draft 2026-08-15)
+============================================================
+
+APP NAME (30 chars max)
+Number Nine: A Horror Story
+
+SHORT DESCRIPTION (80 chars max)
+A typographic horror novella in six broadcasts — plus a new cipher every night.
+
+FULL DESCRIPTION (4000 chars max)
+-----------------------------------------------------
+At 23:14, a numbers station that went silent decades ago comes back on the air. It is counting down from nine. You are reading the transcript — and the transcript knows it's being read.
+
+Number Nine is a horror novella told through typography. The text is the world: words turn when the story's space turns, mirror when something is wrong, and stop — mid-scroll — until you've solved what the page is asking. No tap-to-continue. No cartoon jump scares. Just a book that behaves the way haunted paper would.
+
+SIX BROADCASTS
+The story unfolds across six broadcasts. Broadcast One is free — a complete chapter with its own gates and its own ending. One single purchase unlocks the remaining five. No subscription, no ads, no consumables.
+
+GATES, NOT MINIGAMES
+The scroll stops at gates: a radio that needs the right frequency, a fork in the text, a code assembled from clues planted pages earlier — sometimes chapters earlier. Wrong answers don't produce error messages; they produce atmosphere. Later broadcasts get genuinely hard. Bring a notepad.
+
+TONIGHT'S SIGNAL — FREE, EVERY NIGHT
+Each calendar day the station transmits a fresh substitution cipher, the same puzzle for every listener in the world that night, serializing a prequel one line at a time. Some nights the station changes the rules — always in your favor, if you notice.
+
+A BOOK THAT RESPECTS THE READER
+• Everything you need is in the story — no outside knowledge, no searching the web
+• Answers are computed and discovered, never brute-forced
+• Fully playable with sound off; audio is atmosphere, never required
+• Dark, typographic, portrait — designed to be read in bed with the lights off. We're sorry.
+
+Nothing to sign up for, nothing tracked, everything offline. Just you, the transcript, and a station that should not be broadcasting.
+
+Broadcast One is free. The station is patient.
+-----------------------------------------------------
+
+CATEGORY: Games / Puzzle (or Books-adjacent adventure — match iOS category)
+WEBSITE: https://numbernine.simonbuilds.app/  (press kit at /press/)
+PRIVACY POLICY URL (verified live 2026-08-15): https://numbernine.simonbuilds.app/privacy/
+
+GRAPHIC ASSETS (store/)
+- play-icon-512.png — DONE
+- play-feature-graphic.png (1024x500) — DONE (glowing 9, scan line, ruler ticks)
+- screenshots-android/ — captured this run from the release APK (dark typographic shots; NO late-broadcast spoilers, B1 early pages + Tonight's Signal only)
+
+DATA SAFETY FORM (prep)
+- Offline, no accounts, no analytics; nothing collected or shared
+- Purchase history via Google Play Billing/RevenueCat for the broadcasts unlock — collected, not shared, app functionality
+- expo-sensors/brightness/battery used as PUZZLE INSTRUMENTS on-device only — no data leaves the device (worth a plain-English line in the data-safety "security practices" section if asked)
+
+CONTENT RATING (IARC): horror themes, no graphic violence — expect Teen. Answer the questionnaire honestly re: "horror/fear themes".
+
+IN-APP PURCHASE
+- Broadcasts 2–6 unlock (one-time; mirror iOS product/price) — Play Console product + RevenueCat Google project at submission time. Fail-open.
+
+ANDROID QA NOTES
+- Smoke-tested on emulator this run (B1 opening + gates + Tonight's Signal render)
+- MUST RE-TEST ON PHYSICAL MOTO before submission: expo-brightness dimming puzzles, expo-sensors (gyro/accelerometer) gates, haptic Morse (no haptics on emulator), expo-screen-capture behavior, max-text-size legibility (Simon plays at max Dynamic Type — Android font scale to max)
+
+RELEASE NOTES (first release)
+The station is back on the air. Six broadcasts of typographic horror, one free every-night cipher. Broadcast One is free.
