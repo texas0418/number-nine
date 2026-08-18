@@ -1,0 +1,361 @@
+NUMBER NINE -- PRESS OUTREACH
+Plain text. Nothing here needs stripping before you paste it.
+
+Send AFTER release, once the App Store link resolves. Press kit is already
+live and needs no work: numbernine.simonbuilds.app/press/
+
+THE RULE ON DEVICE 6, because this is where the email earns its keep.
+You may name it. Nominative use in press conversation is fine and is decided
+policy (MARKETING.md, 2026-07-27). What you must never write in your own
+voice: "spiritual successor", "the sequel Simogo never made", "from the world
+of", or anything implying they endorsed, blessed or are connected to this. The
+difference is simple. Your feelings about their game are yours to describe.
+Their mark is not yours to borrow. If a reviewer draws the comparison
+themselves, that is theirs to print and you can quote it afterwards.
+
+NEVER in any email: a puzzle method or answer, a frequency, her hour, or any
+claim of screen-reader support. The press kit already discloses that there is
+none, which is the correct way to handle it.
+
+
+=========================================================================
+THE EMAIL
+=========================================================================
+Short on purpose. Journalists open dozens of these a day and the long ones
+lose. No attachments, ever. Links only. Attachments get pitches spam-filtered.
+
+SUBJECT
+
+I waited thirteen years for another DEVICE 6, then built one myself
+
+BODY
+
+Hello <NAME>,
+
+DEVICE 6 came out in 2013 and I have never really got over it. I kept
+expecting another, from them or from anyone, and it never came. So I spent the
+last stretch building the thing I wanted to read.
+
+Number Nine is a horror novella for iPhone in six chapters, one a night. A man
+inherits his estranged brother's house on the marsh, a war-surplus shortwave
+receiver, and nineteen years of listening logs written in a hand that never
+wavered. On the fourteenth of June the entries stop mid-sentence. There is a
+station where none should be, and a woman counting in groups of five who has
+been counting for nineteen years.
+
+The text is the architecture. It turns when the room turns, it mirrors when
+she speaks, and you turn the phone in your hands to follow it. Fifty locks
+stand between the first page and the last and not one of them is a quiz or a
+multiple choice. There is also a cryptogram every night, free forever, the
+same one for every player on earth, and a year of them in order tells a second
+story underneath the first.
+
+Press kit, fact sheet and assets: https://numbernine.simonbuilds.app/press/
+On the App Store: <APP STORE LINK>
+
+Happy to send you a code that unlocks the whole book, no strings and nothing
+expected back. Chapter one is free either way if you would rather just look.
+
+Simon Shih
+support@simonbuilds.app
+
+
+=========================================================================
+THE ADDRESSES -- 17 of them
+=========================================================================
+Read off each outlet's own published contact page on 2026-08-18. Nothing here
+is guessed from a name pattern. Verify before sending; press contacts rot.
+
+Ordered by fit, and the order changed once the target became "people who loved
+DEVICE 6" rather than horror. DEVICE 6 won an Apple Design Award and its
+audience is the crowd that cares about beautifully made iOS software. That is
+the Apple press, not the horror beat. Horror is still worth doing, just later.
+
+
+TIER 1 -- APPLE AND iOS PRESS
+These people review apps as craft. An iPhone-exclusive typographic novella is
+exactly their subject, and a link from any of them moves more copies than a
+horror-site review would.
+
+  viticci@macstories.net
+    Federico Viticci, founder and Editor in Chief, MacStories. The single best
+    target on this list. He publicly and repeatedly invites developers to email
+    him about apps, and has said the pitches that read as written by a human
+    are the ones he opens first. Do not send him a press release. Send him the
+    email in this file.
+
+  jsnell@sixcolors.com
+    Jason Snell, Six Colors. Long-form Apple writing, and he takes app
+    recommendations seriously.
+
+  tips@9to5mac.com
+    9to5Mac newsroom tips. Large audience, quick hits, low effort to try.
+
+  Cult of Mac -- cultofmac.com/about
+    Publishes separate addresses for news tips and for product reviews, but
+    scrambles them against automated reading. Open the About page in a browser
+    and take the reviews one.
+
+  Daring Fireball -- John Gruber
+    NO email is published. He lists Signal (gruber.44) and Mastodon
+    (@gruber@mastodon.social) and says he reads Mastodon mentions. A Daring
+    Fireball link is the single most valuable thing an indie iOS release can
+    get, and it cannot be pitched in the ordinary way. Do not chase it. If the
+    app is good and MacStories writes about it, he may find it himself.
+
+
+TIER 2 -- GAMES PRESS
+
+  reviews@pocketgamer.co.uk        the reviews desk
+  news@pocketgamer.co.uk           news, previews, story pitches
+  chris@pocketgamer.co.uk          content syndication
+    Pocket Gamer. Mobile is their entire beat, so a phone-native art game is
+    not a curiosity to them, it is the thing they cover. Masthead worth knowing
+    when you look for a byline: Dann Sullivan (Editor in Chief), Stephen
+    Gregson-Wood (Deputy), Catherine Dellosa (Reviews Editor), and staff
+    writers Iwan Morris, Tanish Botadkar, Jupiter Hadley, Cristina Mesesan,
+    Mihail Katsoris.
+
+  jupiterigp@gmail.com             Jupiter Hadley, via Indie Games Plus
+  Jupi@JupiterHadley.com           Jupiter Hadley, direct
+    Covers an enormous volume of small indie games across Metro UK, Big Boss
+    Battle, Pocket Gamer and her own YouTube channel, and is known for actually
+    looking at what she is sent. Very high answer rate for a game this size.
+    Pick ONE of these two addresses, not both.
+
+  editors@indiegamesplus.com
+    Indie Games Plus submissions.
+
+  contact@eurogamer.net
+    Eurogamer. Large, and they have a real history of writing thoughtfully
+    about small formally strange games. Long odds, worth one attempt.
+
+  contact@rockpapershotgun.com
+    Rock Paper Shotgun. Mostly PC, but covers unusual work more than any other
+    outlet of its size. One attempt, no follow-up.
+
+
+TIER 3 -- HORROR
+Keep these for a second wave. The premise fits, but it is not where the DEVICE
+6 crowd reads.
+
+  Team@RelyOnHorror.com            general team address, start here
+  w.lockwood@relyonhorror.com      William Lockwood, Editor in Chief
+  d.adcock@relyonhorror.com        Destiny Maddox, Managing Editor
+  rkeegan@relyonhorror.com         October Rourke Keergan, Senior Editor
+  webmaster@relyonhorror.com       Dominik Mayr, founder
+    Send to the team address OR one editor. Never both. Note the page lists
+    d.adcock@ against the name Destiny Maddox, which usually means a name
+    change or a stale masthead, so lead with the team address.
+
+  info@dreadcentral.com
+    Their contact form at dreadcentral.com/contact-us/ is the route they
+    prefer. Treat the address as fallback.
+
+
+NO PUBLIC ADDRESS, USE THE FORM OR A BYLINE
+
+  Bloody Disgusting -- bloody-disgusting.com/contact-us/
+    Masthead names John Squires (Managing Editor). Form only.
+  Pocket Tactics -- pockettactics.com
+    Network N property. Their pitch page is for freelance writers, not press.
+    Find a byline on a recent mobile indie review.
+  Indie Game Reviewer -- indiegamereviewer.com/contact/
+  Adventure Gamers -- adventuregamers.com/contact
+    No address published, and narrative adventure is squarely their beat, so
+    worth opening in a browser to find the current route.
+  Emily Short -- emshort.blog
+    Check her stated preferences first and follow them exactly.
+  TouchArcade -- dormant since September 2024, but the TouchArcade Show
+    podcast continues. Pitch the show through its own feed.
+
+
+SENDING ORDER, IF YOU ONLY DO FIVE
+  1. viticci@macstories.net
+  2. Jupi@JupiterHadley.com
+  3. reviews@pocketgamer.co.uk
+  4. jsnell@sixcolors.com
+  5. Team@RelyOnHorror.com
+
+
+=========================================================================
+FINDING THE RIGHT PERSON
+=========================================================================
+This matters more than the outlet. A pitch to a named writer who covers horror
+or narrative games gets read. A pitch to tips@ usually does not.
+
+1. Search the site for recent reviews of small narrative or horror games.
+2. Take the byline. Find that writer on Bluesky, Mastodon or their own site.
+3. Most publish a contact address or say plainly what they want pitched.
+4. Only fall back to the generic address if there is no byline to be found.
+
+Do NOT paste a list of addresses from a media-contact database. They are stale,
+they get you filtered, and one email to the right person beats fifty to the
+wrong ones.
+
+
+=========================================================================
+WHO TO TRY, BEST FIT FIRST
+=========================================================================
+Verified as publishing in 2026 unless noted. Check each before sending,
+outlets close quietly.
+
+MOBILE
+
+Pocket Tactics -- pockettactics.com
+  Daily, mobile, explicitly aimed at grown-ups rather than the casual market.
+  Closest thing to a natural home now that TouchArcade has gone.
+
+Indie Game Reviewer -- indiegamereviewer.com
+  Active through 2026, does reviews, previews and developer interviews. The
+  interview format suits your DEVICE 6 story better than a straight review.
+
+TouchArcade -- toucharcade.com
+  Shut down September 2024 and no longer publishes regularly, BUT the
+  TouchArcade Show podcast continues. Pitch the podcast, not the site. A
+  thirteen-years-later story is podcast material.
+
+JayIsGames -- jayisgames.com
+  Long history with exactly this kind of oddity. Verify it is still updating
+  before you spend a slot on it.
+
+HORROR
+
+Bloody Disgusting -- bloody-disgusting.com/video-games/
+  Large, real horror-games section. Hardest to land of the three, worth one
+  well-aimed attempt at a named games writer rather than the general desk.
+
+Dread Central -- dreadcentral.com
+  Covers games alongside film. Analog horror is well within their beat.
+
+Rely on Horror -- relyonhorror.com
+  Covers indie horror seriously and is the most likely of the three to give a
+  small release a proper review.
+
+DreadXP -- runs an annual Indie Horror Showcase. Not press, but a showcase
+  slot reaches the audience press would have reached. Worth checking dates.
+
+NARRATIVE AND INTERACTIVE FICTION
+
+Emily Short's Interactive Storytelling -- emshort.blog
+  The most respected critic in this space. If she writes about it, the right
+  people read it. Verify she is still posting; check what she says she wants
+  sent to her, and follow it exactly.
+
+intfiction.org -- the IF community forum, not press, but the audience is
+  precisely yours and a thoughtful post there travels.
+
+Rock Paper Shotgun -- rockpapershotgun.com
+  Mostly PC and a long shot, but they cover strange, formally interesting
+  work more than any other large outlet. One attempt, no follow-up.
+
+VIDEO
+
+Analog-horror YouTubers are a different pitch and probably a better one for
+this game than any written outlet. They want a thing to react to, not a review
+copy. Lead with the nightly transmission, offer them the archive, and let them
+decode on camera. Do not send a script or ask for anything specific.
+
+
+=========================================================================
+RULES OF THE THING
+=========================================================================
+- One follow-up, seven days later, three lines maximum. Never a second.
+- Personalise the first sentence or do not send it. A visible mail-merge is
+  worse than silence.
+- Send them individually. Never a group email, never a visible CC list.
+- Expect most to go unanswered. That is the normal rate and not a verdict on
+  the game. Ten thoughtful emails beat a hundred copied ones.
+- If someone covers it, thank them and do not argue with the score.
+- Never offer a code in exchange for coverage or a review. Offering a free
+  code so someone CAN cover it is standard and fine. Conditioning it on
+  coverage is not, and it is the thing that ends relationships with writers.
+
+
+=========================================================================
+THE MACSTORIES PITCH -- send this one instead, to viticci@macstories.net
+=========================================================================
+Do NOT send him the generic email. MacStories writes about iOS software as
+craft, so the pitch leads with how the thing is built rather than what happens
+in it. He has said the emails that read as written by a human are the ones he
+opens first, so the opening line has to be true and specific.
+
+OPEN WITH SOMETHING REAL. Before sending, read whatever he has published in
+the last week or two and replace the first line with one honest sentence about
+it. One sentence, no flattery, and only if you actually read it. If you cannot
+be bothered to do that, delete the line entirely and start at "DEVICE 6" --
+a missing personal line is fine, a fake one is not.
+
+
+SUBJECT
+
+An iPhone-only horror novella that re-typesets itself at every Dynamic Type size
+
+
+BODY
+
+Hello Federico,
+
+<ONE TRUE SENTENCE ABOUT SOMETHING HE RECENTLY WROTE, OR DELETE THIS LINE>
+
+DEVICE 6 came out in 2013 and I never got over it. Another one never arrived,
+from Simogo or anyone, so I spent the last stretch building the thing I wanted
+to read. It went on the App Store this week.
+
+Number Nine is a horror novella in six chapters, one a night. The premise is a
+numbers station that has been counting for nineteen years after everyone who
+was supposed to be listening stopped. But the reason I am writing to you is
+how it is built rather than what it is about.
+
+It is iPhone only and it is not a port of anything. The text is the
+architecture: prose runs down the page when a character goes down stairs and
+climbs back up when they return, it mirrors when the voice on the station
+speaks, and the reader physically turns the device to keep reading. That only
+works if the typesetting is real, so the whole book re-typesets at every
+Dynamic Type size including the largest accessibility ones, and the rotated and
+mirrored passages re-flow with it rather than breaking. Getting that to hold at
+the biggest sizes took longer than writing two of the chapters.
+
+Some of the locks use the instrument rather than a keypad: the magnetometer,
+the gyroscope, screen brightness, haptics. Every one of them also accepts touch,
+so nothing depends on physically moving the phone.
+
+The parts I suspect you will care about:
+
+  No account, no server, no sign-in. It is entirely on-device SQLite and the
+  whole book works in aeroplane mode.
+  One payment, never a subscription. First chapter free in full.
+  No ads, no tracking, no analytics SDK, no crash reporter. The privacy label
+  is one line: Purchases, not linked to identity, not used for tracking.
+  No notifications, no timers, no energy meters, no daily-login anything.
+  Portrait locked and dark only, both on purpose.
+
+There is one thing it does not have and I would rather tell you than have you
+find it: no VoiceOver support. It is not built. Dynamic Type is thorough and
+every hardware puzzle has a touch alternative, but screen reader support is
+honestly not there, and I did not want to imply otherwise.
+
+There is also a free part that never expires: a new cryptogram every night, the
+same one for every player on earth, generated from the calendar date. A year of
+them in order tells a second story a night at a time. It costs nothing and
+needs no purchase, so it is a fair way to see whether the thing is any good.
+
+Press kit and assets: https://numbernine.simonbuilds.app/press/
+App Store: <APP STORE LINK>
+
+Happy to send a code that unlocks the whole book, no strings and nothing
+expected in return.
+
+Simon Shih
+support@simonbuilds.app
+
+
+WHY THIS ONE IS SHAPED THIS WAY
+- The subject names a craft detail, not a genre. His inbox is full of genres.
+- The build quality comes before the story, which is backwards for every other
+  outlet on this list and correct for this one.
+- The privacy and no-subscription points are stated plainly because MacStories
+  has written about subscription fatigue and data collection for years.
+- Disclosing the missing VoiceOver support unprompted is the strongest possible
+  signal that everything else in the email is true. Do not remove it.
+- Still no comparison claimed. DEVICE 6 appears once, as why you started.

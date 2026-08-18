@@ -1,0 +1,292 @@
+NUMBER NINE -- REDDIT POSTS
+Everything below is plain text. Nothing needs stripping before you paste it.
+Post all of these ON or AFTER release day, once the App Store link resolves.
+
+Replace <APP STORE LINK> everywhere. Confirm it loads in a private window first.
+
+GENERATE THE CODES BEFORE YOU POST. App Store Connect -> Number Nine ->
+Promo Codes, taken against the IN-APP PURCHASE (The Licence / nn_story_unlock),
+NOT the app. The app is free, so an app code unlocks nothing. 100 per version.
+
+SPACE THESE OUT. One a day across a week, not six in an hour. Six posts in one
+evening from one account is the pattern spam filters are built to catch.
+
+NEVER, in any of them: name another game as a comparison, explain how a lock
+works, give a frequency or an answer, claim screen reader support, or offer a
+code in exchange for a review. That last one breaches App Store Review
+Guideline 3.2.2 and gets the app pulled.
+
+
+=========================================================================
+1. r/iosgaming
+=========================================================================
+The one where a dev handing out codes is welcome rather than tolerated.
+Check current flair rules before posting, they change.
+
+TITLE
+
+I made a horror novella for iPhone where the page turns because the room does
+
+BODY
+
+My brother's house is the setup. Yours, in the story. He's dead, he left you
+a place where the land gives up and becomes marsh, a war-surplus shortwave
+receiver, and nineteen years of listening logs kept in a hand that never once
+wavered. On the fourteenth of June the entries stop mid-sentence. Every night
+after it is blank.
+
+Tune the set. There is a station where none should be: a music box running
+down, and then a woman counting in groups of five, unhurried, like she has
+every night in the world and means to spend them one at a time. She has been
+counting for nineteen years.
+
+Tonight she says your name.
+
+Six broadcasts, one a night. The prose is the map. It turns, it mirrors, it
+goes down the cellar stairs and climbs back up them, and you turn the phone in
+your hands to follow it, because the room turned and not the typeface. Fifty
+locks stand between the first page and the last. None of them is a quiz, and
+none is answered by choosing the right option from a list. The house asks
+things of you and it asks fairly. Nothing it asks for is missing from the book.
+
+There is also Tonight's Signal, and that part is free forever. The station
+sends a new cryptogram every night, and every listener on earth gets the same
+one. A few minutes to break. Behind a year of them lies a dead man's log, 365
+nights of it, in order and a night at a time, which is the year before
+Broadcast One and how a patient man came to be sitting in that cellar. Keep a
+streak and you are reading a second story for nothing.
+
+Her voice is recorded, not synthesised. Sound is atmosphere and never
+information, so if you read it in silence you lose the dread and nothing else.
+
+Broadcast One is free, the whole chapter, start to finish. No account, no trial
+clock. The other five unlock with one purchase, paid once, never a
+subscription.
+
+No ads. No tracking. No account. No timers, no energy, no notifications. It
+works with the aeroplane switch on.
+
+<APP STORE LINK>
+
+If you want the rest of the book on me, send me a DM and I will send you a code
+that unlocks it. No strings. I am not asking for a review or a rating or
+anything back, I would just like people reading it. I have 100 to give away,
+first come first served.
+
+Headphones on. Lights off. One broadcast a night.
+
+
+=========================================================================
+2. r/numbersstations
+=========================================================================
+Small, and the single most on-target audience you have. These people know
+more about numbers stations than you do. Do not sell to them. The rule for
+this sub and the next two: broadcast to them, do not market at them.
+NO code offer in the post body. Put it in a comment only if someone asks.
+
+TITLE
+
+I wrote a novella about a station that has been counting for nineteen years
+
+BODY
+
+I have been listening to recordings of numbers stations for a long time, and
+the thing that never leaves me is the patience of them. Not the mystery. The
+patience. Somebody sat down at the same hour, night after night, and read
+figures into the dark for years, to one person who may or may not have been
+there.
+
+So I wrote the person who was there.
+
+It is a novella about a man who kept nineteen years of listening logs in a
+hand that never wavered, and about the station he found that should not have
+existed. A music box running down, then a woman counting in groups of five.
+The premise is that she is still counting, and one night she uses a name.
+
+It is set on a phone because I wanted the reader turning the device in their
+hands the way you turn a dial. The prose runs down the page when a character
+goes down stairs, and back up it when they climb.
+
+There is a piece of it that is free forever and that I think this sub might
+actually enjoy on its own terms: a new cryptogram every night, the same one
+for every listener on earth, in the format of a transmission. Some nights the
+station sends it differently than others. A year of those in order tells a
+second story underneath the first.
+
+Voice is a real recording rather than a synth, because a synthesised count
+sounds like a synthesised count and this sub of all places would hear it.
+
+<APP STORE LINK>
+
+Happy to talk about the research if anyone wants it. I got a lot of it from
+this sub's archives, so thank you for that.
+
+
+=========================================================================
+3. r/AnalogHorror
+=========================================================================
+Unforgiving about drive-by promotion. Lead with the artifact. If your account
+has no history here, comment on other posts for a few days first.
+NO code offer in the post body.
+
+TITLE
+
+A woman has been reading five-figure groups into the dark since 2007. Nobody
+was assigned to listen.
+
+BODY
+
+The conceit I could not stop pulling at: a numbers station running long after
+anyone was left to receive it. Not a haunted signal. An obedient one. Somebody
+was given a schedule and has kept it, and the schedule outlived the reason.
+
+I built it as a novella you read on a phone. Six chapters, one a night, on the
+theory that dread does not survive being binged. You are the estranged brother
+who inherits the house at the edge of the marsh, the war-surplus receiver, and
+the logbooks. Nineteen years of entries in the same steady hand. Then, on a
+night in June, they stop mid-sentence.
+
+The typography is the horror, as much as anything is. Text turns when the room
+turns. It mirrors when she speaks, because she is speaking turned around. You
+end up holding the phone upside down in a dark kitchen, which is a stupid
+image and exactly the one I wanted.
+
+The audio is a real voice reading real figures over shortwave noise, not a
+synth. Everything is playable in silence, so nothing is gated behind hearing
+it, but it is not the same in silence.
+
+First chapter is free in full.
+
+<APP STORE LINK>
+
+
+=========================================================================
+4. r/ARG
+=========================================================================
+Point them at the site, not the store. The site is the artifact; the app is
+downstream. Let them find it.
+
+TITLE
+
+The Listeners' Society kept a catalogue of a station that should not exist
+
+BODY
+
+There is a site I built as the in-fiction record of a listening club: their
+archive, their transcripts, and their standing disagreement about what they
+were hearing. It reads as a real catalogue because it was more fun to write it
+that way.
+
+numbernine.simonbuilds.app
+
+The live piece is the nightly signal. A new transmission every night, the same
+one for every person who tunes in, and it is free and always will be. Break it
+and you get a fragment of a dead man's log. There are 365 of them in order,
+which is the year leading up to the story, told a night at a time, so anyone
+who keeps a streak is reading something the rest are not.
+
+The station does not send the same way every night. Some nights carry more than
+the figures do. That is all I am going to say about it.
+
+The novella it belongs to is on the App Store, first chapter free, and if you
+would rather just do the nightly one forever and never buy anything, that is a
+completely legitimate way to use it and costs you nothing.
+
+<APP STORE LINK>
+
+
+=========================================================================
+5. r/puzzles  and  r/codes
+=========================================================================
+The strongest angle you have, because the post has standalone value and
+therefore survives self-promotion rules. THE POST IS THE PUZZLE. The app is a
+footer. Post the same night's signal to both, or stagger by a day.
+
+DO NOT post the solution in the body. Let people solve it in the comments and
+confirm the first correct one.
+
+TITLE
+
+Tonight's transmission from a numbers station that has been running since 2007
+
+BODY
+
+<PASTE TONIGHT'S SIGNAL HERE>
+
+To get it: open the app, go to Tonight's Signal, and transcribe the grid as
+plain text, or screenshot it and post the image. Do not paste anything the app
+has already revealed for you, only the puzzle as it starts.
+
+Then this line under it:
+
+A fresh key every night, same puzzle worldwide, and the plaintext is a page
+from a dead man's listening log. This is night <N> of 365. They are in order
+and they tell a story if you keep at them.
+
+It comes from a novella I wrote. The nightly one is free forever and does not
+need the rest of the book, so solve it here and ignore the link if you like.
+
+<APP STORE LINK>
+
+
+=========================================================================
+6. r/interactivefiction
+=========================================================================
+Craft-forward. This sub will ask real questions about structure. Answer them.
+
+TITLE
+
+I wrote a novella where every gate is a different act, and only one per chapter
+is a code you type
+
+BODY
+
+The design rule I set myself, and the one that cost me the most: a chapter gets
+at most one puzzle where the answer is typed on a keypad. Every other gate has
+to be a different kind of act. Something observed, something manipulated,
+something the device itself does, something deduced and then expressed through
+a widget that is not a text field.
+
+The other rule: an answer never sits within three blocks of the gate that wants
+it, and every gate needs at least two clues scattered far apart, one of them in
+a different mode from the other. A detail in a logbook, a property of the
+typography, something you heard. By the last chapter you are going back through
+notes you made in the first.
+
+Difficulty ramps per chapter, deliberately. The first chapter's finale composes
+two rules. The last one expects a full notepad and real cross-referencing.
+
+Wrong answers get atmosphere, never an error message. Static, a dead line, the
+room not responding. I never wanted the book to break character to tell you no.
+
+Six chapters, one a night. First is free.
+
+<APP STORE LINK>
+
+Happy to talk structure in the comments, that is the part I actually enjoy.
+
+
+=========================================================================
+7. WEEKLY SELF-PROMO THREADS ONLY
+=========================================================================
+r/gaming, r/Games, r/apple, r/iphone all remove standalone posts like these.
+They have weekly threads. Use this short version there.
+
+Number Nine, a horror novella for iPhone. Six chapters, one a night. The prose
+turns and mirrors so you turn the phone to follow it, and fifty locks stand
+between the first page and the last, none of them multiple choice. Free daily
+cryptogram that is the same for every player worldwide and serialises a second
+story behind it. First chapter free, one purchase for the rest, no ads, no
+tracking, no account, works offline. <APP STORE LINK>
+
+
+=========================================================================
+AFTER YOU POST
+=========================================================================
+Answer every DM and every comment. A dev who actually replies is the entire
+mechanism here, more than any of the words above. A hundred codes given away
+by someone who answers is worth more than ten thousand impressions.
+
+If a mod removes a post, do not repost it. Message the mods, ask what the sub
+prefers, and follow it. One polite exchange with a mod team has salvaged more
+launches than any rewrite.
