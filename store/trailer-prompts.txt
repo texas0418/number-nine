@@ -6,15 +6,35 @@ needs assembling. Upload the image, paste the whole prompt, generate.
 
 
 =========================================================================
+WHERE THE IMAGES ARE
+=========================================================================
+Everything you need is together in ONE folder:
+
+    ~/Documents/NumberNine-trailer/
+
+    PROMPTS.txt              this file
+    shot-1-receiver.jpg      shot-5-logbook.jpg
+    shot-2-stairs.jpg        shot-6-marsh.jpg
+    shot-3-mast.jpg          shot-7-churchyard.jpg
+    shot-4-study.jpg
+
+Filenames match the shot numbers below, so shot 3 wants shot-3-mast.jpg and
+nothing else. Upload one, paste the matching prompt, generate.
+
+These are copies. The originals live in the repo at assets/scenes/ and are
+the ones the app ships; if you ever regenerate the art, recopy from there.
+
+
+=========================================================================
 READ THIS FIRST -- THREE THINGS THE SOURCE ART DICTATES
 =========================================================================
 
 1. THE STILLS ARE NOT ALL VERTICAL, AND YOU SHOULD NOT MAKE THEM VERTICAL.
-   Already 9:16, use as they are:   marsh.jpg (720x1556)
-                                    churchyard.jpg (720x1556)
-                                    study.jpg (432x934)
-   Square 1:1:                      obj-receiver.jpg, obj-stairs.jpg,
-                                    obj-mast.jpg, obj-logbook.jpg
+   Already 9:16, use as they are:   shot-6-marsh.jpg (720x1556)
+                                    shot-7-churchyard.jpg (720x1556)
+                                    shot-4-study.jpg (432x934)
+   Square 1:1:                      shot-1-receiver.jpg, shot-2-stairs.jpg,
+                                    shot-3-mast.jpg, shot-5-logbook.jpg
    Generate the square ones AT 1:1 and place them centred on a black
    1080x1920 canvas in the edit. Do NOT ask any model to outpaint them to
    vertical. Outpainting invents wall, floor and ceiling that were never in
@@ -35,7 +55,7 @@ READ THIS FIRST -- THREE THINGS THE SOURCE ART DICTATES
 
 3. THE MARSH LIGHT IS ALREADY LIT.
    TRAILER.md asks for "one distant amber light comes on halfway through".
-   In marsh.jpg the light at the mast top is already burning. To get the
+   In shot-6-marsh.jpg the light at the mast top is already burning. To get the
    switch-on you need start-and-end keyframes: duplicate the still, paint the
    light out of the copy in any editor, then feed dark-frame as start and
    original as end and let the model interpolate. That is the Luma trick in
@@ -48,7 +68,7 @@ no sharpening, 3-4 takes each and KEEP THE LEAST ANIMATED ONE.
 
 =========================================================================
 SHOT 1 -- THE RECEIVER          teaser + launch
-UPLOAD: assets/scenes/obj-receiver.jpg          OUTPUT: 1:1, 3 seconds
+UPLOAD: shot-1-receiver.jpg           OUTPUT: 1:1, 3 seconds
 =========================================================================
 
 IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
@@ -88,7 +108,7 @@ a second radio appearing, objects sliding, generated audio, music, voice.
 
 =========================================================================
 SHOT 2 -- THE CELLAR STAIRS AND THE CHAIR          teaser + launch
-UPLOAD: assets/scenes/obj-stairs.jpg            OUTPUT: 1:1, 3 seconds
+UPLOAD: shot-2-stairs.jpg               OUTPUT: 1:1, 3 seconds
 =========================================================================
 
 IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
@@ -125,7 +145,7 @@ rocking, additional furniture appearing, generated audio, music, voice.
 
 =========================================================================
 SHOT 3 -- THE MAST FROM BELOW          teaser + launch
-UPLOAD: assets/scenes/obj-mast.jpg              OUTPUT: 1:1, 3 seconds
+UPLOAD: shot-3-mast.jpg                   OUTPUT: 1:1, 3 seconds
 =========================================================================
 
 IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
@@ -158,7 +178,7 @@ extra masts appearing, generated audio, music, voice.
 
 =========================================================================
 SHOT 4 -- THE STUDY WINDOW          launch trailer only
-UPLOAD: assets/scenes/study.jpg                 OUTPUT: 9:16, 3 seconds
+UPLOAD: shot-4-study.jpg                     OUTPUT: 9:16, 3 seconds
 =========================================================================
 
 IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
@@ -189,7 +209,7 @@ walls, breathing architecture, furniture moving, generated audio, music, voice.
 
 =========================================================================
 SHOT 5 -- THE CLOSED LOGBOOK          launch trailer only
-UPLOAD: assets/scenes/obj-logbook.jpg           OUTPUT: 1:1, 3 seconds
+UPLOAD: shot-5-logbook.jpg             OUTPUT: 1:1, 3 seconds
 =========================================================================
 
 IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
@@ -220,7 +240,7 @@ audio, music, voice.
 
 =========================================================================
 SHOT 6 -- THE DOORWAY ONTO THE MARSH          launch trailer only
-UPLOAD: assets/scenes/marsh.jpg                 OUTPUT: 9:16, 3 seconds
+UPLOAD: shot-6-marsh.jpg                     OUTPUT: 9:16, 3 seconds
 =========================================================================
 The strongest three seconds available, and already vertical. Use it late.
 
@@ -263,7 +283,7 @@ else changes."
 
 =========================================================================
 SHOT 7 -- THE CHURCHYARD          launch trailer only
-UPLOAD: assets/scenes/churchyard.jpg            OUTPUT: 9:16, 3 seconds
+UPLOAD: shot-7-churchyard.jpg            OUTPUT: 9:16, 3 seconds
 =========================================================================
 
 IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
