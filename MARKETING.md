@@ -58,7 +58,10 @@ about this channel is load-bearing.
 Follow DEVICE 6: convey feeling, never record the screen. Assets:
 
 - **Vertical teaser (15s):** black screen, shortwave static tuning, the
-  six-note music-box ident, the amber needle drifting to 4625, one glowing 9.
+  six-note music-box ident, the amber needle drifting and never settling, one
+  glowing 9. The needle must NOT land on a readable frequency: the frequencies
+  are gate answers (SUBMISSION.md), and a legible one in a public video is a
+  permanent spoiler. TRAILER.md's negative prompts enforce this.
   No text until the last frame: a single mirrored line resolving.
 - **Launch trailer (40s):** the degrading ident across the six broadcasts,
   the voice counting, one rotation moment, one mirrored-voice reveal — cut to
