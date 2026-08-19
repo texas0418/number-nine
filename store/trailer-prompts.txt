@@ -1,0 +1,389 @@
+NUMBER NINE -- TRAILER PROMPTS, READY TO PASTE
+Companion to TRAILER.md, which holds the reasoning. This file is the doing.
+
+Each shot below gives you ONE image to upload and ONE complete prompt. Nothing
+needs assembling. Upload the image, paste the whole prompt, generate.
+
+
+=========================================================================
+WHERE THE IMAGES ARE
+=========================================================================
+Everything you need is together in ONE folder:
+
+    ~/Documents/NumberNine-trailer/
+
+    PROMPTS.txt              this file
+    shot-1-receiver.jpg      shot-5-logbook.jpg
+    shot-2-stairs.jpg        shot-6-marsh.jpg
+    shot-3-mast.jpg          shot-7-churchyard.jpg
+    shot-4-study.jpg
+
+Filenames match the shot numbers below, so shot 3 wants shot-3-mast.jpg and
+nothing else. Upload one, paste the matching prompt, generate.
+
+These are copies. The originals live in the repo at assets/scenes/ and are
+the ones the app ships; if you ever regenerate the art, recopy from there.
+
+
+=========================================================================
+READ THIS FIRST -- THREE THINGS THE SOURCE ART DICTATES
+=========================================================================
+
+1. THE STILLS ARE NOT ALL VERTICAL, AND YOU SHOULD NOT MAKE THEM VERTICAL.
+   Already 9:16, use as they are:   shot-6-marsh.jpg (720x1556)
+                                    shot-7-churchyard.jpg (720x1556)
+                                    shot-4-study.jpg (432x934)
+   Square 1:1:                      shot-1-receiver.jpg, shot-2-stairs.jpg,
+                                    shot-3-mast.jpg, shot-5-logbook.jpg
+   Generate the square ones AT 1:1 and place them centred on a black
+   1080x1920 canvas in the edit. Do NOT ask any model to outpaint them to
+   vertical. Outpainting invents wall, floor and ceiling that were never in
+   the book, and the invented part never matches the halftone. Black above and
+   below is not a compromise here: the book's own doctrine is that whitespace
+   is fear and single elements float in acres of empty page. Letterboxing IS
+   the house style.
+
+2. THE RECEIVER'S DIAL ALREADY CARRIES PRINTED NUMBERS.
+   They sit small and soft in the source and read as texture, which is fine.
+   What must never happen: the needle settling anywhere a viewer could read,
+   or the model sharpening those markings into legible figures. The book's
+   frequencies are puzzle answers. Keep the dial glass soft, keep the needle
+   drifting and unresolved, and reject any take where a number becomes
+   readable. Note that MARKETING.md's teaser sketch says the needle drifts
+   "to 4625" -- ignore that. 4625 is the answer to a Broadcast One gate and
+   must never appear in public video.
+
+3. THE MARSH LIGHT IS ALREADY LIT.
+   TRAILER.md asks for "one distant amber light comes on halfway through".
+   In shot-6-marsh.jpg the light at the mast top is already burning. To get the
+   switch-on you need start-and-end keyframes: duplicate the still, paint the
+   light out of the copy in any editor, then feed dark-frame as start and
+   original as end and let the model interpolate. That is the Luma trick in
+   TRAILER.md's tooling section. If that is too much work, use the alternative
+   motion given in SHOT 6 instead, which needs no keyframes.
+
+Universal settings for every shot: mute all generated audio, no upscaling,
+no sharpening, 3-4 takes each and KEEP THE LEAST ANIMATED ONE.
+
+
+=========================================================================
+SHOT 1 -- THE RECEIVER          teaser + launch
+UPLOAD: shot-1-receiver.jpg           OUTPUT: 1:1, 3 seconds
+=========================================================================
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure, halftone texture and tonality exactly. Do not reinterpret, do
+not recompose, do not re-light, do not add or remove objects.
+
+SUBJECT: a war-surplus shortwave radio receiver from the early 1960s, seen
+straight on. Dark bakelite case with a scratched and dusty top, a rectangular
+cloth-and-metal speaker grille on the left, a glass tuning dial on the right lit
+from behind by a single warm amber lamp, one slim amber needle across the dial
+face, three control knobs along the bottom edge. Everything is monochrome except
+the amber of the dial lamp and needle.
+
+MOTION, and keep it minimal: an extremely slow dolly push toward the dial, no
+more than 3 percent scale change across the entire clip. The amber dial lamp
+brightens and dims almost imperceptibly, as though the mains supply is unsteady,
+about one slow cycle every two seconds. Two or three dust motes drift downward
+through the lamp glow. THE NEEDLE DOES NOT MOVE AND DOES NOT SETTLE. Nothing
+else in frame moves. No camera shake, no handheld drift, no rack focus, no
+parallax.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture,
+like a full-page plate in a 1963 hardcover. Heavily underexposed, detail living
+in the midtones, deep black surrounding the case on all sides. The amber lamp is
+the only colour in frame and must stay dim.
+
+LENS: 50mm equivalent, shallow depth of field, focus on the dial glass.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, reflections of people,
+NEW text or lettering of any kind, numerals or dial markings that become
+sharp or legible, signage, labels, logos, watermarks, modern equipment, plastic,
+LEDs, screens, colour beyond the single amber, saturated colour, clean digital
+sharpness, lens flare, sparks, smoke, fire, rain, fog, rapid motion, zoom
+bursts, whip pans, morphing geometry, warping walls, breathing architecture,
+a second radio appearing, objects sliding, generated audio, music, voice.
+
+
+=========================================================================
+SHOT 2 -- THE CELLAR STAIRS AND THE CHAIR          teaser + launch
+UPLOAD: shot-2-stairs.jpg               OUTPUT: 1:1, 3 seconds
+=========================================================================
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure, halftone texture and tonality exactly. Do not reinterpret, do
+not recompose, do not re-light, do not add or remove objects.
+
+SUBJECT: looking through an open plank door and down a flight of worn wooden
+cellar steps. At the bottom, a bare room washed in dim amber light, and in the
+middle of it one empty wooden spindle-back chair casting a long hard shadow up
+the right-hand wall. Damp stained plaster. Everything monochrome except the
+amber pool of light at the foot of the stairs.
+
+MOTION, and keep it minimal: the camera holds absolutely still. The amber light
+at the foot of the stairs dims very slightly and unevenly across the clip, as
+though a filament somewhere out of frame is failing, which makes the chair's
+shadow deepen a fraction. Fine dust drifts in the light. THE CHAIR DOES NOT
+MOVE, DOES NOT ROCK, AND NOTHING ENTERS OR LEAVES FRAME. No camera push, no
+drift, no focus change.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture,
+like a full-page plate in a 1963 hardcover. Heavily underexposed, deep black
+around the doorframe, all detail in the midtones. Amber is the only colour.
+
+LENS: 35mm equivalent, deep focus, the whole stairwell legible.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, figures at the foot of
+the stairs, silhouettes, anything moving in the dark doorway beyond, text,
+lettering, numerals, signage, labels, logos, watermarks, modern fittings,
+plastic, LEDs, colour beyond the single amber, saturated colour, clean digital
+sharpness, lens flare, smoke, fog, rapid motion, zoom bursts, whip pans,
+morphing geometry, warping walls, breathing architecture, the chair moving or
+rocking, additional furniture appearing, generated audio, music, voice.
+
+
+=========================================================================
+SHOT 3 -- THE MAST FROM BELOW          teaser + launch
+UPLOAD: shot-3-mast.jpg                   OUTPUT: 1:1, 3 seconds
+=========================================================================
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure and tonality exactly. Do not reinterpret, do not recompose, do
+not re-light, do not add or remove objects.
+
+SUBJECT: a tall weathered timber lattice radio mast photographed from directly
+below, rising into a flat overcast night sky. Steel guy wires run out of frame
+in every direction. A single small pale lamp burns near the top of the mast.
+Near monochrome, cold and grey, very slightly blue in the sky.
+
+MOTION, and keep it minimal: ONE of the guy wires vibrates at a barely visible
+amplitude, a fine shiver rather than a swing, as though something is passing
+through it. The lamp near the top holds steady. THE SKY IS COMPLETELY STILL AND
+THE CLOUDS DO NOT DRIFT: the air is windless, and that wrongness is the entire
+point of the shot. The camera does not move at all.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture.
+Underexposed, flat overcast light, deep shadow in the timber. No warm tones.
+
+LENS: 24mm equivalent looking straight up, deep focus.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, birds, aircraft, clouds
+moving, wind in anything, text, lettering, numerals, signage, labels, logos,
+watermarks, modern antennas, satellite dishes, plastic, LEDs, colour, saturated
+colour, clean digital sharpness, lens flare, sparks, smoke, rain, fog, rapid
+motion, zoom bursts, whip pans, morphing geometry, the mast bending or swaying,
+extra masts appearing, generated audio, music, voice.
+
+
+=========================================================================
+SHOT 4 -- THE STUDY WINDOW          launch trailer only
+UPLOAD: shot-4-study.jpg                     OUTPUT: 9:16, 3 seconds
+=========================================================================
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure, halftone texture and tonality exactly. Do not reinterpret, do
+not recompose, do not re-light, do not add or remove objects.
+
+SUBJECT: the interior of a cold, sparsely furnished study in an old house, lit
+only by grey daylight from a window. Monochrome, damp, unheated.
+
+MOTION, and keep it minimal: the daylight at the window dims by a small
+fraction across the full three seconds, as though a cloud were crossing, and
+does not come back. Nothing else changes. No curtain movement, no dust, no
+camera movement whatsoever.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture,
+like a plate in a 1963 hardcover. Underexposed, detail in the midtones, deep
+shadow in the corners of the room.
+
+LENS: 35mm equivalent, deep focus.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, shadows of people,
+silhouettes at the window, anything passing outside the glass, text, lettering,
+numerals, signage, labels, logos, watermarks, modern fittings, plastic, LEDs,
+screens, colour, saturated colour, clean digital sharpness, lens flare, smoke,
+fog, rain, rapid motion, zoom bursts, whip pans, morphing geometry, warping
+walls, breathing architecture, furniture moving, generated audio, music, voice.
+
+
+=========================================================================
+SHOT 5 -- THE CLOSED LOGBOOK          launch trailer only
+UPLOAD: shot-5-logbook.jpg             OUTPUT: 1:1, 3 seconds
+=========================================================================
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure, halftone texture and tonality exactly. Do not reinterpret, do
+not recompose, do not re-light, do not add or remove objects.
+
+SUBJECT: a worn hardbound listening logbook lying closed on a wooden surface in
+low light. Monochrome, heavy grain, the board cover scuffed with use.
+
+MOTION: as close to none as the model will allow. A single dust mote crossing
+the frame is the entire permitted event. THE BOOK DOES NOT OPEN. No page moves,
+no cover lifts, no shadow shifts, and the camera does not move at all. If the
+model will accept a still hold with only grain movement, take it: a closed book
+that refuses to move is more unsettling than one that opens.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture.
+Deeply underexposed, one soft directional light, deep black around the book.
+
+LENS: 50mm equivalent, shallow depth of field, focus on the front board.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, a hand reaching for the
+book, THE BOOK OPENING, pages turning, pages fanning, text, handwriting,
+lettering, numerals, signage, labels, logos, watermarks, colour, saturated
+colour, clean digital sharpness, lens flare, smoke, fog, rapid motion, zoom
+bursts, whip pans, morphing geometry, additional books appearing, generated
+audio, music, voice.
+
+
+=========================================================================
+SHOT 6 -- THE DOORWAY ONTO THE MARSH          launch trailer only
+UPLOAD: shot-6-marsh.jpg                     OUTPUT: 9:16, 3 seconds
+=========================================================================
+The strongest three seconds available, and already vertical. Use it late.
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure, halftone texture and tonality exactly. Do not reinterpret, do
+not recompose, do not re-light, do not add or remove objects.
+
+SUBJECT: looking out through a dark open doorway of an old building onto flat
+salt marsh at dusk. A winding tidal creek leads away from a stone threshold,
+reeds either side, a heavy clouded sky, and on the far horizon a guyed radio
+mast with one tiny point of light burning at its top. Monochrome, the doorframe
+almost black, the sky the brightest thing in frame.
+
+MOTION, and keep it minimal: the water in the creek moves very slightly, a
+surface shiver rather than a flow. The reeds are ABSOLUTELY STILL. The clouds do
+not drift. The single point of light at the mast top holds steady, then in the
+last second dims very slightly, once, as though someone far away had passed in
+front of it. The camera does not move.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture.
+Underexposed, high contrast between the black doorframe and the pale sky.
+
+LENS: 35mm equivalent, deep focus from threshold to horizon.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, figures on the marsh,
+silhouettes in the doorway, boats, birds, aircraft, wind in the reeds, text,
+lettering, numerals, signage, labels, logos, watermarks, modern buildings,
+pylons, plastic, LEDs, colour, saturated colour, clean digital sharpness, lens
+flare, smoke, fog banks, rain, rapid motion, zoom bursts, whip pans, morphing
+geometry, the doorway changing shape, extra masts appearing, generated audio,
+music, voice.
+
+IF YOU WANT THE LIGHT TO SWITCH ON INSTEAD (stronger, more work): duplicate the
+still, paint out the mast light in the copy, and give the model the dark copy as
+the START keyframe and the original as the END keyframe, with the prompt above
+but this motion line: "the single point of light at the mast top is absent at
+the start of the clip and comes on halfway through, then holds steady. Nothing
+else changes."
+
+
+=========================================================================
+SHOT 7 -- THE CHURCHYARD          launch trailer only
+UPLOAD: shot-7-churchyard.jpg            OUTPUT: 9:16, 3 seconds
+=========================================================================
+
+IMAGE-TO-VIDEO. Animate the supplied still. Preserve its composition, framing,
+grain structure, halftone texture and tonality exactly. Do not reinterpret, do
+not recompose, do not re-light, do not add or remove objects.
+
+SUBJECT: an old rural churchyard under low mist, headstones unevenly set in wet
+grass, bare trees behind. Monochrome, overcast, no warmth anywhere in frame.
+
+MOTION, and keep it minimal: ground mist drifts laterally at slow walking pace,
+kept low, no higher than a foot off the grass. Nothing else moves. The grass is
+still, the trees are still, the camera does not move.
+
+LOOK: grainy monochrome 35mm photography with a coarse halftone print texture.
+Underexposed, flat grey light, deep shadow under the trees.
+
+LENS: 35mm equivalent, deep focus.
+
+ABSOLUTELY NOT IN FRAME: people, faces, hands, limbs, figures among the stones,
+silhouettes, crows, ANY LEGIBLE LETTERING OR NAME ON ANY HEADSTONE, dates,
+numerals, inscriptions coming into focus, signage, labels, logos, watermarks,
+fresh flowers, colour, saturated colour, clean digital sharpness, lens flare,
+sparks, rain, heavy fog obscuring the frame, rapid motion, zoom bursts, whip
+pans, morphing geometry, stones moving or tilting, ground opening, generated
+audio, music, voice.
+
+
+=========================================================================
+THE TITLE CARD IS NOT GENERATED
+=========================================================================
+Never let a model make your typography. It hallucinates letterforms and the
+result is the one frame that tells a viewer this was machine-made.
+
+Render the end card from the app itself: open Number Nine, let the title screen
+sit, and screen-record it on device. That gives you the real typeface, the real
+amber, and the real glowing 9, and it costs nothing. Drop that recording in as
+the final two to three seconds.
+
+If you want a plain card instead, set it in the book's own serif on near-black
+with the amber 9, in Resolve. Still not generated.
+
+
+=========================================================================
+ASSEMBLY -- 15 SECOND VERTICAL TEASER
+=========================================================================
+Canvas 1080x1920. Square shots centred on black, vertical shots full bleed.
+
+  0.0 - 2.5   Black.                          static-loop.wav fading up
+  2.5 - 5.0   SHOT 1, the receiver            static continues, station-music
+                                              .wav six notes begin
+  5.0 - 7.0   SHOT 2, the stairs and chair    station-music.wav
+  7.0 - 9.5   SHOT 3, the mast                ident tail, marsh-wind.wav under
+  9.5 - 12.0  Black, or hold on the dial      HER LINE, see below
+  12.0 - 15.0 Title card from the app         static cuts abruptly to silence
+
+THE LINE, and it is the only speech in the teaser:
+  "AT THE THIRD STROKE, EDWIN, IT WILL BE TOO LATE TO LEAVE."
+  TRAILER.md marks this the best line available for a teaser. Every other line
+  either states a puzzle answer or gives away an ending. Do not substitute one
+  without checking the safe-lines table in TRAILER.md.
+
+
+=========================================================================
+ASSEMBLY -- 40 SECOND LAUNCH TRAILER
+=========================================================================
+Same discipline, one more movement. Order:
+
+  Black, static rising
+  SHOT 1   the receiver
+  SHOT 4   the study window dimming
+  SHOT 5   the logbook that will not open
+  SHOT 2   the stairs and the chair
+  SHOT 3   the mast, one wire shivering
+  SHOT 6   the doorway onto the marsh          <- hold this one longest
+  SHOT 7   the churchyard
+  Black
+  Her line: "THANK YOU, EDWIN. WE HAVE SO MUCH TO ASK YOU."
+  Title card from the app
+
+Audio is ours only, from assets/audio/: static-loop, station-music, ident,
+marsh-wind, wire-hum, and her lines v-b1-1 through v-b6-5. Never let the video
+model generate sound. A listener can tell.
+
+DO NOT SCORE IT WITH title-theme.m4a. "Ghost" by Tim Beek is properly licensed
+for your marketing, but it is a commercial release and putting it on YouTube or
+TikTok invites a Content ID claim on your own trailer. Score it from the
+station's own material, which sounds more like this game anyway.
+
+
+=========================================================================
+BEFORE YOU PUBLISH ANYTHING
+=========================================================================
+- Watch it once looking ONLY at the dial and the headstones. If a number or a
+  name resolved, recut. That is the whole spoiler risk in one sentence.
+- No competitor's mark in the title, description or tags of the upload. The
+  trademark rule covers video metadata exactly as it covers store metadata.
+- No accessibility claim in the description.
+- The App Store preview video has its own size and duration rules and they are
+  NOT the screenshot rules. Read them off the ASC upload box. Assuming the
+  general case instead of reading the page already cost a redo on screenshots.
+- Apple additionally requires App Store preview footage to be captured from the
+  app itself. A mood trailer made from these shots is fine for social and NOT
+  acceptable as your App Store preview. Those are two different deliverables.

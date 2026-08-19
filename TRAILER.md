@@ -52,8 +52,51 @@ that shipped in the app, so the trailer matches the book.
 
 ## Tooling
 
-Recorded 2026-07-30. This field moves monthly, so treat the ranking as reasoning
-rather than fact and re-check commercial-use terms before committing.
+Recorded 2026-07-30, prices re-checked 2026-08-18. This field moves monthly, so
+treat the ranking as reasoning rather than fact and re-check commercial-use
+terms before committing.
+
+### Prices, and the size of the actual job
+
+Checked 2026-08-18. Read these against the real workload rather than the plans'
+marketing, because the job is far smaller than any of these tiers assume:
+**seven shots at three or four takes each is about thirty clips of three
+seconds.** No audio is needed (every output gets muted, see below) and no 4K is
+needed (clips are downscaled and grained once at the end). One month of an entry
+tier covers the whole trailer. Then cancel.
+
+| Tool | Price | What your money buys | Ease |
+|---|---|---|---|
+| **Google Flow / Veo** | **$19.99/mo** AI Pro, 1,000 credits | Veo 3.1 Lite 10 credits/clip, Fast 20. Thirty clips at Fast is ~600 credits, inside one month. Ultra at $200/mo is 250 Quality videos and is money set on fire for this. | Easiest |
+| **Kling** | **$10/mo** Standard, 660 credits | Cheapest real option. Tight for thirty clips, ample for the teaser's twelve. Historically strong at photoreal restrained motion, which is this register exactly. | Simple |
+| **Runway** | **$12/mo** annual Standard, ~$15 monthly | The only genuine technical edge for our specific problem: Motion Brush paints motion onto the dial lamp alone with everything else masked static, and Camera Controls make "3 percent dolly push" a setting rather than a hope. | Steeper |
+| **Luma** | **free tier**, 1 clip/day | Do not subscribe. Use it for ONE shot: the marsh light switch-on needs start-and-end keyframes and that is Luma's clean trick. Confirm the free tier does not watermark before relying on it. | Simple |
+
+**The recommendation: Google AI Pro for one month, $20, then cancel.** Not
+because it wins this month's benchmark, but because the Gemini commercial terms
+were already audited for this project (ART.md) and the stills were generated
+there, so it has the best chance of extending the look rather than
+reinterpreting it. If shots 1 to 3 keep coming back too lively after a dozen
+takes, add Runway for one month and brush the motion by hand. Worst case for
+the entire trailer is about $35.
+
+**Three ways to waste money here:** paying for an audio tier when every output
+is muted, paying for 4K when the clips are downscaled and grained, and paying
+for a top tier sized for hundreds of videos a month.
+
+**The one check that is not optional.** Confirm the tier grants commercial use
+AND produces output without a watermark. Free tiers commonly fail both, and a
+watermarked clip is worthless. This is the same audit that let the Gemini art
+ship as final rather than placeholder.
+
+Sources, 2026-08-18: [Google AI subscriptions](https://blog.google/products-and-platforms/products/google-one/google-ai-subscriptions/)
+· [Veo pricing](https://diyai.io/ai-tools/video-generation/google-veo-pricing/)
+· [Flow pricing](https://www.toolcolumn.com/pricing/google-flow-pricing)
+· [Luma pricing](https://costbench.com/software/ai-video-generators/luma-dream-machine/)
+· [Kling / Runway / Luma comparison](https://blog.segmind.com/price-comparison-kling-ai-vs-runway-vs-mochi-1-vs-luma-dream-machine/)
+· [Free-tier limits](https://whichoneisreal.com/compare/best-free-ai-video/)
+
+### The reasoning behind the ranking
 
 **Start with Google Veo, through Flow.** The deciding factor is not this month's
 benchmark: it is that the Gemini commercial-use terms have already been audited
