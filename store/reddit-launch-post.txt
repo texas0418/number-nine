@@ -22,10 +22,18 @@ it:
 SPACE THESE OUT. One a day across a week, not six in an hour. Six posts in one
 evening from one account is the pattern spam filters are built to catch.
 
-NEVER, in any of them: name another game as a comparison, explain how a lock
-works, give a frequency or an answer, claim screen reader support, or offer a
-code in exchange for a review. That last one breaches App Store Review
-Guideline 3.2.2 and gets the app pulled.
+NEVER, in any of them: explain how a lock works, give a frequency or an
+answer, claim screen reader support, or offer a code in exchange for a review.
+That last one breaches App Store Review Guideline 3.2.2 and gets the app
+pulled.
+
+DEVICE 6 may be named as the reason Simon built this (MARKETING.md permits
+nominative lineage in social posts; only App Store metadata bans it). It may
+NEVER be claimed as a succession: no "spiritual successor", no "the sequel
+Simogo never made", nothing implying Simogo blessed or is connected to this.
+The r/iosgaming and r/interactivefiction posts carry the motivation line; the
+artifact posts (numbersstations, AnalogHorror, ARG) deliberately do not,
+because a game-lineage opener would weaken them.
 
 
 =========================================================================
@@ -39,6 +47,10 @@ TITLE
 I made a horror novella for iPhone where the page turns because the room does
 
 BODY
+
+DEVICE 6 came out in 2013 and I never got over it. I kept waiting for another,
+from Simogo or from anyone, and it never came. So I built the thing I wanted
+to read. It went on the App Store this morning.
 
 My brother's house is the setup. Yours, in the story. He's dead, he left you
 a place where the land gives up and becomes marsh, a war-surplus shortwave
@@ -251,6 +263,9 @@ I wrote a novella where every gate is a different act, and only one per chapter
 is a code you type
 
 BODY
+
+DEVICE 6 came out in 2013 and nothing in its shape ever followed it, from
+Simogo or anyone. Thirteen years later I gave up waiting and wrote one.
 
 The design rule I set myself, and the one that cost me the most: a chapter gets
 at most one puzzle where the answer is typed on a keypad. Every other gate has
