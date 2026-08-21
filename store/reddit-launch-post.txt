@@ -1,33 +1,64 @@
 NUMBER NINE -- REDDIT POSTS
 Everything below is plain text. Nothing needs stripping before you paste it.
-Post all of these ON or AFTER release day, once the App Store link resolves.
+Number Nine released 2026-08-21. The store link in every post below is live
+and verified, so these are ready to post exactly as they are.
 
-Replace <APP STORE LINK> everywhere. Confirm it loads in a private window first.
+GENERATE THE CODES BEFORE YOU POST. Use OFFER CODES, not promo codes: Apple
+stopped allowing promo codes for in-app purchases on 2026-03-26, so offer
+codes are now the only route. App Store Connect -> Number Nine -> In-App
+Purchases -> The Licence (nn_story_unlock) -> Create Offer.
 
-GENERATE THE CODES BEFORE YOU POST. App Store Connect -> Number Nine ->
-Promo Codes, taken against the IN-APP PURCHASE (The Licence / nn_story_unlock),
-NOT the app. The app is free, so an app code unlocks nothing. 100 per version.
+Take them against the IN-APP PURCHASE, never the app. The app is free, so an
+app-level code unlocks nothing anyone cannot already download.
+
+Offer codes are not always instant, but Simon generated and TESTED one on
+2026-08-21 and it redeemed correctly, so the batch is good. Hand people a
+redeem LINK
+rather than a bare code, because a bare code means explaining where to type
+it:
+
+  https://apps.apple.com/redeem?ctx=offercodes&id=6796237101&code=THECODE
 
 SPACE THESE OUT. One a day across a week, not six in an hour. Six posts in one
 evening from one account is the pattern spam filters are built to catch.
 
-NEVER, in any of them: name another game as a comparison, explain how a lock
-works, give a frequency or an answer, claim screen reader support, or offer a
-code in exchange for a review. That last one breaches App Store Review
-Guideline 3.2.2 and gets the app pulled.
+NEVER, in any of them: explain how a lock works, give a frequency or an
+answer, claim screen reader support, or offer a code in exchange for a review.
+That last one breaches App Store Review Guideline 3.2.2 and gets the app
+pulled.
+
+DEVICE 6 may be named as the reason Simon built this (MARKETING.md permits
+nominative lineage in social posts; only App Store metadata bans it). It may
+NEVER be claimed as a succession: no "spiritual successor", no "the sequel
+Simogo never made", nothing implying Simogo blessed or is connected to this.
+The r/iosgaming and r/interactivefiction posts carry the motivation line; the
+artifact posts (numbersstations, AnalogHorror, ARG) deliberately do not,
+because a game-lineage opener would weaken them.
 
 
 =========================================================================
 1. r/iosgaming
 =========================================================================
-The one where a dev handing out codes is welcome rather than tolerated.
-Check current flair rules before posting, they change.
+BLOCKED as of 2026-08-21: Reddit's submit page warned "Rule 3: Dev
+Self-Promotion Is Temporarily Paused." The sub has suspended dev posts
+entirely for now. Simon saved the draft and did NOT submit. Do not post this
+until the pause lifts; check the sub's rules and pinned posts first, and if
+the pause looks long-lived, modmail politely to ask when it reopens, the same
+way r/adventuregames was asked. Posting into a pause is removal plus a mark
+against the account in the best sub on this list.
+
+The one where a dev handing out codes is welcome rather than tolerated,
+ordinarily. Check current flair rules before posting, they change.
 
 TITLE
 
-I made a horror novella for iPhone where the page turns because the room does
+I Made a Horror Novella for iPhone Where the Page Turns Because the Room Does
 
 BODY
+
+DEVICE 6 came out in 2013 and I never got over it. I kept waiting for another,
+from Simogo or from anyone, and it never came. So I built the thing I wanted
+to read. It went on the App Store this morning.
 
 My brother's house is the setup. Yours, in the story. He's dead, he left you
 a place where the land gives up and becomes marsh, a war-surplus shortwave
@@ -66,11 +97,11 @@ subscription.
 No ads. No tracking. No account. No timers, no energy, no notifications. It
 works with the aeroplane switch on.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 If you want the rest of the book on me, send me a DM and I will send you a code
 that unlocks it. No strings. I am not asking for a review or a rating or
-anything back, I would just like people reading it. I have 100 to give away,
+anything back, I would just like people reading it. I have plenty to give away,
 first come first served.
 
 Headphones on. Lights off. One broadcast a night.
@@ -86,7 +117,7 @@ NO code offer in the post body. Put it in a comment only if someone asks.
 
 TITLE
 
-I wrote a novella about a station that has been counting for nineteen years
+I Wrote a Novella About a Station That Has Been Counting for Nineteen Years
 
 BODY
 
@@ -116,7 +147,7 @@ second story underneath the first.
 Voice is a real recording rather than a synth, because a synthesised count
 sounds like a synthesised count and this sub of all places would hear it.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 Happy to talk about the research if anyone wants it. I got a lot of it from
 this sub's archives, so thank you for that.
@@ -131,8 +162,8 @@ NO code offer in the post body.
 
 TITLE
 
-A woman has been reading five-figure groups into the dark since 2007. Nobody
-was assigned to listen.
+A Woman Has Been Reading Five-Figure Groups into the Dark Since 2007. Nobody
+Was Assigned to Listen.
 
 BODY
 
@@ -157,7 +188,7 @@ it, but it is not the same in silence.
 
 First chapter is free in full.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
@@ -168,7 +199,7 @@ downstream. Let them find it.
 
 TITLE
 
-The Listeners' Society kept a catalogue of a station that should not exist
+The Listeners' Society Kept a Catalogue of a Station That Should Not Exist
 
 BODY
 
@@ -192,7 +223,7 @@ The novella it belongs to is on the App Store, first chapter free, and if you
 would rather just do the nightly one forever and never buy anything, that is a
 completely legitimate way to use it and costs you nothing.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
@@ -207,7 +238,7 @@ confirm the first correct one.
 
 TITLE
 
-Tonight's transmission from a numbers station that has been running since 2007
+Tonight's Transmission from a Numbers Station That Has Been Running Since 2007
 
 BODY
 
@@ -226,7 +257,7 @@ and they tell a story if you keep at them.
 It comes from a novella I wrote. The nightly one is free forever and does not
 need the rest of the book, so solve it here and ignore the link if you like.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
@@ -236,10 +267,13 @@ Craft-forward. This sub will ask real questions about structure. Answer them.
 
 TITLE
 
-I wrote a novella where every gate is a different act, and only one per chapter
-is a code you type
+I Wrote a Novella Where Every Gate Is a Different Act, and Only One Per Chapter
+Is a Code You Type
 
 BODY
+
+DEVICE 6 came out in 2013 and nothing in its shape ever followed it, from
+Simogo or anyone. Thirteen years later I gave up waiting and wrote one.
 
 The design rule I set myself, and the one that cost me the most: a chapter gets
 at most one puzzle where the answer is typed on a keypad. Every other gate has
@@ -261,7 +295,7 @@ room not responding. I never wanted the book to break character to tell you no.
 
 Six chapters, one a night. First is free.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 Happy to talk structure in the comments, that is the part I actually enjoy.
 
@@ -277,7 +311,7 @@ turns and mirrors so you turn the phone to follow it, and fifty locks stand
 between the first page and the last, none of them multiple choice. Free daily
 cryptogram that is the same for every player worldwide and serialises a second
 story behind it. First chapter free, one purchase for the rest, no ads, no
-tracking, no account, works offline. <APP STORE LINK>
+tracking, no account, works offline. https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
