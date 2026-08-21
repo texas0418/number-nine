@@ -370,8 +370,8 @@ Simon
 
 TITLE
 
-An adventure with no inventory, no verbs and no point-and-click. You turn the
-phone instead.
+An Adventure with No Inventory, No Verbs and No Point-and-Click. You Turn the
+Phone Instead.
 
 BODY
 
@@ -404,7 +404,7 @@ There is also a cryptogram every night, free forever, the same one for every
 player on earth, and a year of them in order tells a second story underneath
 the first.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 If you would like the rest of the book on me, send me a DM and I will send a
 code that unlocks it. No strings, and I am not asking for a review or a rating
