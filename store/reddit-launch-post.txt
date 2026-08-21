@@ -39,8 +39,16 @@ because a game-lineage opener would weaken them.
 =========================================================================
 1. r/iosgaming
 =========================================================================
-The one where a dev handing out codes is welcome rather than tolerated.
-Check current flair rules before posting, they change.
+BLOCKED as of 2026-08-21: Reddit's submit page warned "Rule 3: Dev
+Self-Promotion Is Temporarily Paused." The sub has suspended dev posts
+entirely for now. Simon saved the draft and did NOT submit. Do not post this
+until the pause lifts; check the sub's rules and pinned posts first, and if
+the pause looks long-lived, modmail politely to ask when it reopens, the same
+way r/adventuregames was asked. Posting into a pause is removal plus a mark
+against the account in the best sub on this list.
+
+The one where a dev handing out codes is welcome rather than tolerated,
+ordinarily. Check current flair rules before posting, they change.
 
 TITLE
 
