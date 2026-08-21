@@ -315,8 +315,20 @@ tracking, no account, works offline. https://apps.apple.com/us/app/number-nine/i
 
 
 =========================================================================
-8. r/adventuregames  -- PERMISSION REQUIRED, ASK FIRST
+8. r/adventuregames  -- DECLINED, DO NOT POST, EVER
 =========================================================================
+DECLINED 2026-08-22: the mods refused under their rule 4, no AI. The game's
+scene art and the trailers are AI-generated, so the rule applies as written
+and the answer is final. Simon replied graciously and did not post. Nobody
+re-asks, nobody posts, nobody argues. The entry below is kept only as a
+record of what was sent.
+
+LESSON FOR EVERY OTHER SUB: check each subreddit's AI-content rules BEFORE
+posting, the same way flair rules get checked. The art being AI-generated is
+a settled, disclosed decision (the Gemini stills ship; TRAILER.md documents
+the video tooling), but some communities prohibit AI content outright and
+their house, their rules.
+
 This sub allows promotion only with mod permission. The modmail below was
 sent 2026-08-19. DO NOT POST UNTIL THEY ANSWER YES. If they answer no, that
 is the end of it: posting anyway is how an account gets banned and how the
