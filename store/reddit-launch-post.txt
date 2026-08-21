@@ -2,11 +2,22 @@ NUMBER NINE -- REDDIT POSTS
 Everything below is plain text. Nothing needs stripping before you paste it.
 Post all of these ON or AFTER release day, once the App Store link resolves.
 
-Replace <APP STORE LINK> everywhere. Confirm it loads in a private window first.
+Replace https://apps.apple.com/us/app/number-nine/id6796237101 everywhere. Confirm it loads in a private window first.
 
-GENERATE THE CODES BEFORE YOU POST. App Store Connect -> Number Nine ->
-Promo Codes, taken against the IN-APP PURCHASE (The Licence / nn_story_unlock),
-NOT the app. The app is free, so an app code unlocks nothing. 100 per version.
+GENERATE THE CODES BEFORE YOU POST. Use OFFER CODES, not promo codes: Apple
+stopped allowing promo codes for in-app purchases on 2026-03-26, so offer
+codes are now the only route. App Store Connect -> Number Nine -> In-App
+Purchases -> The Licence (nn_story_unlock) -> Create Offer.
+
+Take them against the IN-APP PURCHASE, never the app. The app is free, so an
+app-level code unlocks nothing anyone cannot already download.
+
+Offer codes are NOT instant. Allow up to two days before they redeem, and
+test one yourself before you promise any in a post. Hand people a redeem LINK
+rather than a bare code, because a bare code means explaining where to type
+it:
+
+  https://apps.apple.com/redeem?ctx=offercodes&id=6796237101&code=THECODE
 
 SPACE THESE OUT. One a day across a week, not six in an hour. Six posts in one
 evening from one account is the pattern spam filters are built to catch.
@@ -66,7 +77,7 @@ subscription.
 No ads. No tracking. No account. No timers, no energy, no notifications. It
 works with the aeroplane switch on.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 If you want the rest of the book on me, send me a DM and I will send you a code
 that unlocks it. No strings. I am not asking for a review or a rating or
@@ -116,7 +127,7 @@ second story underneath the first.
 Voice is a real recording rather than a synth, because a synthesised count
 sounds like a synthesised count and this sub of all places would hear it.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 Happy to talk about the research if anyone wants it. I got a lot of it from
 this sub's archives, so thank you for that.
@@ -157,7 +168,7 @@ it, but it is not the same in silence.
 
 First chapter is free in full.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
@@ -192,7 +203,7 @@ The novella it belongs to is on the App Store, first chapter free, and if you
 would rather just do the nightly one forever and never buy anything, that is a
 completely legitimate way to use it and costs you nothing.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
@@ -226,7 +237,7 @@ and they tell a story if you keep at them.
 It comes from a novella I wrote. The nightly one is free forever and does not
 need the rest of the book, so solve it here and ignore the link if you like.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
@@ -261,7 +272,7 @@ room not responding. I never wanted the book to break character to tell you no.
 
 Six chapters, one a night. First is free.
 
-<APP STORE LINK>
+https://apps.apple.com/us/app/number-nine/id6796237101
 
 Happy to talk structure in the comments, that is the part I actually enjoy.
 
@@ -277,7 +288,7 @@ turns and mirrors so you turn the phone to follow it, and fifty locks stand
 between the first page and the last, none of them multiple choice. Free daily
 cryptogram that is the same for every player worldwide and serialises a second
 story behind it. First chapter free, one purchase for the rest, no ads, no
-tracking, no account, works offline. <APP STORE LINK>
+tracking, no account, works offline. https://apps.apple.com/us/app/number-nine/id6796237101
 
 
 =========================================================================
