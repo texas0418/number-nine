@@ -436,3 +436,86 @@ by someone who answers is worth more than ten thousand impressions.
 If a mod removes a post, do not repost it. Message the mods, ask what the sub
 prefers, and follow it. One polite exchange with a mod team has salvaged more
 launches than any rewrite.
+
+
+=========================================================================
+9. SHOW HN (news.ycombinator.com)
+=========================================================================
+One attempt, ever. Read the Show HN rules first (news.ycombinator.com/showhn.html).
+Post from Simon's own HN account. Do NOT put a code offer in the text; HN
+treats giveaways as marketing. Answer comments fast; HN threads die in hours.
+If asked about the AI art, answer plainly and without defence: scene art is
+generated, prose, puzzles, engine and audio direction are not.
+
+TITLE (HN convention, not Title Case -- their style beats ours here)
+
+Show HN: A horror novella for iPhone where the text is the architecture
+
+BODY
+
+DEVICE 6 came out in 2013 and nothing like it followed, so I built the thing I wanted to read. It shipped this week.
+
+Number Nine is a typographic horror novella: the prose runs down the page when a character descends the stairs and climbs back when they return, mirrors when the voice on the numbers station speaks, and the reader physically turns the phone to follow it. Fifty gates stand between the first and last page; one per chapter at most is typed, the rest use the device itself: magnetometer, gyroscope, screen brightness, haptic Morse you count with your hands. Every hardware gate has a touch fallback.
+
+Technical bits HN might care about: no server, entirely on-device SQLite, works in airplane mode. The nightly cryptogram is generated deterministically from the calendar date, so every player on earth gets the same puzzle with a fresh substitution key each day, and a year of solutions serialises a prequel. No account, no analytics SDK, no tracking; the privacy label is one line. One non-consumable IAP, no subscription. Getting the typesetting to hold at the largest Dynamic Type sizes, with rotated and mirrored passages reflowing, took longer than writing two of the chapters.
+
+First chapter is free in full: https://apps.apple.com/us/app/number-nine/id6796237101
+
+Happy to answer anything about the engine, the cipher design, or shipping a fiction app solo.
+
+
+=========================================================================
+10. TOUCHARCADE FORUMS (forums.toucharcade.com)
+=========================================================================
+The surviving concentration of serious iOS players now the site is dormant.
+Post in the iPhone/iPad games release section; read the section rules first.
+Codes are traditional and welcomed here. Reuse the r/iosgaming post exactly
+as written (entry 1), including the DM-for-a-code offer, but change the DM
+line to "post here or PM me and I will send you a code" since forum norms
+favour in-thread requests.
+
+TITLE (thread title)
+
+Number Nine - a Shortwave Horror Novella (DEVICE 6 Lineage, Premium, Offline)
+
+
+=========================================================================
+11. r/playmygame
+=========================================================================
+Exists explicitly for promotion; zero removal risk, modest traffic. Flair as
+required (usually a platform flag). Reuse the r/iosgaming post (entry 1)
+unchanged. Free to post any time; no spacing concern with other subs.
+
+
+=========================================================================
+12. r/horrorgaming
+=========================================================================
+Straight horror-games audience. Check self-promo and AI rules before posting.
+Use the r/AnalogHorror post (entry 3) rather than the iosgaming one: this
+crowd buys atmosphere, not feature lists. No code offer in the body.
+
+
+=========================================================================
+13. r/shortwave -- ASK OR TREAD CAREFULLY
+=========================================================================
+Real radio hobbyists. A fiction app is off-topic unless it arrives as an
+artifact. Check the rules; if unsure, modmail first the way r/adventuregames
+was asked. If posting, use the r/numbersstations post (entry 2) with the
+first line adjusted to address listeners rather than recording collectors.
+No code offer. If the rules say hardware only, skip without regret.
+
+
+=========================================================================
+14. intfiction.org + IFDB -- IF COMMUNITY, AI CAUTION APPLIES
+=========================================================================
+See the AI-art caution in press-outreach.txt. The community skews strongly
+against AI-generated content. The honest play:
+
+  IFDB (ifdb.org): create a plain factual listing. Title, author, platform,
+  price, blurb WITHOUT marketing voice. A listing is metadata, not promo.
+
+  intfiction.org: post in the game-announcements category using the
+  r/interactivefiction craft post (entry 6), which is about puzzle structure
+  and claims nothing about art. If asked whether the art is AI, the answer
+  is plainly yes, disclosed, and the licence-checked details are in CREDITS.md.
+  If the reception is hostile, thank and withdraw; never argue.

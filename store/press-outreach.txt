@@ -359,3 +359,41 @@ WHY THIS ONE IS SHAPED THIS WAY
 - Disclosing the missing VoiceOver support unprompted is the strongest possible
   signal that everything else in the email is true. Do not remove it.
 - Still no comparison claimed. DEVICE 6 appears once, as why you started.
+
+
+=========================================================================
+SECOND-WAVE TARGETS -- verified 2026-08-22
+=========================================================================
+Routes checked against each outlet's own pages on 2026-08-22.
+
+Night Mind Index -- nmindexentry@gmail.com
+  THE BIGGEST AUDIENCE ON THIS LIST if it lands. Catalogues unfiction (ARGs,
+  interactive stories). Submit the SOCIETY SITE as a project, not the app:
+  numbernine.simonbuilds.app is an in-fiction catalogue with a live nightly
+  transmission, which is exactly what they index. Short email, no pitch voice,
+  no code. Creators may submit their own projects; say plainly it is yours.
+
+Launched podcast (Charlie Chapman) -- guest application form:
+  https://docs.google.com/forms/d/e/1FAIpQLSfxduoOnjnF_qE6PpnEGdKewWHvB3YDl0gv3WAxAJ4HDVq8Bg/viewform
+  Interviews indie devs about launching. The thirteen-years-after-DEVICE-6
+  story is an episode, not just an email hook. Fill the form once; they book
+  from applications and the schedule is limited, so no follow-up.
+
+Indie Dev Monday (Josh Holtz) -- NO submission email. The stated route:
+  subscribe at indiedevmonday.com, then REPLY TO AN ISSUE with what you are
+  building, where you are in the journey, and what you hope to do next.
+  Active (issue 149, 2026-08-17). Keep the reply to a few sentences.
+
+AppAdvice -- devcontact@appadvice.com
+148Apps  -- george.bird@148apps.com
+  Both known-good from the Bindery outreach list. SPACING RULE: Bindery mails
+  these on 2026-09-02, so Number Nine must go out THIS WEEK to keep the
+  two-products-one-week problem away. Use the generic email with a code each.
+
+AI-ART CAUTION FOR THE IF COMMUNITY. intfiction.org and IFDB skew strongly
+against AI-generated content (a live "ban AI content on IFComp" thread).
+The game's scene art is AI-generated and disclosed. If posting there, the
+craft post (puzzle structure, no art claims) is the honest fit, and the
+answer to "is the art AI?" is plainly yes. Expect friction; do not argue.
+An IFDB listing is factual metadata and worth having either way -- ifdb.org,
+free account, list the game with its real details, no marketing copy.
