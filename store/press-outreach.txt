@@ -13,6 +13,11 @@ difference is simple. Your feelings about their game are yours to describe.
 Their mark is not yours to borrow. If a reviewer draws the comparison
 themselves, that is theirs to print and you can quote it afterwards.
 
+SIGN EVERY EMAIL simon@simonbuilds.app. That is Simon's own address.
+support@simonbuilds.app is the customer-support mailbox published in App Store
+Connect, and a journalist who replies into a support queue is a reply that gets
+lost. Quote support@ only where the press kit does, never as a signature.
+
 NEVER in any email: a puzzle method or answer, a frequency, her hour, or any
 claim of screen-reader support. The press kit already discloses that there is
 none, which is the correct way to handle it.
@@ -57,7 +62,7 @@ Happy to send you a code that unlocks the whole book, no strings and nothing
 expected back. Chapter one is free either way if you would rather just look.
 
 Simon Shih
-support@simonbuilds.app
+simon@simonbuilds.app
 
 
 =========================================================================
@@ -347,7 +352,7 @@ Happy to send a code that unlocks the whole book, no strings and nothing
 expected in return.
 
 Simon Shih
-support@simonbuilds.app
+simon@simonbuilds.app
 
 
 WHY THIS ONE IS SHAPED THIS WAY
