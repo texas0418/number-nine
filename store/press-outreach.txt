@@ -18,6 +18,19 @@ support@simonbuilds.app is the customer-support mailbox published in App Store
 Connect, and a journalist who replies into a support queue is a reply that gets
 lost. Quote support@ only where the press kit does, never as a signature.
 
+SEND A CODE WITH THE EMAIL, AND SAY HOW TO REDEEM IT. Do not offer to send
+one on request; a journalist who has to reply first mostly does not reply.
+ALWAYS include the redemption instructions with it: Apple's redeem links only
+work on a device signed into the App Store, so on a PC the link hands off to
+the Mac App Store and dies. There is no web redemption. Tim Beek hit exactly
+this on 2026-08-21 and could not use his code. If a recipient turns out to
+have no Apple device, point them at numbernine.simonbuilds.app instead, where
+the nightly cryptogram is free and works in any browser.
+
+Pull codes from ~/Documents/NumberNine-launch/number-nine-offer-codes-1000.csv
+(take the BOTTOM row, delete it, log the recipient in codes-sent.txt). One
+unique code per recipient, never the same code twice.
+
 NEVER in any email: a puzzle method or answer, a frequency, her hour, or any
 claim of screen-reader support. The press kit already discloses that there is
 none, which is the correct way to handle it.
@@ -58,8 +71,13 @@ story underneath the first.
 Press kit, fact sheet and assets: https://numbernine.simonbuilds.app/press/
 On the App Store: https://apps.apple.com/us/app/number-nine/id6796237101
 
-Happy to send you a code that unlocks the whole book, no strings and nothing
-expected back. Chapter one is free either way if you would rather just look.
+Here is a code that unlocks the whole book, no strings and nothing expected
+back. It redeems on an iPhone or iPad, either by opening this link on the
+device or through App Store, your photo top right, Redeem Gift Card or Code.
+
+<REDEEM LINK>
+
+Chapter one is free either way if you would rather just look.
 
 Simon Shih
 simon@simonbuilds.app
@@ -348,8 +366,11 @@ needs no purchase, so it is a fair way to see whether the thing is any good.
 Press kit and assets: https://numbernine.simonbuilds.app/press/
 App Store: https://apps.apple.com/us/app/number-nine/id6796237101
 
-Happy to send a code that unlocks the whole book, no strings and nothing
-expected in return.
+Here is a code that unlocks the whole book, no strings and nothing expected
+in return. It redeems on an iPhone or iPad, either by opening this link on the
+device or through App Store, your photo top right, Redeem Gift Card or Code.
+
+<REDEEM LINK>
 
 Simon Shih
 simon@simonbuilds.app
