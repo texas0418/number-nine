@@ -8,7 +8,8 @@
 // by WINDING the little clock — the lie; she notices, and it is remembered.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchLamp } from '../device';
 import { cue } from '../audio';
 import { setKv } from '../db';
@@ -147,48 +148,48 @@ export function InkAtHour({
     <View style={styles.wrap}>
       <View style={styles.page}>
         {aboveText.map((line, i) => (
-          <Text key={i} style={[styles.line, dark && styles.lineDimmed]} maxFontSizeMultiplier={1.3}>
+          <MechText key={i} style={[styles.line, dark && styles.lineDimmed]}>
             {line}
-          </Text>
+          </MechText>
         ))}
         <Animated.View style={{ opacity: dimAnim }}>
-          <Text style={styles.hidden} maxFontSizeMultiplier={1.3}>
+          <MechText style={styles.hidden}>
             {before}
-            <Text style={done ? styles.wordFound : styles.hidden} onPress={touchWord} suppressHighlighting>
+            <MechText style={done ? styles.wordFound : styles.hidden} onPress={touchWord} suppressHighlighting>
               {targetWord}
-            </Text>
+            </MechText>
             {after}
-          </Text>
+          </MechText>
         </Animated.View>
         {!done && (
           <View style={styles.instrumentRow}>
             <View style={styles.clockWell} {...clock.panHandlers}>
-              <Text
+              <MechText
                 style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
                 allowFontScaling={false}
               >
                 {clock.display}
-              </Text>
+              </MechText>
             </View>
             <View style={styles.wickRail} {...pan.panHandlers}>
               <View
                 pointerEvents="none"
                 style={{ transform: [{ translateY: wick * WICK_TRAVEL * 0.5 }] }}
               >
-                <Text style={styles.wickGlyph} allowFontScaling={false}>
+                <MechText style={styles.wickGlyph} allowFontScaling={false}>
                   {dark ? '·' : '❋'}
-                </Text>
+                </MechText>
               </View>
-              <Text style={styles.wickLabel} allowFontScaling={false}>
+              <MechText style={styles.wickLabel} allowFontScaling={false}>
                 the lamp
-              </Text>
+              </MechText>
             </View>
           </View>
         )}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? (wasLie ? noticedText : unlockedText) : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

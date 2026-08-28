@@ -9,7 +9,8 @@
 // Wrong map touches get the dull knock; the room absorbs it.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { GestureResponderEvent, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
+import { GestureResponderEvent, Image, PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, playSfx, setStaticLevel } from '../audio';
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
@@ -200,9 +201,9 @@ export function Triangulate({
       </View>
       {/* the readout lives ABOVE the strip — a dialing thumb covered it
           when it sat inside (device QA) */}
-      <Text style={styles.freq} allowFontScaling={false}>
+      <MechText style={styles.freq} allowFontScaling={false}>
         {khz} kc/s
-      </Text>
+      </MechText>
       <View
         style={styles.strip}
         onLayout={(e) => {
@@ -218,13 +219,13 @@ export function Triangulate({
           ]}
         />
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done
           ? unlockedText
           : allLocked
             ? 'three lines · they agree about one place · touch it'
             : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

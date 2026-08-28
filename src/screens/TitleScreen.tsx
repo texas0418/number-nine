@@ -1,7 +1,8 @@
 // src/screens/TitleScreen.tsx
 // The set, switched off. Everything in the game starts from this dark room.
 
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ChromeText } from '../engine/ui';
 import { useStoryUnlocked } from '../proAccess';
 import { colors, fonts } from '../theme';
 
@@ -60,9 +61,9 @@ export default function TitleScreen({
       : 'broadcast one · begin';
   return (
     <View style={styles.root}>
-      <Text style={styles.ident} maxFontSizeMultiplier={1.5}>· · · — — — · · ·</Text>
-      <Text style={styles.title} maxFontSizeMultiplier={1.15}>NUMBER{'\n'}NINE</Text>
-      <Text style={styles.sub} maxFontSizeMultiplier={1.2}>a story received, not read</Text>
+      <ChromeText style={styles.ident} maxFontSizeMultiplier={1.5}>· · · — — — · · ·</ChromeText>
+      <ChromeText style={styles.title} maxFontSizeMultiplier={1.15}>NUMBER{'\n'}NINE</ChromeText>
+      <ChromeText style={styles.sub} maxFontSizeMultiplier={1.2}>a story received, not read</ChromeText>
 
       <ScrollView
         style={styles.menuScroll}
@@ -101,9 +102,9 @@ export default function TitleScreen({
         <MenuRow label="the set" hint="settings · about" onPress={onSettings} />
       </ScrollView>
 
-      <Text style={styles.footer} maxFontSizeMultiplier={1.3}>
+      <ChromeText style={styles.footer}>
         headphones recommended{'\n'}play in the dark
-      </Text>
+      </ChromeText>
     </View>
   );
 }
@@ -121,12 +122,12 @@ function MenuRow({
 }) {
   return (
     <Pressable style={styles.row} onPress={onPress}>
-      <Text style={[styles.rowLabel, dim && { color: colors.faint }]} maxFontSizeMultiplier={1.25}>
+      <ChromeText style={[styles.rowLabel, dim && { color: colors.faint }]} maxFontSizeMultiplier={1.25}>
         {label}
-      </Text>
-      <Text style={styles.rowHint} maxFontSizeMultiplier={1.25}>
+      </ChromeText>
+      <ChromeText style={styles.rowHint} maxFontSizeMultiplier={1.25}>
         {hint}
-      </Text>
+      </ChromeText>
     </Pressable>
   );
 }

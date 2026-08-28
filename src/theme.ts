@@ -42,6 +42,23 @@ export const amberViewGlow = {
   shadowOffset: { width: 0, height: 0 },
 } as const;
 
+/** Dynamic Type ceilings (maxFontSizeMultiplier), applied explicitly per
+ *  surface via src/engine/ui.tsx — Text.defaultProps is silently DEAD under
+ *  React 19, so a cap must ride every component. Anchors: `body` keeps the
+ *  old intended global 1.6 (a reading app for older eyes; Simon plays at max
+ *  text size); `chrome` and `mechanism` match the 1.3 the device-QA'd call
+ *  sites already used — mechanism blocks are puzzles whose alignment IS the
+ *  puzzle, and text that is drawn geometry (dial faces, keypad keys, compass
+ *  roses) additionally passes allowFontScaling={false}; `fixed` = 1 for the
+ *  share card, which is captured to a fixed-size image. Call sites may still
+ *  pass a tighter explicit prop (headers, titles) — it overrides the cap. */
+export const TYPE_CAPS = {
+  chrome: 1.3,
+  body: 1.6,
+  mechanism: 1.3,
+  fixed: 1,
+} as const;
+
 export const fonts = {
   /** Story prose — a book, not an app. */
   serif: Platform.select({ ios: 'Georgia', default: 'serif' })!,

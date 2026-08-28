@@ -10,7 +10,8 @@
 // the turn glyph materializes with the margin note, as it did in B3.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue } from '../audio';
 import { watchInversion, watchNearEar } from '../device';
 import { amberGlow, colors, fonts } from '../theme';
@@ -59,19 +60,19 @@ function SheetLine({
 }) {
   if (!interactive || !line.includes(targetWord))
     return (
-      <Text style={[styles.line, faded && styles.lineFaded]} maxFontSizeMultiplier={1.3}>
+      <MechText style={[styles.line, faded && styles.lineFaded]}>
         {line}
-      </Text>
+      </MechText>
     );
   const [before, after] = line.split(targetWord);
   return (
-    <Text style={[styles.line, styles.lineFaded]} maxFontSizeMultiplier={1.3}>
+    <MechText style={[styles.line, styles.lineFaded]}>
       {before}
-      <Text style={done ? styles.wordFound : styles.lineFaded} onPress={onWord} suppressHighlighting>
+      <MechText style={done ? styles.wordFound : styles.lineFaded} onPress={onWord} suppressHighlighting>
         {targetWord}
-      </Text>
+      </MechText>
       {after}
-    </Text>
+    </MechText>
   );
 }
 
@@ -211,21 +212,21 @@ export function TripleSheet({
           ))}
           {!done && heard && hintShown && (
             <View style={styles.turnGlyph} {...turnPan.panHandlers}>
-              <Text style={styles.turnText} allowFontScaling={false} pointerEvents="none">
+              <MechText style={styles.turnText} allowFontScaling={false} pointerEvents="none">
                 ⟲
-              </Text>
+              </MechText>
             </View>
           )}
         </View>
       </Pressable>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {captionFor(done, showingVerso, heard, {
           prompt,
           heardPrompt,
           invertedPrompt,
           unlockedText,
         })}
-      </Text>
+      </MechText>
     </View>
   );
 }

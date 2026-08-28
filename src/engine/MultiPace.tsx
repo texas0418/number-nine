@@ -9,7 +9,8 @@
 // has been drilling.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchHeading, watchStepBounce } from '../device';
 import { cue } from '../audio';
 import { setScrollLock } from './scrollLock';
@@ -150,16 +151,16 @@ export function MultiPace({
             style={[styles.lubber, aligned && styles.lubberLit]}
             pointerEvents="none"
           />
-          <Text style={[styles.degrees, aligned && styles.degreesLit]} allowFontScaling={false} pointerEvents="none">
+          <MechText style={[styles.degrees, aligned && styles.degreesLit]} allowFontScaling={false} pointerEvents="none">
             {`${Math.round(heading)}°`}
-          </Text>
+          </MechText>
           <View
             style={[styles.rose, { transform: [{ rotate: `${-heading}deg` }] }]}
             pointerEvents="none"
           >
-            <Text style={styles.roseN} allowFontScaling={false}>
+            <MechText style={styles.roseN} allowFontScaling={false}>
               N
-            </Text>
+            </MechText>
           </View>
         </View>
         <Pressable style={styles.ground} onPress={done ? undefined : pace} disabled={done}>
@@ -189,9 +190,9 @@ export function MultiPace({
           </View>
         </Pressable>
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

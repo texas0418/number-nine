@@ -12,7 +12,8 @@
 // with sound gone entirely the needle still glows by closeness.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchHeading } from '../device';
 import { cue, setLoopVolume, setStaticLevel, startSfxLoop, stopSfx } from '../audio';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
@@ -146,14 +147,14 @@ export function BearingVoice({
           style={[styles.rose, { transform: [{ rotate: `${-heading}deg` }] }]}
           pointerEvents="none"
         >
-          <Text style={styles.roseN} allowFontScaling={false}>
+          <MechText style={styles.roseN} allowFontScaling={false}>
             N
-          </Text>
+          </MechText>
         </View>
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

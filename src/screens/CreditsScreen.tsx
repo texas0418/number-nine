@@ -11,7 +11,8 @@
 // does: the app is fully playable offline and a reader with no signal should
 // get nothing rather than an error.
 
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ChromeText } from '../engine/ui';
 import { colors, fonts } from '../theme';
 
 const open = (url: string) => {
@@ -31,20 +32,20 @@ function Credit({
 }) {
   return (
     <View style={styles.entry}>
-      <Text style={styles.role}>{role}</Text>
-      <Text style={styles.name} maxFontSizeMultiplier={1.4}>
+      <ChromeText style={styles.role}>{role}</ChromeText>
+      <ChromeText style={styles.name} maxFontSizeMultiplier={1.4}>
         {name}
-      </Text>
+      </ChromeText>
       {detail ? (
-        <Text style={styles.detail} maxFontSizeMultiplier={1.4}>
+        <ChromeText style={styles.detail} maxFontSizeMultiplier={1.4}>
           {detail}
-        </Text>
+        </ChromeText>
       ) : null}
       {url ? (
         <Pressable onPress={() => open(url)} hitSlop={10}>
-          <Text style={styles.link} maxFontSizeMultiplier={1.3}>
+          <ChromeText style={styles.link}>
             {url.replace(/^https?:\/\//, '')}
-          </Text>
+          </ChromeText>
         </Pressable>
       ) : null}
     </View>
@@ -56,11 +57,11 @@ export default function CreditsScreen({ onBack }: { onBack: () => void }) {
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
+          <ChromeText style={styles.back}>‹ the set</ChromeText>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+        <ChromeText style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
           CREDITS
-        </Text>
+        </ChromeText>
         <View style={styles.spacer} />
       </View>
 
@@ -94,11 +95,11 @@ export default function CreditsScreen({ onBack }: { onBack: () => void }) {
 
         <View style={styles.rule} />
 
-        <Text style={styles.colophon} maxFontSizeMultiplier={1.4}>
+        <ChromeText style={styles.colophon} maxFontSizeMultiplier={1.4}>
           Number Nine was written, recorded and built by one person. The
           Listeners’ Society, which keeps the clues, is a fiction. So is the
           station, though it keeps better hours than most of us.
-        </Text>
+        </ChromeText>
       </ScrollView>
     </View>
   );

@@ -7,7 +7,8 @@
 // the hurry) and THE CHOICE (two endings; the fork that does not join).
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { BodyText, MechText } from './ui';
 import { cue } from '../audio';
 import { setScrollLock } from './scrollLock';
 import { getKv, setKv } from '../db';
@@ -128,14 +129,14 @@ export function NightGate({
 
   return (
     <View style={styles.body}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? (hurried ? noticedText : unlockedText) : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.clockWell} {...pan.panHandlers}>
-          <Text style={styles.clockText} allowFontScaling={false}>
+          <MechText style={styles.clockText} allowFontScaling={false}>
             {woundHours === 0 ? '— · —' : `+${woundHours} h`}
-          </Text>
+          </MechText>
         </View>
       )}
     </View>
@@ -187,15 +188,15 @@ export function EndingFork({
     return (
       <View style={styles.forkRow}>
         <Pressable style={styles.forkChoice} onPress={() => choose('seat')}>
-          <Text style={styles.forkLabel} maxFontSizeMultiplier={1.25}>
+          <MechText style={styles.forkLabel} maxFontSizeMultiplier={1.25}>
             {leftLabel}
-          </Text>
+          </MechText>
         </Pressable>
         <View style={styles.forkRule} />
         <Pressable style={styles.forkChoice} onPress={() => choose('break')}>
-          <Text style={styles.forkLabel} maxFontSizeMultiplier={1.25}>
+          <MechText style={styles.forkLabel} maxFontSizeMultiplier={1.25}>
             {rightLabel}
-          </Text>
+          </MechText>
         </Pressable>
       </View>
     );
@@ -205,13 +206,13 @@ export function EndingFork({
   return (
     <View style={styles.endingWrap}>
       {paragraphs.map((p, i) => (
-        <Text key={i} style={styles.endingText} maxFontSizeMultiplier={1.5}>
+        <BodyText key={i} style={styles.endingText} maxFontSizeMultiplier={1.5}>
           {p}
-        </Text>
+        </BodyText>
       ))}
-      <Text style={[styles.endingText, styles.coda]} maxFontSizeMultiplier={1.5}>
+      <BodyText style={[styles.endingText, styles.coda]} maxFontSizeMultiplier={1.5}>
         {coda}
-      </Text>
+      </BodyText>
     </View>
   );
 }

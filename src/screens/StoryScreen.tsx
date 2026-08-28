@@ -3,7 +3,8 @@
 // revealed block so the reader resumes exactly at the locked door they left.
 
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { ChromeText } from '../engine/ui';
 import type { Chapter } from '../models';
 import { ChapterView } from '../engine/ChapterView';
 import { BROADCAST_ONE } from '../chapters/broadcast1';
@@ -67,11 +68,11 @@ export default function StoryScreen({
       />
       <View style={styles.header} pointerEvents="box-none">
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
+          <ChromeText style={styles.back}>‹ the set</ChromeText>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+        <ChromeText style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
           {chapter.title}
-        </Text>
+        </ChromeText>
         <View style={styles.spacer} />
       </View>
     </View>

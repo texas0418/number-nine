@@ -4,7 +4,8 @@
 // is in the listening. Wrong sequence: static swallows it and the box resets.
 
 import { useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, playIdent, playSfx, setStaticLevel } from '../audio';
 import { amberViewGlow, colors, fonts } from '../theme';
 
@@ -68,9 +69,9 @@ export function MelodyBox({
 
   return (
     <View style={styles.body}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       <View style={styles.dotRow}>
         {Array.from({ length: answer.length }, (_, i) => (
           <View key={i} style={[styles.dot, i < dots && styles.dotLit]} />
@@ -79,9 +80,9 @@ export function MelodyBox({
       {!done && (
         <>
           <Pressable style={styles.horn} onPress={() => playIdent()} hitSlop={6}>
-            <Text style={styles.hornText} allowFontScaling={false}>
+            <MechText style={styles.hornText} allowFontScaling={false}>
               ◉ wind the box
-            </Text>
+            </MechText>
           </Pressable>
           <View style={styles.keyRow}>
             {KEYS.map((k) => (

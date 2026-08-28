@@ -7,7 +7,8 @@
 // the right time for a breath, the clock accepts it.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, playSfx } from '../audio';
 import { amberViewGlow, colors, fonts } from '../theme';
 
@@ -158,7 +159,7 @@ export function ClockDial({
           const a = (hr * 15 * Math.PI) / 180;
           const r = SIZE / 2 - 34;
           return (
-            <Text
+            <MechText
               key={hr}
               allowFontScaling={false}
               suppressHighlighting
@@ -171,7 +172,7 @@ export function ClockDial({
               ]}
             >
               {String(hr).padStart(2, '0')}
-            </Text>
+            </MechText>
           );
         })}
         <View
@@ -186,16 +187,16 @@ export function ClockDial({
       </View>
       {/* In FLOW, below the face — never absolutely positioned. See the
           readout style for what that cost us twice. */}
-      <Text
+      <MechText
         style={[styles.readout, done && { color: colors.lockGlow }]}
         allowFontScaling={false}
         pointerEvents="none"
       >
         {pad(hour)}:{pad(minute)}
-      </Text>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      </MechText>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }
