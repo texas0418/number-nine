@@ -606,6 +606,10 @@ function pressPage(sections: ArchiveSection[]): Page {
 <p class="prose">Please do not print puzzle solutions. The difficulty is the product, and a solution in a review is spent for every reader who sees it. If a piece needs to describe a puzzle, the Society archive on this site is written for exactly that: it opens in three graded stages so you can quote the flavour without the answer. Screenshots that show a solved gate are the other easy way to spoil one, and we would rather send you replacements than have you avoid illustrating the piece.</p>
 <p class="prose">Comparisons are yours to draw and not ours to claim. We do not describe the book as a successor to anything, and we would rather earn the comparison in your words than assert it in ours.</p>
 
+<h2 class="label">Video</h2>
+<p class="prose">Two cuts, both free to embed, both without an embargo. Neither records the screen: the station is a place rather than an interface, and a screen recording would sell the wrong thing. The audio is the book\u2019s own \u2014 her recordings, the shortwave bed and the six-note ident \u2014 so there is no third-party music in either and nothing to clear.</p>
+<p class="prose"><a href="https://www.youtube.com/watch?v=nQX2u6UEQCI">Teaser, fifteen seconds</a> \u00b7 <a href="https://www.youtube.com/watch?v=tR9Vmjl5rGA">Launch trailer, thirty-six seconds</a></p>
+
 <h2 class="label">Assets</h2>
 <p class="prose">Screenshots at App Store resolution, the app icon, and the six-note station ident as audio are all available on request; say which sizes and formats suit you and they will come back the same day. There is no embargo on anything published here.</p>
 

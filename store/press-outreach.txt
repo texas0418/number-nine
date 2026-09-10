@@ -1,7 +1,7 @@
 NUMBER NINE -- PRESS OUTREACH
 Plain text. Nothing here needs stripping before you paste it.
 
-Send AFTER release, once the App Store link resolves. Press kit is already
+Number Nine released 2026-08-21 and the store link below is live. Press kit is
 live and needs no work: numbernine.simonbuilds.app/press/
 
 THE RULE ON DEVICE 6, because this is where the email earns its keep.
@@ -12,6 +12,24 @@ of", or anything implying they endorsed, blessed or are connected to this. The
 difference is simple. Your feelings about their game are yours to describe.
 Their mark is not yours to borrow. If a reviewer draws the comparison
 themselves, that is theirs to print and you can quote it afterwards.
+
+SIGN EVERY EMAIL simon@simonbuilds.app. That is Simon's own address.
+support@simonbuilds.app is the customer-support mailbox published in App Store
+Connect, and a journalist who replies into a support queue is a reply that gets
+lost. Quote support@ only where the press kit does, never as a signature.
+
+SEND A CODE WITH THE EMAIL, AND SAY HOW TO REDEEM IT. Do not offer to send
+one on request; a journalist who has to reply first mostly does not reply.
+ALWAYS include the redemption instructions with it: Apple's redeem links only
+work on a device signed into the App Store, so on a PC the link hands off to
+the Mac App Store and dies. There is no web redemption. Tim Beek hit exactly
+this on 2026-08-21 and could not use his code. If a recipient turns out to
+have no Apple device, point them at numbernine.simonbuilds.app instead, where
+the nightly cryptogram is free and works in any browser.
+
+Pull codes from ~/Documents/NumberNine-launch/number-nine-offer-codes-1000.csv
+(take the BOTTOM row, delete it, log the recipient in codes-sent.txt). One
+unique code per recipient, never the same code twice.
 
 NEVER in any email: a puzzle method or answer, a frequency, her hour, or any
 claim of screen-reader support. The press kit already discloses that there is
@@ -26,7 +44,7 @@ lose. No attachments, ever. Links only. Attachments get pitches spam-filtered.
 
 SUBJECT
 
-I waited thirteen years for another DEVICE 6, then built one myself
+I Waited Thirteen Years for Another DEVICE 6, Then Built One Myself
 
 BODY
 
@@ -51,13 +69,18 @@ same one for every player on earth, and a year of them in order tells a second
 story underneath the first.
 
 Press kit, fact sheet and assets: https://numbernine.simonbuilds.app/press/
-On the App Store: <APP STORE LINK>
+On the App Store: https://apps.apple.com/us/app/number-nine/id6796237101
 
-Happy to send you a code that unlocks the whole book, no strings and nothing
-expected back. Chapter one is free either way if you would rather just look.
+Here is a code that unlocks the whole book, no strings and nothing expected
+back. It redeems on an iPhone or iPad, either by opening this link on the
+device or through App Store, your photo top right, Redeem Gift Card or Code.
+
+<REDEEM LINK>
+
+Chapter one is free either way if you would rather just look.
 
 Simon Shih
-support@simonbuilds.app
+simon@simonbuilds.app
 
 
 =========================================================================
@@ -289,7 +312,7 @@ a missing personal line is fine, a fake one is not.
 
 SUBJECT
 
-An iPhone-only horror novella that re-typesets itself at every Dynamic Type size
+An iPhone-Only Horror Novella That Re-Typesets Itself at Every Dynamic Type Size
 
 
 BODY
@@ -341,13 +364,16 @@ them in order tells a second story a night at a time. It costs nothing and
 needs no purchase, so it is a fair way to see whether the thing is any good.
 
 Press kit and assets: https://numbernine.simonbuilds.app/press/
-App Store: <APP STORE LINK>
+App Store: https://apps.apple.com/us/app/number-nine/id6796237101
 
-Happy to send a code that unlocks the whole book, no strings and nothing
-expected in return.
+Here is a code that unlocks the whole book, no strings and nothing expected
+in return. It redeems on an iPhone or iPad, either by opening this link on the
+device or through App Store, your photo top right, Redeem Gift Card or Code.
+
+<REDEEM LINK>
 
 Simon Shih
-support@simonbuilds.app
+simon@simonbuilds.app
 
 
 WHY THIS ONE IS SHAPED THIS WAY
@@ -359,3 +385,41 @@ WHY THIS ONE IS SHAPED THIS WAY
 - Disclosing the missing VoiceOver support unprompted is the strongest possible
   signal that everything else in the email is true. Do not remove it.
 - Still no comparison claimed. DEVICE 6 appears once, as why you started.
+
+
+=========================================================================
+SECOND-WAVE TARGETS -- verified 2026-08-22
+=========================================================================
+Routes checked against each outlet's own pages on 2026-08-22.
+
+Night Mind Index -- nmindexentry@gmail.com
+  THE BIGGEST AUDIENCE ON THIS LIST if it lands. Catalogues unfiction (ARGs,
+  interactive stories). Submit the SOCIETY SITE as a project, not the app:
+  numbernine.simonbuilds.app is an in-fiction catalogue with a live nightly
+  transmission, which is exactly what they index. Short email, no pitch voice,
+  no code. Creators may submit their own projects; say plainly it is yours.
+
+Launched podcast (Charlie Chapman) -- guest application form:
+  https://docs.google.com/forms/d/e/1FAIpQLSfxduoOnjnF_qE6PpnEGdKewWHvB3YDl0gv3WAxAJ4HDVq8Bg/viewform
+  Interviews indie devs about launching. The thirteen-years-after-DEVICE-6
+  story is an episode, not just an email hook. Fill the form once; they book
+  from applications and the schedule is limited, so no follow-up.
+
+Indie Dev Monday (Josh Holtz) -- NO submission email. The stated route:
+  subscribe at indiedevmonday.com, then REPLY TO AN ISSUE with what you are
+  building, where you are in the journey, and what you hope to do next.
+  Active (issue 149, 2026-08-17). Keep the reply to a few sentences.
+
+AppAdvice -- devcontact@appadvice.com
+148Apps  -- george.bird@148apps.com
+  Both known-good from the Bindery outreach list. SPACING RULE: Bindery mails
+  these on 2026-09-02, so Number Nine must go out THIS WEEK to keep the
+  two-products-one-week problem away. Use the generic email with a code each.
+
+AI-ART CAUTION FOR THE IF COMMUNITY. intfiction.org and IFDB skew strongly
+against AI-generated content (a live "ban AI content on IFComp" thread).
+The game's scene art is AI-generated and disclosed. If posting there, the
+craft post (puzzle structure, no art claims) is the honest fit, and the
+answer to "is the art AI?" is plainly yes. Expect friction; do not argue.
+An IFDB listing is factual metadata and worth having either way -- ifdb.org,
+free account, list the game with its real details, no marketing copy.
