@@ -45,7 +45,7 @@ export const ENTITLEMENT_ID = 'story';
 export const PRODUCT_ID = 'nn_story_unlock';
 
 const IOS_KEY = 'appl_AIRpeyCjFESLdxpceHHyeXRUlfH';
-const ANDROID_KEY = 'REVENUECAT_ANDROID_KEY_PLACEHOLDER';
+const ANDROID_KEY = 'goog_HvPrnlgPItYnzyqmEnTXClGnnxm';
 
 export const keyForPlatform = (): string =>
   Platform.OS === 'android' ? ANDROID_KEY : IOS_KEY;
