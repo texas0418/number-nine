@@ -389,7 +389,7 @@ function privacyPage(): Page {
 
 <h2 class="label">What the phone's sensors are doing</h2>
 <p class="prose">Several puzzles use the hardware: the compass to face an aerial, the motion sensors to hold the phone still or turn it over, the screen's brightness, the volume buttons, the battery, the haptic engine. Those readings are used in the moment, to decide whether a gate opens, and then they are gone. Nothing is recorded and nothing is transmitted.</p>
-<p class="prose">The app asks for no permissions at all. It has no access to your microphone, camera, location, photographs, contacts or calendar, and it sends no notifications.</p>
+<p class="prose">On iOS the app asks for no permissions at all. On Android it declares one, and only on Android 13 and earlier: access to your photo library. It never opens your photographs and never reads one — on those versions that permission is simply the only way the system will tell the app that you took a screenshot, which is the shutter Broadcast Four's plate is listening for. On Android 14 and later the system reports the screenshot directly and the photo permission is not requested at all. Beyond that it has no access to your microphone, camera, location, contacts or calendar, and it sends no notifications.</p>
 
 <h2 class="label">Children</h2>
 <p class="prose">Number Nine is a horror story written for adults and is not directed at children. It collects no personal information from anyone, of any age.</p>
