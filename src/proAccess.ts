@@ -9,6 +9,7 @@
 import { useSyncExternalStore } from 'react';
 import {
   ENTITLEMENT_ID,
+  IS_AMAZON_BUILD,
   isPlaceholderKey,
   keyForPlatform,
 } from './revenuecat';
@@ -51,7 +52,7 @@ export function initPurchases(): void {
     return;
   }
   try {
-    Purchases.configure({ apiKey: key });
+    Purchases.configure({ apiKey: key, useAmazon: IS_AMAZON_BUILD });
     Purchases.addCustomerInfoUpdateListener((info: any) => {
       setUnlocked(Boolean(info?.entitlements?.active?.[ENTITLEMENT_ID]));
     });
