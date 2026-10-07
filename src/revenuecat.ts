@@ -46,9 +46,20 @@ export const PRODUCT_ID = 'nn_story_unlock';
 
 const IOS_KEY = 'appl_AIRpeyCjFESLdxpceHHyeXRUlfH';
 const ANDROID_KEY = 'goog_HvPrnlgPItYnzyqmEnTXClGnnxm';
+const AMAZON_KEY = 'amzn_KSFaZYIfQHNFyNYuzBgTZeUVnGi';
 
-export const keyForPlatform = (): string =>
-  Platform.OS === 'android' ? ANDROID_KEY : IOS_KEY;
+// Store selection is a BUILD-TIME flag: EXPO_PUBLIC_STORE=amazon in the
+// environment when Metro bundles (scripts/build-amazon-apk.sh sets it).
+// Unset, every build is a Play build, so nothing changes for the existing
+// pipeline. The Amazon billing library already ships in every Android build
+// via purchases-hybrid-common; the flag only decides which store the SDK
+// talks to at configure time.
+export const IS_AMAZON_BUILD = process.env.EXPO_PUBLIC_STORE === 'amazon';
+
+export const keyForPlatform = (): string => {
+  if (Platform.OS !== 'android') return IOS_KEY;
+  return IS_AMAZON_BUILD ? AMAZON_KEY : ANDROID_KEY;
+};
 
 export const isPlaceholderKey = (key: string): boolean =>
   key.includes('PLACEHOLDER');
