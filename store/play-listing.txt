@@ -40,7 +40,17 @@ PRIVACY POLICY URL (verified live 2026-08-15): https://numbernine.simonbuilds.ap
 GRAPHIC ASSETS (store/)
 - play-icon-512.png — DONE
 - play-feature-graphic.png (1024x500) — DONE (glowing 9, scan line, ruler ticks)
-- screenshots-android/ — captured this run from the release APK (dark typographic shots; NO late-broadcast spoilers, B1 early pages + Tonight's Signal only)
+- screenshots-android/ — ORIGINAL set, 1080x2160 (1:2). Superseded on Play; kept for reference.
+- screenshots-android/9x16/ — LIVE ON PLAY (2026-09-12). Four shots, 1080x1920, true 9:16,
+  captured from the release APK on a purpose-built 1080x1920 AVD (NN_1080x1920, density 420).
+  Order as listed: 01 the set, 02 Broadcast One / The Licence, 03 Tonight's Signal, 04 the study wall.
+  Play's promotion bar wants >= 4 screenshots with >= 3 at 16:9 or 9:16 and >= 1080 px; the old
+  1:2 set met none of that on a strict reading. Status bar rendered clipped under the headless
+  emulator, so each frame is cropped 100 px off the top and rescaled back to 1080x1920.
+  SPOILER RULE, LEARNED THE HARD WAY: a fifth candidate showed the probate artifact reading
+  'one wireless aerial licence, No. 46-25' — that is the clue for the 4625 kHz gate in Broadcast
+  One. It was cut. Never put a gate clue on a store page; screenshots are read by people who have
+  not played.
 
 DATA SAFETY FORM (prep)
 - Offline, no accounts, no analytics; nothing collected or shared
