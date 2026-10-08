@@ -48,5 +48,31 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "install": {
+      "exclude": [
+        "expo",
+        "expo-asset",
+        "expo-audio",
+        "expo-battery",
+        "expo-brightness",
+        "expo-clipboard",
+        "expo-constants",
+        "expo-dev-client",
+        "expo-device",
+        "expo-file-system",
+        "expo-font",
+        "expo-haptics",
+        "expo-keep-awake",
+        "expo-network",
+        "expo-screen-capture",
+        "expo-sensors",
+        "expo-splash-screen",
+        "expo-sqlite",
+        "expo-store-review",
+        "expo-system-ui"
+      ]
+    }
+  }
 }
