@@ -2,7 +2,7 @@
   "expo": {
     "name": "Number Nine",
     "slug": "number-nine",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "numbernine",
@@ -19,7 +19,7 @@
     },
     "android": {
       "package": "com.numbernine.app",
-      "versionCode": 4,
+      "versionCode": 5,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -50,7 +50,8 @@
           "enableBackgroundPlayback": false
         }
       ],
-      "./plugins/withReleaseSigning.js"
+      "./plugins/withReleaseSigning.js",
+      "./plugins/withAmazonAuthKey.js"
     ]
   }
 }
