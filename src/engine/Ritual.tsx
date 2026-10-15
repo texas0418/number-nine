@@ -9,7 +9,8 @@
 // instrument dims until it is next; that is all the grammar she allows.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, setStaticLevel } from '../audio';
 import { setGain, watchGain, watchStillness } from '../device';
 import { useWoundClock } from './ExaminationGates';
@@ -89,9 +90,9 @@ function RitualTuner({
 
   return (
     <View style={[styles.instrument, !armed && styles.dimmed]}>
-      <Text style={styles.readout} allowFontScaling={false}>
+      <MechText style={styles.readout} allowFontScaling={false}>
         {khz} kc/s
-      </Text>
+      </MechText>
       <View
         style={styles.strip}
         onLayout={(e) => {
@@ -241,13 +242,13 @@ function RitualClock({
     return (
       <View style={styles.instrument}>
         <View style={styles.clockDragSurface} {...clock.panHandlers}>
-          <Text
+          <MechText
             style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
             allowFontScaling={false}
             pointerEvents="none"
           >
             {clock.display}
-          </Text>
+          </MechText>
         </View>
       </View>
     );
@@ -256,9 +257,9 @@ function RitualClock({
     <View style={[styles.instrument, styles.dimmed]}>
       <Pressable onPress={refuse}>
         <View style={styles.clockWell}>
-          <Text style={styles.clockText} allowFontScaling={false}>
+          <MechText style={styles.clockText} allowFontScaling={false}>
             {clock.display}
-          </Text>
+          </MechText>
         </View>
       </Pressable>
     </View>
@@ -384,9 +385,9 @@ export function Ritual({
     return (
       <View style={styles.wrap}>
         <View style={styles.instrument} pointerEvents="none">
-          <Text style={styles.readout} allowFontScaling={false}>
+          <MechText style={styles.readout} allowFontScaling={false}>
             {targetKhz} kc/s
-          </Text>
+          </MechText>
           <View style={styles.strip}>
             <View style={[styles.needle, { left: `${((targetKhz - bandLowKhz) / (bandHighKhz - bandLowKhz)) * 100}%`, backgroundColor: colors.dial }]} />
           </View>
@@ -401,9 +402,9 @@ export function Ritual({
         </View>
         <View style={styles.instrument} pointerEvents="none">
           <View style={styles.clockDragSurface}>
-            <Text style={[styles.clockText, { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
+            <MechText style={[styles.clockText, { color: colors.dial, ...amberGlow }]} allowFontScaling={false}>
               {`${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`}
-            </Text>
+            </MechText>
           </View>
         </View>
         <View style={styles.instrument} pointerEvents="none">
@@ -413,9 +414,9 @@ export function Ritual({
             </View>
           </View>
         </View>
-        <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+        <MechText style={styles.caption}>
           {unlockedText}
-        </Text>
+        </MechText>
       </View>
     );
   }

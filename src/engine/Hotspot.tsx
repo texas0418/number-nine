@@ -10,9 +10,9 @@ import {
   LayoutChangeEvent,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import { MechText } from './ui';
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
 import { cue, playSfx } from '../audio';
@@ -97,9 +97,9 @@ export function Hotspot({
         )}
       </Pressable>
       {(done ? unlockedText : prompt) !== '' && (
-        <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+        <MechText style={styles.caption}>
           {done ? unlockedText : prompt}
-        </Text>
+        </MechText>
       )}
     </View>
   );

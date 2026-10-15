@@ -4,7 +4,8 @@
 // so the reader physically turns the phone in their hands (DEVICE 6's trick).
 
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { BodyText, ChromeText, MechText } from './ui';
 import type { SceneId } from '../models';
 import { SCENES } from './scenes';
 import { colors, fonts, type } from '../theme';
@@ -18,9 +19,9 @@ export function PlateBlock({ image, caption }: { image: SceneId; caption?: strin
         <Image source={SCENES[image]} resizeMode="contain" style={styles.plate} />
       </View>
       {caption ? (
-        <Text style={styles.plateCaption} maxFontSizeMultiplier={1.3}>
+        <ChromeText style={styles.plateCaption}>
           {caption}
-        </Text>
+        </ChromeText>
       ) : null}
     </View>
   );
@@ -28,9 +29,9 @@ export function PlateBlock({ image, caption }: { image: SceneId; caption?: strin
 
 export function ProseBlock({ text, faded }: { text: string; faded?: boolean }) {
   return (
-    <Text style={[styles.prose, faded && { color: colors.proseFaded }]}>
+    <BodyText style={[styles.prose, faded && { color: colors.proseFaded }]}>
       {text}
-    </Text>
+    </BodyText>
   );
 }
 
@@ -39,13 +40,13 @@ export function ProseBlock({ text, faded }: { text: string; faded?: boolean }) {
 export function ChapterCardBlock({ number, title }: { number: string; title: string }) {
   return (
     <View style={styles.card}>
-      <Text style={styles.cardNumber} maxFontSizeMultiplier={1.4}>
+      <BodyText style={styles.cardNumber} maxFontSizeMultiplier={1.4}>
         {number}
-      </Text>
-      <Text style={styles.cardRule}>· · · — — — · · ·</Text>
-      <Text style={styles.cardTitle} maxFontSizeMultiplier={1.4}>
+      </BodyText>
+      <ChromeText style={styles.cardRule}>· · · — — — · · ·</ChromeText>
+      <BodyText style={styles.cardTitle} maxFontSizeMultiplier={1.4}>
         {title}
-      </Text>
+      </BodyText>
     </View>
   );
 }
@@ -53,18 +54,18 @@ export function ChapterCardBlock({ number, title }: { number: string; title: str
 /** A place label, like a room on a survey map. */
 export function RoomBlock({ text }: { text: string }) {
   return (
-    <Text style={styles.room} maxFontSizeMultiplier={1.4}>
+    <BodyText style={styles.room} maxFontSizeMultiplier={1.4}>
       {text.toUpperCase()}
-    </Text>
+    </BodyText>
   );
 }
 
 /** An inner thought: centered italics floating apart from the narration. */
 export function ThoughtBlock({ text }: { text: string }) {
   return (
-    <Text style={styles.thought} maxFontSizeMultiplier={1.5}>
+    <BodyText style={styles.thought} maxFontSizeMultiplier={1.5}>
       {text}
-    </Text>
+    </BodyText>
   );
 }
 
@@ -73,14 +74,14 @@ export function ThoughtBlock({ text }: { text: string }) {
 export function VoiceBlock({ text, mirrored }: { text: string; mirrored: boolean }) {
   return (
     <View style={styles.voiceWrap}>
-      <Text
+      <BodyText
         style={[
           styles.voice,
           { transform: mirrored ? [{ scaleY: -1 }] : [{ rotate: '180deg' }] },
         ]}
       >
         {text}
-      </Text>
+      </BodyText>
     </View>
   );
 }
@@ -110,13 +111,13 @@ export function RotatedBlock({
   };
   return (
     <View style={styles.rotatedWrap}>
-      <Text
+      <BodyText
         style={[styles.rotated, styles.rotatedMeasure, { width: SPAN }]}
         maxFontSizeMultiplier={MAX_SCALE}
         onTextLayout={(e) => measure(e.nativeEvent.lines)}
       >
         {text}
-      </Text>
+      </BodyText>
       {textHeight != null && (
         <View style={{ width: textHeight, height: SPAN, justifyContent: 'center', alignItems: 'center' }}>
           <View
@@ -127,9 +128,9 @@ export function RotatedBlock({
               justifyContent: 'center',
             }}
           >
-            <Text style={styles.rotated} maxFontSizeMultiplier={MAX_SCALE}>
+            <BodyText style={styles.rotated} maxFontSizeMultiplier={MAX_SCALE}>
               {text}
-            </Text>
+            </BodyText>
           </View>
         </View>
       )}
@@ -143,10 +144,10 @@ export function LogbookBlock({ lines }: { lines: string[] }) {
       {lines.map((line, i) => (
         // Cap scaling on the monospace log: at full accessibility size an
         // uncapped mono line overran the panel and clipped ("entries
-        // incomplete" -> "incompet…"). 1.3 keeps it legible and contained.
-        <Text key={i} style={styles.logbookLine} maxFontSizeMultiplier={1.3}>
+        // incomplete" -> "incompet…"). TYPE_CAPS.mechanism keeps it contained.
+        <MechText key={i} style={styles.logbookLine}>
           {line}
-        </Text>
+        </MechText>
       ))}
     </View>
   );
@@ -172,9 +173,9 @@ export function StaircaseBlock({
         return (
           <View key={i} style={[styles.stairRow, { paddingLeft: 8 + depth * STEP }]}>
             <View style={styles.stairTread} />
-            <Text style={styles.stairText} maxFontSizeMultiplier={1.3}>
+            <MechText style={styles.stairText}>
               {line}
-            </Text>
+            </MechText>
           </View>
         );
       })}
@@ -218,10 +219,10 @@ export function ForkBlock({
               style={styles.forkCol}
               onPress={() => choose(side)}
             >
-              <Text style={[styles.forkLabel, dimmed && { color: colors.faint }]}>
+              <ChromeText style={[styles.forkLabel, dimmed && { color: colors.faint }]}>
                 {label}
-              </Text>
-              <Text
+              </ChromeText>
+              <BodyText
                 style={[
                   styles.forkBody,
                   dimmed && { color: colors.faint },
@@ -229,13 +230,13 @@ export function ForkBlock({
                 ]}
               >
                 {body}
-              </Text>
+              </BodyText>
             </Pressable>
           );
         })}
       </View>
-      {!chosen && <Text style={styles.forkHint}>the page is waiting — choose a column</Text>}
-      {chosen && <Text style={styles.prose}>{join}</Text>}
+      {!chosen && <ChromeText style={styles.forkHint}>the page is waiting — choose a column</ChromeText>}
+      {chosen && <BodyText style={styles.prose}>{join}</BodyText>}
     </View>
   );
 }
@@ -249,10 +250,10 @@ export function ChapterEndBlock({
 }) {
   return (
     <View style={styles.endWrap}>
-      <Text style={styles.endRule}>· · · — — — · · ·</Text>
-      <Text style={styles.endTitle}>{title}</Text>
+      <ChromeText style={styles.endRule}>· · · — — — · · ·</ChromeText>
+      <ChromeText style={styles.endTitle}>{title}</ChromeText>
       <Pressable onPress={onDone} style={styles.endButton}>
-        <Text style={styles.endButtonText}>switch off the set</Text>
+        <ChromeText style={styles.endButtonText}>switch off the set</ChromeText>
       </Pressable>
     </View>
   );

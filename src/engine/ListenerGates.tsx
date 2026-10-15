@@ -7,7 +7,8 @@
 // gain knob). Fail-open throughout (device.ts).
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue as playCue } from '../audio';
 import { setGain, watchGain, watchSeverance } from '../device';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
@@ -77,9 +78,9 @@ export function SeverBlock({
 
   return (
     <View style={styles.body}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <Pressable
           onPressIn={pressIn}
@@ -87,9 +88,9 @@ export function SeverBlock({
           style={styles.worldWell}
         >
           <View style={[styles.worldLamp, worldLit && styles.worldOn]} />
-          <Text style={styles.worldLabel} allowFontScaling={false}>
+          <MechText style={styles.worldLabel} allowFontScaling={false}>
             {worldLit ? 'the world · still lit' : 'the world · going…'}
-          </Text>
+          </MechText>
         </Pressable>
       )}
     </View>
@@ -198,9 +199,9 @@ export function GainBlock({
     movedUi && level >= target - HALF_BAND && level <= target + HALF_BAND;
   return (
     <View style={styles.body}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View
           style={styles.scale}

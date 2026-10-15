@@ -6,7 +6,8 @@
 // and the story continues below.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { isRadioLocked, signalStrength } from '../models';
 import { watchTwist } from '../device';
 import {
@@ -164,9 +165,9 @@ export function RadioTuner({
 
   return (
     <View style={styles.body}>
-      <Text style={[styles.freq, locked && { color: colors.lockGlow }]}>
+      <MechText style={[styles.freq, locked && { color: colors.lockGlow }]}>
         {khz} kHz
-      </Text>
+      </MechText>
       <View style={styles.dialTrack} {...(locked ? {} : pan.panHandlers)}>
         <View style={styles.dialCenterline} />
         <View
@@ -179,14 +180,14 @@ export function RadioTuner({
         </View>
       </View>
       <View style={styles.meterRow}>
-        <Text style={styles.meterLabel}>signal</Text>
+        <MechText style={styles.meterLabel}>signal</MechText>
         <View style={styles.meterTrack}>
           <View style={[styles.meterFill, { width: `${Math.round(strength * 100)}%` }]} />
         </View>
       </View>
-      <Text style={[styles.caption, locked && { color: colors.lockGlow }]}>
+      <MechText style={[styles.caption, locked && { color: colors.lockGlow }]}>
         {locked ? unlockedText : lockedText}
-      </Text>
+      </MechText>
     </View>
   );
 }

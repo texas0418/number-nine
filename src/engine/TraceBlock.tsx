@@ -9,7 +9,8 @@
 // expressed through the hand, not typing.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PanResponder, StyleSheet, Text, View } from 'react-native';
+import { PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, playSfx, setStaticLevel } from '../audio';
 import { setScrollLock } from './scrollLock';
 import { amberGlow, amberViewGlow, colors, fonts } from '../theme';
@@ -162,19 +163,19 @@ export function TraceBlock({
                 lit && styles.nodeLit,
               ]}
             >
-              <Text
+              <MechText
                 style={[styles.nodeLabel, lit && { color: colors.dial, ...amberGlow }]}
                 allowFontScaling={false}
               >
                 {label}
-              </Text>
+              </MechText>
             </View>
           );
         })}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

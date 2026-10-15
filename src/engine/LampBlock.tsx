@@ -8,7 +8,8 @@
 // sensor is atmosphere, the wick is the guarantee.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, Text, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchLamp } from '../device';
 import { cue } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
@@ -115,18 +116,18 @@ export function LampBlock({
     <View style={styles.wrap}>
       <View style={styles.page}>
         {aboveText.map((line, i) => (
-          <Text key={i} style={[styles.line, dark && styles.lineDimmed]} maxFontSizeMultiplier={1.3}>
+          <MechText key={i} style={[styles.line, dark && styles.lineDimmed]}>
             {line}
-          </Text>
+          </MechText>
         ))}
         <Animated.View style={{ opacity: dimAnim }}>
-          <Text style={styles.hidden} maxFontSizeMultiplier={1.3}>
+          <MechText style={styles.hidden}>
             {before}
-            <Text style={done ? styles.wordFound : styles.hidden} onPress={touchWord} suppressHighlighting>
+            <MechText style={done ? styles.wordFound : styles.hidden} onPress={touchWord} suppressHighlighting>
               {targetWord}
-            </Text>
+            </MechText>
             {after}
-          </Text>
+          </MechText>
         </Animated.View>
         {!done && (
           <View style={styles.wickRail} {...pan.panHandlers}>
@@ -134,19 +135,19 @@ export function LampBlock({
               pointerEvents="none"
               style={[styles.wickFlame, { transform: [{ translateY: wick * WICK_TRAVEL * 0.5 }] }]}
             >
-              <Text style={styles.wickGlyph} allowFontScaling={false}>
+              <MechText style={styles.wickGlyph} allowFontScaling={false}>
                 {dark ? '·' : '❋'}
-              </Text>
+              </MechText>
             </View>
-            <Text style={styles.wickLabel} allowFontScaling={false} pointerEvents="none">
+            <MechText style={styles.wickLabel} allowFontScaling={false} pointerEvents="none">
               the lamp
-            </Text>
+            </MechText>
           </View>
         )}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

@@ -8,7 +8,8 @@
 // or hold it to the lamp). Fail-open throughout (device.ts).
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Image, PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue as playCue, holdSfx } from '../audio';
 import { watchNearEar, watchShutter } from '../device';
 import { setKv } from '../db';
@@ -108,9 +109,9 @@ export function WhisperBlock({
       onPressIn={done ? undefined : () => hold(true)}
       onPressOut={done ? undefined : () => hold(false)}
     >
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.earRow} pointerEvents="none">
           <View style={[styles.earDot, listening && styles.earOn]} />
@@ -302,17 +303,17 @@ export function HourBlock({
 
   return (
     <View style={styles.body}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? (wasLie ? noticedText : unlockedText) : prompt}
-      </Text>
+      </MechText>
       {!done && (
         <View style={styles.clockWell} {...clock.panHandlers}>
-          <Text
+          <MechText
             style={[styles.clockText, clock.matches && { color: colors.dial, ...amberGlow }]}
             allowFontScaling={false}
           >
             {clock.display}
-          </Text>
+          </MechText>
         </View>
       )}
     </View>
@@ -372,9 +373,9 @@ export function ExposureBlock({
           style={styles.plateImg}
         />
       </Pressable>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

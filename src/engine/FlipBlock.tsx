@@ -5,7 +5,8 @@
 // is the latch: touch it and the page gives up what it was hiding.
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { watchFacing } from '../device';
 import { cue, playSfx } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
@@ -88,19 +89,19 @@ export function FlipBlock({
         {lines.map((line, i) => {
           if (!showingBack || !line.includes(targetWord))
             return (
-              <Text key={i} style={[styles.line, showingBack && styles.lineBack]} maxFontSizeMultiplier={1.3}>
+              <MechText key={i} style={[styles.line, showingBack && styles.lineBack]}>
                 {line}
-              </Text>
+              </MechText>
             );
           const [before, after] = line.split(targetWord);
           return (
-            <Text key={i} style={[styles.line, styles.lineBack]} maxFontSizeMultiplier={1.3}>
+            <MechText key={i} style={[styles.line, styles.lineBack]}>
               {before}
-              <Text style={done ? styles.wordFound : styles.lineBack} onPress={touchWord} suppressHighlighting>
+              <MechText style={done ? styles.wordFound : styles.lineBack} onPress={touchWord} suppressHighlighting>
                 {targetWord}
-              </Text>
+              </MechText>
               {after}
-            </Text>
+            </MechText>
           );
         })}
         {!done && (
@@ -109,9 +110,9 @@ export function FlipBlock({
           </Pressable>
         )}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : showingBack ? (backPrompt ?? prompt) : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

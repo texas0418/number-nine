@@ -14,7 +14,8 @@
 // Laid out at CARD_W x CARD_H points and captured at CARD_SCALE, which yields
 // 1080x1350 — a 4:5 portrait, the shape feeds give the most room to.
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { FixedText } from './ui';
 import type { CardCell } from '../daily/card';
 import { colors, fonts } from '../theme';
 
@@ -41,8 +42,8 @@ export function ShareCard({
   return (
     <View style={styles.card}>
       <View style={styles.rule} />
-      <Text style={styles.wordmark}>NUMBER NINE</Text>
-      <Text style={styles.serial}>INTERCEPT NO. {serial}</Text>
+      <FixedText style={styles.wordmark}>NUMBER NINE</FixedText>
+      <FixedText style={styles.serial}>INTERCEPT NO. {serial}</FixedText>
 
       <View style={styles.grid}>
         {words.map((word, wi) => (
@@ -54,7 +55,7 @@ export function ShareCard({
                   style={[styles.bar, { width: cell, height: cell * 1.35 }]}
                 />
               ) : (
-                <Text
+                <FixedText
                   key={ci}
                   style={[
                     styles.letter,
@@ -63,18 +64,18 @@ export function ShareCard({
                   ]}
                 >
                   {c.letter}
-                </Text>
+                </FixedText>
               ),
             )}
           </View>
         ))}
       </View>
 
-      <Text style={styles.status}>{status}</Text>
+      <FixedText style={styles.status}>{status}</FixedText>
 
       <View style={styles.footer}>
-        <Text style={styles.tagline}>a story you receive, not read</Text>
-        <Text style={styles.url}>{url}</Text>
+        <FixedText style={styles.tagline}>a story you receive, not read</FixedText>
+        <FixedText style={styles.url}>{url}</FixedText>
       </View>
     </View>
   );

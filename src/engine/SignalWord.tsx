@@ -10,7 +10,8 @@
 // card quietly re-derives itself if midnight passes mid-gate.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { nightWordChoices } from '../daily/crossover';
 import { dayKeyFromMs } from '../models';
 import { cue, setStaticLevel } from '../audio';
@@ -79,9 +80,9 @@ export function SignalWord({
     <View style={styles.wrap}>
       <View style={styles.card}>
         {offAir ? (
-          <Text style={styles.offAir} allowFontScaling={false}>
+          <MechText style={styles.offAir} allowFontScaling={false}>
             {'· · ·   gone off the air   · · ·'}
-          </Text>
+          </MechText>
         ) : (
           card.words.map((w, i) => (
             <Pressable
@@ -90,7 +91,7 @@ export function SignalWord({
               onPress={() => pick(i)}
               disabled={done}
             >
-              <Text
+              <MechText
                 style={[
                   styles.wordText,
                   done && i === card.answerIndex && { color: colors.dial, ...amberGlow },
@@ -98,14 +99,14 @@ export function SignalWord({
                 allowFontScaling={false}
               >
                 {w}
-              </Text>
+              </MechText>
             </Pressable>
           ))
         )}
       </View>
-      <Text style={styles.caption} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.caption}>
         {done ? unlockedText : prompt}
-      </Text>
+      </MechText>
     </View>
   );
 }

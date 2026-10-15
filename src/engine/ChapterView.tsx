@@ -17,7 +17,6 @@
    render would be the bug this rule guards against; here it is by design. */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Text,
   Animated,
   LayoutChangeEvent,
   NativeScrollEvent,
@@ -25,6 +24,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { BodyText } from './ui';
 import type { Chapter, ChapterBlock, SceneId } from '../models';
 import { cue, setStaticLevel, stopOneShot, stopSfx } from '../audio';
 import { colors, fonts } from '../theme';
@@ -350,10 +350,10 @@ export function ChapterView({
           ),
         )}
         {hintAt !== null && hintAt === frontier && (
-          <Text style={styles.marginNote} maxFontSizeMultiplier={1.4}>
+          <BodyText style={styles.marginNote} maxFontSizeMultiplier={1.4}>
             {'margin, in the smaller hand:\n· '}
             {chapter.hints?.[(blocks[frontier] as { id?: string }).id ?? '']}
-          </Text>
+          </BodyText>
         )}
       </Animated.ScrollView>
     </View>

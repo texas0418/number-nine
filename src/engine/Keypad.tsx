@@ -6,7 +6,8 @@
 // and the ident.
 
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { MechText } from './ui';
 import { cue, setStaticLevel } from '../audio';
 import { amberGlow, colors, fonts } from '../theme';
 
@@ -110,20 +111,20 @@ export function Keypad({
 
   return (
     <View style={[styles.body, letters && styles.bodyWide]}>
-      <Text style={styles.prompt} maxFontSizeMultiplier={1.3}>
+      <MechText style={styles.prompt}>
         {done ? unlockedText : prompt}
-      </Text>
-      <Text
+      </MechText>
+      <MechText
         style={[styles.display, letters && styles.displayLetters, done && { color: colors.lockGlow }]}
         allowFontScaling={false}
       >
         {[...display].join(' ')}
-      </Text>
+      </MechText>
       {!done && feltGroups && (
         <Pressable onPress={feel} style={styles.palm} disabled={speaking}>
-          <Text style={styles.palmText} allowFontScaling={false}>
+          <MechText style={styles.palmText} allowFontScaling={false}>
             {speaking ? 'the wall is counting' : '◉ palm to the wall'}
-          </Text>
+          </MechText>
         </Pressable>
       )}
       {!done && (
@@ -141,9 +142,9 @@ export function Keypad({
                   onPress={() => press(key)}
                   hitSlop={4}
                 >
-                  <Text style={styles.keyText} allowFontScaling={false}>
+                  <MechText style={styles.keyText} allowFontScaling={false}>
                     {key}
-                  </Text>
+                  </MechText>
                 </Pressable>
               ))}
             </View>

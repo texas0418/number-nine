@@ -14,7 +14,8 @@
 // placeholder key the story is already unlocked and nothing links here.
 
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { BodyText, ChromeText } from '../engine/ui';
 import {
   getLicenceOffer,
   renewLicence,
@@ -78,20 +79,20 @@ export default function LicenceScreen({
     <View style={styles.root}>
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ the set</Text>
+          <ChromeText style={styles.back}>‹ the set</ChromeText>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
+        <ChromeText style={styles.title} maxFontSizeMultiplier={1.2} numberOfLines={1}>
           THE LICENCE
-        </Text>
+        </ChromeText>
         <View style={{ width: 52 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         {/* The artefact. Straight out of B1's probate inventory. */}
         <View style={styles.certificate}>
-          <Text style={styles.certHead} allowFontScaling={false}>
+          <ChromeText style={styles.certHead} allowFontScaling={false}>
             WIRELESS RECEIVING LICENCE
-          </Text>
+          </ChromeText>
           <View style={styles.rule} />
           <CertRow label="No." value="46-25" />
           <CertRow label="Issued to" value="H. MARSH" />
@@ -100,36 +101,36 @@ export default function LicenceScreen({
           <CertRow label="Status" value="LAPSED" danger />
         </View>
 
-        <Text style={styles.prose} maxFontSizeMultiplier={1.4}>
+        <BodyText style={styles.prose} maxFontSizeMultiplier={1.4}>
           His brother let it run out. The set goes on receiving regardless — it
           has never much cared whose name is on the paper — but the rest of the
           count is not addressed to a man without a licence.
-        </Text>
-        <Text style={styles.aside} maxFontSizeMultiplier={1.4}>
+        </BodyText>
+        <BodyText style={styles.aside} maxFontSizeMultiplier={1.4}>
           Put your own name to it, and she will go on.
-        </Text>
+        </BodyText>
 
         <View style={styles.rule} />
 
         {/* The commerce. Plain, complete, and never dressed up. */}
-        <Text style={styles.label} allowFontScaling={false}>What renewing grants</Text>
-        <Text style={styles.plain} maxFontSizeMultiplier={1.4}>
+        <ChromeText style={styles.label} allowFontScaling={false}>What renewing grants</ChromeText>
+        <BodyText style={styles.plain} maxFontSizeMultiplier={1.4}>
           Broadcasts Two, Three, Four, Five and Six — the rest of the story,
           about six hours of it, and every puzzle in them.
-        </Text>
-        <Text style={styles.plain} maxFontSizeMultiplier={1.4}>
+        </BodyText>
+        <BodyText style={styles.plain} maxFontSizeMultiplier={1.4}>
           One payment. Not a subscription, and it never renews itself.
           Broadcast One and Tonight’s Signal stay free forever, as they are now.
-        </Text>
-        <Text style={styles.plain} maxFontSizeMultiplier={1.4}>
+        </BodyText>
+        <BodyText style={styles.plain} maxFontSizeMultiplier={1.4}>
           No advertising. No tracking. The whole thing works offline.
-        </Text>
+        </BodyText>
 
         {held ? (
-          <Text style={styles.heldNote} maxFontSizeMultiplier={1.4}>
+          <BodyText style={styles.heldNote} maxFontSizeMultiplier={1.4}>
             The licence stands in your name. Nothing further is owed, and
             nothing here will charge you again.
-          </Text>
+          </BodyText>
         ) : loading ? (
           <ActivityIndicator color={colors.dial} style={{ marginTop: 26 }} />
         ) : offer ? (
@@ -138,40 +139,40 @@ export default function LicenceScreen({
             onPress={renew}
             disabled={status === 'working'}
           >
-            <Text style={styles.renewText} allowFontScaling={false}>
+            <ChromeText style={styles.renewText} allowFontScaling={false}>
               {status === 'working' ? 'ON THE LINE…' : `RENEW THE LICENCE · ${offer.price}`}
-            </Text>
+            </ChromeText>
           </Pressable>
         ) : (
-          <Text style={styles.unavailable} maxFontSizeMultiplier={1.4}>
+          <BodyText style={styles.unavailable} maxFontSizeMultiplier={1.4}>
             The exchange is not answering. The licence cannot be renewed just
             now — no charge has been made. Try again when you have a signal.
-          </Text>
+          </BodyText>
         )}
 
         {!held && (
         <Pressable onPress={restore} hitSlop={10} disabled={status === 'working'}>
-          <Text style={styles.restore} maxFontSizeMultiplier={1.3}>
+          <ChromeText style={styles.restore}>
             already renewed it? restore
-          </Text>
+          </ChromeText>
         </Pressable>
         )}
 
         {status === 'refused' && (
-          <Text style={styles.refused} maxFontSizeMultiplier={1.4}>
+          <BodyText style={styles.refused} maxFontSizeMultiplier={1.4}>
             The renewal did not go through, and nothing has been charged.
-          </Text>
+          </BodyText>
         )}
         {status === 'nothing-to-restore' && (
-          <Text style={styles.refused} maxFontSizeMultiplier={1.4}>
+          <BodyText style={styles.refused} maxFontSizeMultiplier={1.4}>
             No previous renewal was found for this Apple Account.
-          </Text>
+          </BodyText>
         )}
 
-        <Text style={styles.footnote} maxFontSizeMultiplier={1.3}>
+        <ChromeText style={styles.footnote}>
           Payment is charged to your Apple Account at confirmation. A renewal
           carries to every device signed in to the same account.
-        </Text>
+        </ChromeText>
       </ScrollView>
     </View>
   );
@@ -180,13 +181,13 @@ export default function LicenceScreen({
 function CertRow({ label, value, danger }: { label: string; value: string; danger?: boolean }) {
   return (
     <View style={styles.certRow}>
-      <Text style={styles.certLabel} allowFontScaling={false}>{label}</Text>
-      <Text
+      <ChromeText style={styles.certLabel} allowFontScaling={false}>{label}</ChromeText>
+      <ChromeText
         style={[styles.certValue, danger && { color: colors.danger }]}
         allowFontScaling={false}
       >
         {value}
-      </Text>
+      </ChromeText>
     </View>
   );
 }

@@ -20,9 +20,9 @@ import {
   ScrollView,
   Share,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import { BodyText, ChromeText, MechText } from '../engine/ui';
 import {
   buildPuzzle,
   isSolved,
@@ -243,32 +243,32 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
           instead of the title getting smaller. */}
       <View style={styles.header}>
         <Pressable onPress={onBack} hitSlop={12}>
-          <Text style={styles.back} maxFontSizeMultiplier={1.3}>‹ set</Text>
+          <ChromeText style={styles.back}>‹ set</ChromeText>
         </Pressable>
-        <Text style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
+        <ChromeText style={styles.title} maxFontSizeMultiplier={1.15} numberOfLines={1}>
           TONIGHT’S SIGNAL
-        </Text>
+        </ChromeText>
         {/* Balances the back link so the title sits optically centred on the
             screen rather than centred in what is left of the row. */}
         <View style={styles.headSpacer} />
       </View>
-      <Text style={styles.meta} maxFontSizeMultiplier={1.3} numberOfLines={2}>
+      <ChromeText style={styles.meta} numberOfLines={2}>
         intercepted · 4625 kHz · no. {serial} · {puzzle.revealedLetters.length} letters clear
         {/* On a header-key night she prints a word in the header, unlabelled and
             unexplained, and that word IS the key. Nothing here says so: a
             listener who recognises it reads the night in seconds, and one who
             does not has an ordinary cryptogram. */}
         {headerKeyNight ? ` · ${keywordForDay(puzzle.dayKey)}` : ''}
-      </Text>
+      </ChromeText>
 
       <View style={styles.actions}>
         <Pressable onPress={listen} hitSlop={12}>
-          <Text style={[styles.action, isSpeaking && styles.backLive]} maxFontSizeMultiplier={1.3}>
+          <ChromeText style={[styles.action, isSpeaking && styles.backLive]}>
             {isSpeaking ? 'stop' : 'listen'}
-          </Text>
+          </ChromeText>
         </Pressable>
         <Pressable onPress={share} hitSlop={12}>
-          <Text style={styles.action} maxFontSizeMultiplier={1.3}>share</Text>
+          <ChromeText style={styles.action}>share</ChromeText>
         </Pressable>
       </View>
 
@@ -277,9 +277,9 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
           deliberately NOT applied for you — a gift you did not have to read is
           just a reveal with extra steps. */}
       {morseNight && gifts.length > 0 && (
-        <Text style={styles.keyed} maxFontSizeMultiplier={1.2} numberOfLines={2}>
+        <ChromeText style={styles.keyed} maxFontSizeMultiplier={1.2} numberOfLines={2}>
           {giftLine(gifts)}
-        </Text>
+        </ChromeText>
       )}
 
       <ScrollView style={styles.paper} contentContainerStyle={styles.paperInner}>
@@ -287,9 +287,11 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
           <View key={wi} style={styles.word}>
             {word.map((sym, si) =>
               'literal' in sym ? (
-                <Text key={si} style={styles.literal}>
+                // The grid's cells are fixed-size (allowFontScaling={false} below),
+                // so the amber literal must not scale either or rows misalign.
+                <MechText key={si} style={styles.literal} allowFontScaling={false}>
                   {sym.literal}
-                </Text>
+                </MechText>
               ) : (
                 <Cell
                   key={si}
@@ -308,27 +310,27 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
 
       {solved ? (
         <View style={styles.solvedWrap}>
-          <Text style={styles.solvedRule}>· · · — — — · · ·</Text>
-          <Text style={styles.solvedText}>SIGNAL RECEIVED</Text>
-          <Text style={styles.decoded} maxFontSizeMultiplier={1.4}>
+          <ChromeText style={styles.solvedRule}>· · · — — — · · ·</ChromeText>
+          <ChromeText style={styles.solvedText}>SIGNAL RECEIVED</ChromeText>
+          <BodyText style={styles.decoded} maxFontSizeMultiplier={1.4}>
             “{plaintext.toLowerCase()}”
-          </Text>
-          <Text style={styles.attribution} maxFontSizeMultiplier={1.3}>
+          </BodyText>
+          <ChromeText style={styles.attribution}>
             — the listening log of H. MARSH · entry no. {serial}
-          </Text>
-          <Text style={styles.streak}>
+          </ChromeText>
+          <ChromeText style={styles.streak}>
             {streak} night{streak === 1 ? '' : 's'} listening · a new signal at midnight
-          </Text>
+          </ChromeText>
           <Pressable style={styles.shareBtn} onPress={share}>
-            <Text style={styles.shareBtnText}>share the intercept</Text>
+            <ChromeText style={styles.shareBtnText}>share the intercept</ChromeText>
           </Pressable>
         </View>
       ) : (
         <View style={styles.keys}>
           {refused && (
-            <Text style={styles.refused} maxFontSizeMultiplier={1.3}>
+            <ChromeText style={styles.refused}>
               she repeats the group, unhurried — something is mistranscribed
-            </Text>
+            </ChromeText>
           )}
           {LETTER_ROWS.map((row) => (
             <View key={row} style={styles.keyRow}>
@@ -338,21 +340,21 @@ export default function DailySignalScreen({ onBack }: { onBack: () => void }) {
                   style={[styles.key, { width: sizes.keyW, height: sizes.keyH }]}
                   onPress={() => assign(letter)}
                 >
-                  <Text
+                  <MechText
                     style={[styles.keyText, { fontSize: sizes.keyFont }]}
                     allowFontScaling={false}
                   >
                     {letter}
-                  </Text>
+                  </MechText>
                 </Pressable>
               ))}
             </View>
           ))}
-          <Text style={styles.hint}>
+          <ChromeText style={styles.hint}>
             {selected === null
               ? 'tap a number in the transmission'
               : `assign a letter to every ${selected}`}
-          </Text>
+          </ChromeText>
         </View>
       )}
       {/* Rendered off-screen so it can be captured. Positioned far outside
@@ -424,7 +426,7 @@ function Cell({
         revealed && { borderColor: colors.panelBorder, backgroundColor: colors.bg },
       ]}
     >
-      <Text
+      <MechText
         style={[
           styles.cellLetter,
           { fontSize: sizes.cellFont, height: Math.round(sizes.cellFont * 1.35) },
@@ -434,13 +436,13 @@ function Cell({
         allowFontScaling={false}
       >
         {spin ?? guess ?? ' '}
-      </Text>
-      <Text
+      </MechText>
+      <MechText
         style={[styles.cellNum, { fontSize: sizes.numFont }, selected && { color: colors.dial, ...amberGlow }]}
         allowFontScaling={false}
       >
         {num}
-      </Text>
+      </MechText>
     </Pressable>
   );
 }
